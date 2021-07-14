@@ -11,8 +11,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
 import android.view.WindowManager;
+import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -31,11 +33,18 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         WebView = findViewById(R.id.webView);
-        WebView.loadUrl(Connection.API+"/signup");
-        WebSettings webSettings = WebView.getSettings();
-        webSettings.setJavaScriptEnabled(true);
+        WebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+
+
+        WebView.getSettings().setAllowContentAccess(true);
+        WebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
+        WebView.getSettings().setJavaScriptEnabled(true);
+        WebView.getSettings().setDomStorageEnabled(true);
         WebView.getSettings().setLoadWithOverviewMode(true);
         WebView.getSettings().setUseWideViewPort(true);
+        WebView.setWebChromeClient(new WebChromeClient());
+        WebView.setWebViewClient(new WebViewClient());
+        WebView.loadUrl(Connection.API+"/signup");
 
 
     }

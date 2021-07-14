@@ -21,7 +21,10 @@ public class signin extends AppCompatActivity {
         WebView = findViewById(R.id.webView_signin);
         WebView.loadUrl(Connection.API+"/signin");
         WebSettings webSettings = WebView.getSettings();
+        webSettings.setAllowContentAccess(true);
+        webSettings.setJavaScriptCanOpenWindowsAutomatically(true);
         webSettings.setJavaScriptEnabled(true);
+        webSettings.setDomStorageEnabled(true);
         WebView.getSettings().setLoadWithOverviewMode(true);
         WebView.getSettings().setUseWideViewPort(true);
 
