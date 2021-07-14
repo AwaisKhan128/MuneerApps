@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Context;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.Toast;
 
 import com.auth0.android.Auth0;
 import com.auth0.android.Auth0Exception;
@@ -34,20 +35,40 @@ public class MainActivity extends AppCompatActivity {
         WebAuthProvider.login(account)
                 .withScheme("demo")
                 .withScope("openid profile email")
-                .start(mContext, (Callback)(new Callback() {
+                .start(mContext, new Callback<Credentials, AuthenticationException>() {
+                    @Override
+                    public void onSuccess(Credentials credentials) {
+                        Toaster("Login Succeed Congratulations");
+                    }
 
-            public void onFailure(Auth0Exception var1) {
-                this.onFailure((AuthenticationException)var1);
-            }
+                    @Override
+                    public void onFailure(AuthenticationException e) {
+                        Toaster("Login Failed due to"+e.getDescription());
+                    }
+                });
 
+    }
+    public void Toaster(String s)
+    {
+        Toast.makeText(mContext,s,Toast.LENGTH_SHORT).show();
+    }
 
+    public void LogOut(View view)
+    {
+        WebAuthProvider.logout(account)
+                .withScheme("demo")
+                .start(mContext, new Callback<Void, AuthenticationException>() {
+                    @Override
+                    public void onFailure(AuthenticationException e) {
+                        Toaster("Logout Failed.");
+                    }
 
-            public void onSuccess(Object var1) {
-                this.onSuccess((Credentials)var1);
-                String accessToken = ((Credentials) var1).getAccessToken();
-            }
-        }));
+                    @Override
+                    public void onSuccess(Void aVoid) {
+                        Toaster("Logout Success");
+                    }
 
+                });
     }
 
 
