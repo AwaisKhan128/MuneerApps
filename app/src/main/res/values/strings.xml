@@ -3,6 +3,7 @@
     <string name="com_auth0_domain">dev-muneer123.eu.auth0.com</string>
     <string name="com_auth0_clientID">6E6scrvEFX3h0uiXwmBXwbHEVoOzxsQp</string>
     <string name="com_auth0_clientSecret">uEHKrfJ--64zM9IsKlzm-rc6w3up8TBc_bKZSiDyM1eV5IKKY_rbx1M1Mc9iYQTL</string>
+    <string name="admin_key">24699</string>
 
     <string name="register">REGISTER</string>
     <string name="login_email_hint">Email</string>
