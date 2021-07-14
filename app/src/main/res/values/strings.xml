@@ -4,4 +4,9 @@
     <string name="com_auth0_clientID">6E6scrvEFX3h0uiXwmBXwbHEVoOzxsQp</string>
     <string name="com_auth0_clientSecret">uEHKrfJ--64zM9IsKlzm-rc6w3up8TBc_bKZSiDyM1eV5IKKY_rbx1M1Mc9iYQTL</string>
 
+    <string name="register">REGISTER</string>
+    <string name="login_email_hint">Email</string>
+    <string name="login_password_hint">Password</string>
+    <string name="signup_login_hint">Already have an account? Sign In</string>
+    <string name="login_signup_hint">Don\'t have an account? Sign Up</string>
 </resources>
