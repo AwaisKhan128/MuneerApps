@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/floatingActionButton4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentRight="false"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:clickable="true"
+        android:contentDescription="This description"
+        android:text="Cash Out"
+        android:textColor="@color/white"
+        android:textAlignment="textStart"
+        android:backgroundTint="@color/red"
+        app:icon="@drawable/ic_baseline_sub"
+        app:layout_anchorGravity="bottom|right|end"
+         />
+
+    <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+        android:id="@+id/floatingActionButton3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentBottom="true"
+        android:layout_marginStart="20dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:backgroundTint="@color/green"
+        android:textColor="@color/white"
+        android:clickable="true"
+        android:textAlignment="textStart"
+        app:srcCompat="@drawable/ic_add_cash"
+        android:contentDescription="This description"
+        android:text="Cash IN"
+        app:icon="@drawable/ic_baseline_add_24"
+        app:layout_anchorGravity="bottom|right|end"
+
+        />
+</RelativeLayout>

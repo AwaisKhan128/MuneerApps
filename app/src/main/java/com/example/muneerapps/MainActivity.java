@@ -10,11 +10,13 @@ import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewStub;
+import android.view.Window;
 import android.view.WindowManager;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -25,27 +27,32 @@ import connection.Connection;
 public class MainActivity extends AppCompatActivity {
 
     Context mContext;
-    WebView WebView;
+    EditText userName, emails,password,password2;
+    TextView signin;
+    Button button3;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_main);
         mContext = this;
-        WebView = findViewById(R.id.webView);
-        WebView.getSettings().setPluginState(WebSettings.PluginState.ON);
+        userName = (EditText) findViewById(R.id.userName);
+        emails = (EditText) findViewById(R.id.email);
+        password = (EditText) findViewById(R.id.password);
+        password2 = (EditText) findViewById(R.id.password2);
+        signin = (TextView) findViewById(R.id.signin);
+    }
 
-
-        WebView.getSettings().setAllowContentAccess(true);
-        WebView.getSettings().setJavaScriptCanOpenWindowsAutomatically(true);
-        WebView.getSettings().setJavaScriptEnabled(true);
-        WebView.getSettings().setDomStorageEnabled(true);
-        WebView.getSettings().setLoadWithOverviewMode(true);
-        WebView.getSettings().setUseWideViewPort(true);
-        WebView.setWebChromeClient(new WebChromeClient());
-        WebView.setWebViewClient(new WebViewClient());
-        WebView.loadUrl(Connection.API+"/signup");
-
+    public void setButton3(View view)
+    {
+        String user = userName.getText().toString();
+        String email = emails.getText().toString();
+        String password_u = password.getText().toString();
+        String password2_u = password2.getText().toString();
 
     }
 

@@ -16,6 +16,9 @@
     <color name="primaryTextColor">#00a5ff</color>
     <color name="loginBkColor">#f0f0f0</color>
 
+    <color name="red">#FF0000</color>
+    <color name="green">#00FF00</color>
+
     <!--colros for card-->
     <color name="whiteCardColor">#fff</color>
 </resources>

@@ -13,9 +13,14 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuneerApps">
-        <activity android:name=".signin"></activity>
-        <activity android:name=".MainActivity" />
-        <activity android:name=".starter">
+        <activity android:name=".Selector"></activity>
+        <activity android:name=".signin" />
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".starter"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
