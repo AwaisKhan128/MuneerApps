@@ -28,6 +28,7 @@
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
             android:ems="10"
+            android:hint="Name"
             android:inputType="textPersonName" />
 
         <EditText
@@ -37,6 +38,7 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:ems="10"
+            android:hint="CNIC"
             android:inputType="textPersonName" />
 
         <EditText
@@ -48,6 +50,7 @@
             android:layout_marginEnd="20dp"
             android:ems="10"
             android:gravity="start|top"
+            android:hint="Address"
             android:inputType="textMultiLine" />
 
         <Button
