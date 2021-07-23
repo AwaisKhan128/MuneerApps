@@ -13,7 +13,6 @@
         android:layout_height="wrap_content"
         android:background="@drawable/dialog_back"
         android:backgroundTintMode="screen"
-
         android:orientation="vertical">
 
         <TextView

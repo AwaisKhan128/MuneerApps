@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "39314707095",
+    "project_id": "muneerapps-acc7a",
+    "storage_bucket": "muneerapps-acc7a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:39314707095:android:a9fa66b609d114a2700fd2",
+        "android_client_info": {
+          "package_name": "com.example.muneerapps"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "39314707095-sphbgkb60l8v7m0d086bojticl2gnisr.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCQc1anyy4iI-R-Piwt9eEbLtbbqnTRytI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "39314707095-sphbgkb60l8v7m0d086bojticl2gnisr.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
