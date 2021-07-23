@@ -11,8 +11,9 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import com.example.muneerapps.R;
+import com.google.android.material.textfield.TextInputLayout;
 
-public class Category_dialog extends Dialog implements
+public class Product_dialog extends Dialog implements
         View.OnClickListener {
 
     public Activity c;
@@ -21,11 +22,14 @@ public class Category_dialog extends Dialog implements
     public EditText title,description;
     public RadioButton radioButton,radioButton2,radioButton3;
 
-    public EditText category_reg;
-    public Button button9;
+
+    public Button button11;
+
+    public TextInputLayout product_cat;
+    public EditText product_name, product_unit, price;
 
 
-    public Category_dialog(Activity a) {
+    public Product_dialog(Activity a) {
         super(a);
         // TODO Auto-generated constructor stub
         this.c = a;
@@ -35,13 +39,15 @@ public class Category_dialog extends Dialog implements
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        setContentView(R.layout.create_categ);
-        category_reg = (EditText) findViewById(R.id.category_reg);
-        button9 = (Button) findViewById(R.id.button9);
+        setContentView(R.layout.create_product);
+        product_cat = (TextInputLayout) findViewById(R.id.product_cat);
+        product_name = (EditText) findViewById(R.id.product_name);
+        product_unit = (EditText) findViewById(R.id.product_unit);
+        price = (EditText) findViewById(R.id.price);
+        button11 = (Button) findViewById(R.id.button11);
+
 
     }
-
-
 
     public void Toaster(String s)
     {
