@@ -24,4 +24,8 @@ public class signin extends AppCompatActivity {
     }
 
 
+    public void go_forward(View view)
+    {
+        startActivity(new Intent(this,Selector.class));
+    }
 }

@@ -77,6 +77,7 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/create_acc"
             android:drawableLeft="@drawable/login_15"
+            android:onClick="go_forward"
             android:paddingStart="100dp"
             android:paddingEnd="100dp"
             android:text="Sign In"
