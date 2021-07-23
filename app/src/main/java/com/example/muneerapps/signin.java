@@ -3,7 +3,9 @@ package com.example.muneerapps;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.view.View;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
 
@@ -19,6 +21,7 @@ public class signin extends AppCompatActivity {
         setContentView(R.layout.activity_signin);
         mContext = this;
 
-
     }
+
+
 }

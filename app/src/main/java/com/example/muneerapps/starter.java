@@ -42,20 +42,18 @@ public class starter extends AppCompatActivity {
         alertDialogBuilder
                 .setCancelable(false)
                 .setPositiveButton("OK",
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog,int id) {
-                                // get user input and set it to result
-                                // edit text
-                                if (userInput.getText().toString().equals(getResources().getString(R.string.admin_key)))
-                                {
-                                    Toaster("Verification Succeed");
-                                    startActivity(new Intent(starter.this,MainActivity.class));
-                                }
-                                else
-                                {
-                                    Toaster("Verification Failed");
+                        (dialog, id) -> {
+                            // get user input and set it to result
+                            // edit text
+                            if (userInput.getText().toString().equals(getResources().getString(R.string.admin_key)))
+                            {
+                                Toaster("Verification Succeed");
+                                startActivity(new Intent(starter.this,MainActivity.class));
+                            }
+                            else
+                            {
+                                Toaster("Verification Failed");
 
-                                }
                             }
                         })
                 .setNegativeButton("Cancel",

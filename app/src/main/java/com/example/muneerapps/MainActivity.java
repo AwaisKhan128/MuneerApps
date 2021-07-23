@@ -31,6 +31,11 @@ public class MainActivity extends AppCompatActivity {
     TextView signin;
     Button button3;
 
+    public void signin_transact(View view)
+    {
+        startActivity(new Intent(this,signin.class));
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
