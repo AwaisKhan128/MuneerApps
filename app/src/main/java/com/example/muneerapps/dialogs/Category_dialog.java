@@ -17,9 +17,6 @@ public class Category_dialog extends Dialog implements
 
     public Activity c;
     public Dialog d;
-    public Button yes, no;
-    public EditText title,description;
-    public RadioButton radioButton,radioButton2,radioButton3;
 
     public EditText category_reg;
     public Button button9;
