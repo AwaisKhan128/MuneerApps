@@ -84,6 +84,7 @@
                 android:id="@+id/radioButton"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:onClick="Access"
                 android:text="Customer Registration" />
 
             <RadioButton

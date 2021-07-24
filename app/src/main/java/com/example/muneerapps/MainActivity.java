@@ -1,5 +1,6 @@
 package com.example.muneerapps;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
@@ -12,10 +13,16 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.concurrent.Executor;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -28,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     TextView signin;
     Button button3;
     ProgressBar progressBar;
+    RadioButton radioButton,radioButton2,radioButton3,radioButton4;
 
     public void signin_transact(View view)
     {
@@ -50,6 +58,13 @@ public class MainActivity extends AppCompatActivity {
         signin = (TextView) findViewById(R.id.signin);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         button3 = (Button) findViewById(R.id.button3);
+        radioButton = (RadioButton) findViewById(R.id.radioButton);
+        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
+        radioButton3 = (RadioButton) findViewById(R.id.radioButton3);
+        radioButton4 = (RadioButton) findViewById(R.id.radioButton4);
+
+
+
         progressBar.setVisibility(View.GONE);
     }
 
@@ -68,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 Register_firebase_user register_firebase_user = new Register_firebase_user();
-                register_firebase_user.execute(email, password_u);
+                register_firebase_user.execute(email, password_u,user);
             }
 
         }
@@ -129,14 +144,43 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected String doInBackground(String... strings) {
             AtomicBoolean ans = new AtomicBoolean(false);
-//            if ( !password_u.equals("") && !password2_u.equals("") )
+
             {
                 FirebaseAuth.getInstance().createUserWithEmailAndPassword(strings[0], strings[1])
                         .addOnCompleteListener(MainActivity.this, task -> {
                             if (task.isSuccessful()) {
                                 Toaster("User Created Successfully");
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                        .getReference("Users").child(FirebaseAuth.getInstance()
+                                                .getCurrentUser().getUid());
+
+                                databaseReference
+                                        .child("Name").setValue(strings[2]);
+
+                                databaseReference
+                                        .child("Access").child("Customer").setValue(access[0]);
+
+                                databaseReference
+                                        .child("Access").child("Category").setValue(access[1]);
+
+                                databaseReference
+                                        .child("Access").child("Product").setValue(access[2]);
+
+                                databaseReference
+                                        .child("Access").child("Payment").setValue(access[3]);
+
+
+
                                 progressBar.setVisibility(View.GONE);
                                 button3.setVisibility(View.VISIBLE);
+                                userName.setText("");
+                                emails.setText("");
+                                password.setText("");
+                                password2.setText("");
+                                radioButton.setChecked(false);
+                                radioButton2.setChecked(false);
+                                radioButton3.setChecked(false);
+                                radioButton4.setChecked(false);
                                 ans.set(true);
 
                             } else {
@@ -157,6 +201,33 @@ public class MainActivity extends AppCompatActivity {
             }
 
 
+        }
+    }
+
+    private boolean access[] = {false,false,false,false};
+    public void Access(View view)
+    {
+        switch (view.getId())
+        {
+            case R.id.radioButton:
+                radioButton.toggle();
+                access[0]= !access[0];
+                break;
+
+            case R.id.radioButton2:
+                radioButton2.toggle();
+                access[1]= !access[1];
+                break;
+
+            case R.id.radioButton3:
+                radioButton3.toggle();
+                access[2]= !access[2];
+                break;
+
+            case R.id.radioButton4:
+                radioButton4.toggle();
+                access[3]= !access[3];
+                break;
         }
     }
 
