@@ -72,13 +72,12 @@ public class signin extends AppCompatActivity {
         protected void onPostExecute(String s) {
             super.onPostExecute(s);
 
-
-
         }
 
         @Override
         protected void onProgressUpdate(Void... values) {
             super.onProgressUpdate(values);
+
         }
 
         @Override
@@ -133,5 +132,14 @@ public class signin extends AppCompatActivity {
     public void Toaster(String s)
     {
         Toast.makeText(mContext,s,Toast.LENGTH_SHORT).show();
+    }
+
+    public void forget_pass(View view)
+    {
+        if (email2.getText().toString().length()>0 )
+        {
+            FirebaseAuth.getInstance().sendPasswordResetEmail(email2.getText().toString());
+            Toaster("Reset Email sent successfully to you");
+        }
     }
 }
