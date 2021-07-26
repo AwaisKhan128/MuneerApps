@@ -62,9 +62,6 @@ public class MainActivity extends AppCompatActivity {
         radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
         radioButton3 = (RadioButton) findViewById(R.id.radioButton3);
         radioButton4 = (RadioButton) findViewById(R.id.radioButton4);
-
-
-
         progressBar.setVisibility(View.GONE);
     }
 
@@ -181,7 +178,13 @@ public class MainActivity extends AppCompatActivity {
                                 radioButton2.setChecked(false);
                                 radioButton3.setChecked(false);
                                 radioButton4.setChecked(false);
+
+                                access[0] = false;
+                                access[1] = false;
+                                access[2] = false;
+                                access[3] = false;
                                 ans.set(true);
+                                FirebaseAuth.getInstance().signOut();
 
                             } else {
                                 Toaster(task.getException().getMessage());
@@ -210,23 +213,27 @@ public class MainActivity extends AppCompatActivity {
         switch (view.getId())
         {
             case R.id.radioButton:
-                radioButton.toggle();
+//                radioButton.toggle();
                 access[0]= !access[0];
+                radioButton.setChecked(access[0]);
                 break;
 
             case R.id.radioButton2:
-                radioButton2.toggle();
+//                radioButton2.toggle();
                 access[1]= !access[1];
+                radioButton2.setChecked(access[1]);
                 break;
 
             case R.id.radioButton3:
-                radioButton3.toggle();
+//                radioButton3.toggle();
                 access[2]= !access[2];
+                radioButton3.setChecked(access[2]);
                 break;
 
             case R.id.radioButton4:
-                radioButton4.toggle();
+//                radioButton4.toggle();
                 access[3]= !access[3];
+                radioButton4.setChecked(access[3]);
                 break;
         }
     }
