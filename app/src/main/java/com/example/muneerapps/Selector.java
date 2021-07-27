@@ -11,6 +11,7 @@ import android.widget.Button;
 import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Customer_dialog;
 import com.example.muneerapps.dialogs.Product_dialog;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -32,27 +33,44 @@ public class Selector extends AppCompatActivity {
             DatabaseReference db = firebaseDatabase.getReference("Users")
                     .child(FirebaseAuth.getInstance().getCurrentUser().getUid())
                     .child("Access");
-            db.addListenerForSingleValueEvent(new ValueEventListener() {
+            db.addValueEventListener(new ValueEventListener() {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.child("Category").getValue(Boolean.class))
                     {
                         button6.setVisibility(View.VISIBLE);
                     }
+                    else if (!(snapshot.child("Category").getValue(Boolean.class)))
+                    {
+                        button6.setVisibility(View.GONE);
+                    }
 
                     if (snapshot.child("Customer").getValue(Boolean.class))
                     {
                         button5.setVisibility(View.VISIBLE);
+                    }
+                    else if (!(snapshot.child("Customer").getValue(Boolean.class)))
+                    {
+                        button5.setVisibility(View.GONE);
                     }
 
                     if (snapshot.child("Payment").getValue(Boolean.class))
                     {
                         button8.setVisibility(View.VISIBLE);
                     }
+                    else if (!(snapshot.child("Payment").getValue(Boolean.class)))
+                    {
+                        button8.setVisibility(View.GONE);
+                    }
+
 
                     if (snapshot.child("Product").getValue(Boolean.class))
                     {
                         button7.setVisibility(View.VISIBLE);
+                    }
+                    else if (!(snapshot.child("Product").getValue(Boolean.class)))
+                    {
+                        button7.setVisibility(View.GONE);
                     }
 
                 }
@@ -77,8 +95,8 @@ public class Selector extends AppCompatActivity {
         button6.setVisibility(View.GONE);
         button7.setVisibility(View.GONE);
         button8.setVisibility(View.GONE);
+        FirebaseApp.initializeApp(this);
         Firebase_Selector();
-
 
 
     }

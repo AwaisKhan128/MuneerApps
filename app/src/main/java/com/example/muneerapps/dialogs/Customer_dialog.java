@@ -11,7 +11,15 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.muneerapps.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import static android.content.Context.MODE_PRIVATE;
 
@@ -44,9 +52,66 @@ public class Customer_dialog extends Dialog implements
         c_address = (EditText) findViewById(R.id.c_address);
         button10 = (Button) findViewById(R.id.button10);
 
-        button10.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
+        button10.setOnClickListener(view -> {
+
+            if (FirebaseAuth.getInstance().getCurrentUser()!=null)
+            {
+                if (c_name.getText().toString().length()>0 && c_cnic.getText().toString().length()>0 && c_address.getText().toString().length()>0) {
+                    FirebaseDatabase.getInstance().getReference("Customers").addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.hasChildren()) {
+
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                        .getReference("Customers")
+                                        .child(String.valueOf(snapshot.getChildrenCount()));
+
+
+                                databaseReference.child("Name").setValue(c_name.getText().toString());
+                                databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
+                                databaseReference.child("Address").setValue(c_address.getText().toString());
+
+
+                            } else {
+                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                        .getReference("Customers")
+                                        .child(String.valueOf(0));
+
+
+                                databaseReference.child("Name").setValue(c_name.getText().toString());
+                                databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
+                                databaseReference.child("Address").setValue(c_address.getText().toString());
+                            }
+                            Toaster("Success");
+                            c_name.setText("");
+                            c_cnic.setText("");
+                            c_address.setText("");
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                            Toaster("Failed to Saved Try again");
+                        }
+                    });
+                }
+                else
+                {
+                    Toaster("Failed to put empty blocks");
+                    if(c_name.getText().toString().length()==0)
+                    {
+                        c_name.setError("Empty");
+                    }
+                    if(c_cnic.getText().toString().length()==0)
+                    {
+                        c_cnic.setError("Empty");
+                    }
+                    if(c_address.getText().toString().length()==0)
+                    {
+                        c_address.setError("Empty");
+                    }
+                }
 
             }
         });

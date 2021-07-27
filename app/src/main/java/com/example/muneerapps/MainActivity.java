@@ -17,6 +17,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -63,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         radioButton3 = (RadioButton) findViewById(R.id.radioButton3);
         radioButton4 = (RadioButton) findViewById(R.id.radioButton4);
         progressBar.setVisibility(View.GONE);
+        FirebaseApp.initializeApp(this);
     }
 
     public void setButton3(View view)

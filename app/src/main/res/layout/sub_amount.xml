@@ -36,7 +36,18 @@
             android:layout_marginEnd="20dp"
             android:ems="10"
             android:hint="Customer"
-            android:text="Name" />
+            android:text="Name"
+            app:placeholderTextColor="#000000"
+            app:prefixTextColor="#000000"
+            app:suffixTextColor="#000000">
+            <AutoCompleteTextView
+                android:id="@+id/select_custom_Ac"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:inputType="none"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/select_categ"
@@ -48,7 +59,18 @@
             android:layout_marginEnd="20dp"
             android:ems="10"
             android:hint="Category"
-            android:text="Name" />
+            android:text="Name"
+            app:placeholderTextColor="#000000"
+            app:prefixTextColor="#000000"
+            app:suffixTextColor="#000000">
+            <AutoCompleteTextView
+                android:id="@+id/select_categ_Ac"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:inputType="none"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/select_prod"
@@ -60,7 +82,15 @@
             android:layout_marginEnd="20dp"
             android:ems="10"
             android:hint="Product"
-            android:text="Name" />
+            android:text="Name" >
+            <AutoCompleteTextView
+                android:id="@+id/select_prod_Ac"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:inputType="none"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/select_rate"
@@ -73,6 +103,13 @@
             android:ems="10"
             android:hint="Product"
             android:text="Name">
+            <AutoCompleteTextView
+                android:id="@+id/select_rate_Ac"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:inputType="none"
+                android:textColor="@color/black" />
 
         </com.google.android.material.textfield.TextInputLayout>
 
@@ -83,9 +120,11 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Quantity"
-            android:inputType="number" />
+            android:inputType="number"
+            android:paddingStart="15dp" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -99,7 +138,9 @@
                 android:id="@+id/textView9"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:paddingStart="15dp"
                 android:text="Estimated Total (in Rs) :"
+                android:textColor="#000000"
                 android:textSize="18sp" />
 
             <TextView
@@ -109,7 +150,8 @@
                 android:layout_weight="1"
                 android:gravity="end"
                 android:text="-400"
-                android:textSize="18sp" />
+                android:textColor="#EF0000"
+                android:textSize="24sp" />
         </LinearLayout>
 
         <androidx.appcompat.widget.AppCompatButton

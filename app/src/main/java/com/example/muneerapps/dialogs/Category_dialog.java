@@ -10,7 +10,14 @@ import android.widget.EditText;
 import android.widget.RadioButton;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+
 import com.example.muneerapps.R;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 public class Category_dialog extends Dialog implements
         View.OnClickListener {
@@ -35,6 +42,40 @@ public class Category_dialog extends Dialog implements
         setContentView(R.layout.create_categ);
         category_reg = (EditText) findViewById(R.id.category_reg);
         button9 = (Button) findViewById(R.id.button9);
+
+        button9.setOnClickListener(view -> {
+
+            if (category_reg.getText().toString().length()>0) {
+                FirebaseDatabase.getInstance().getReference("Categories")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChildren()) {
+                                    FirebaseDatabase
+                                            .getInstance().getReference("Categories")
+                                            .child(String.valueOf(snapshot.getChildrenCount())).setValue(category_reg.getText().toString());
+                                } else {
+                                    FirebaseDatabase
+                                            .getInstance().getReference("Categories")
+                                            .child(String.valueOf(0)).setValue(category_reg.getText().toString());
+                                }
+                                category_reg.setText("");
+                                Toaster("Success");
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toaster("Error due to "+error.getDetails());
+                            }
+                        });
+            }
+            else {
+                Toaster("Empty Blocks");
+                category_reg.setError("Empty Blocks");
+            }
+
+
+        });
 
     }
 

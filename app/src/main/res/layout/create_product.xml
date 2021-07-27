@@ -26,28 +26,39 @@
             android:textSize="24sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/product_cat"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/input_back"
-            android:ems="10"
             android:hint="Category"
-            android:text="Name" />
+            android:id="@+id/product_cat_hint"
+            android:textColorHint="#000000"
+            app:placeholderTextColor="#000000"
+            app:prefixTextColor="#000000"
+            app:suffixTextColor="#000000">
+            <AutoCompleteTextView
+                android:id="@+id/product_cat"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:enabled="false"
+                android:inputType="none"
+                android:textColor="@color/black" />
+        </com.google.android.material.textfield.TextInputLayout>
+
 
         <EditText
             android:id="@+id/product_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_margin="20dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Name"
             android:inputType="textPersonName"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <EditText
             android:id="@+id/product_unit"
@@ -56,11 +67,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Unit"
             android:inputType="text"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <EditText
             android:id="@+id/price"
@@ -69,11 +81,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Price"
             android:inputType="number"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button11"

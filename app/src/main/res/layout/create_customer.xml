@@ -25,6 +25,7 @@
             android:layout_marginBottom="10dp"
             android:gravity="center"
             android:text="Create Customers"
+            android:textColor="#000000"
             android:textSize="24sp" />
 
         <EditText
@@ -34,11 +35,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="10dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Name"
             android:inputType="textPersonName"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <EditText
             android:id="@+id/c_cnic"
@@ -46,11 +48,12 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="CNIC"
             android:inputType="textPersonName"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <EditText
             android:id="@+id/c_address"
@@ -59,11 +62,12 @@
             android:layout_marginStart="20dp"
             android:layout_marginTop="10dp"
             android:layout_marginEnd="20dp"
-            android:background="@drawable/input_back"
+            android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="Address"
             android:inputType="textMultiLine"
-            android:textAlignment="center" />
+            android:paddingStart="15dp"
+            android:textAlignment="textStart" />
 
         <androidx.appcompat.widget.AppCompatButton
             android:id="@+id/button10"
