@@ -26,29 +26,6 @@
             android:textSize="30sp" />
 
         <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/select_custom"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Customer"
-            android:text="Name"
-            app:placeholderTextColor="#000000"
-            app:prefixTextColor="#000000"
-            app:suffixTextColor="#000000">
-            <AutoCompleteTextView
-                android:id="@+id/select_custom_Ac"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:inputType="none"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/select_categ"
             style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
@@ -62,6 +39,7 @@
             app:placeholderTextColor="#000000"
             app:prefixTextColor="#000000"
             app:suffixTextColor="#000000">
+
             <AutoCompleteTextView
                 android:id="@+id/select_categ_Ac"
                 android:layout_width="match_parent"
@@ -71,28 +49,58 @@
                 android:textColor="@color/black" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/select_prod"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
             android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Product"
-            android:text="Name"
-            app:placeholderTextColor="#000000"
-            app:prefixTextColor="#000000"
-            app:suffixTextColor="#000000">
-            <AutoCompleteTextView
-                android:id="@+id/select_prod_Ac"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/select_cutom"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:inputType="none"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Customer"
+                android:inputType="text"
+                android:paddingStart="15dp"
+                android:textColorHint="#373737" />
+
+            <ListView
+                android:id="@+id/custom_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="20dp"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/select_prod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Product"
+                android:inputType="text"
+                android:paddingStart="15dp"
+                android:textColorHint="#373737" />
+
+            <ListView
+                android:id="@+id/product_list"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:visibility="visible" />
+        </LinearLayout>
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/select_rate"
@@ -127,7 +135,6 @@
             android:layout_marginEnd="20dp"
             android:background="@drawable/dialog_text"
             android:ems="10"
-
             android:hint="Quantity"
             android:inputType="number"
             android:paddingStart="15dp"
@@ -156,7 +163,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:gravity="end"
-                android:text="400"
+                android:text="0"
                 android:textColor="#00FF0A"
                 android:textSize="24sp" />
         </LinearLayout>

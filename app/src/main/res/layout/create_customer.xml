@@ -51,7 +51,7 @@
             android:background="@drawable/dialog_text"
             android:ems="10"
             android:hint="CNIC"
-            android:inputType="textPersonName"
+            android:inputType="number"
             android:paddingStart="15dp"
             android:textAlignment="textStart" />
 

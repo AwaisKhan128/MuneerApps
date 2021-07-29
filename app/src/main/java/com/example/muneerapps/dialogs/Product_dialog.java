@@ -150,7 +150,6 @@ public class Product_dialog extends Dialog implements
                                     Categories.add(data);
 
                                 }
-                                Toaster("Goes here");
 
 
                             }
@@ -217,7 +216,6 @@ public class Product_dialog extends Dialog implements
                                             Categories.add(data);
 
                                         }
-                                        Toaster("Goes here");
 
 
                                     }

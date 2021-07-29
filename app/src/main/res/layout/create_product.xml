@@ -58,7 +58,9 @@
             android:hint="Name"
             android:inputType="textPersonName"
             android:paddingStart="15dp"
-            android:textAlignment="textStart" />
+            android:textAlignment="textStart" >
+
+        </EditText>
 
         <EditText
             android:id="@+id/product_unit"
