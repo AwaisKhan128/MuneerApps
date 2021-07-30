@@ -22,14 +22,18 @@ import androidx.annotation.NonNull;
 
 import com.example.muneerapps.R;
 import com.google.android.material.textfield.TextInputLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.List;
+import java.util.Objects;
 
 public class Subcash_dialog extends Dialog implements
         View.OnClickListener {
@@ -102,6 +106,8 @@ public class Subcash_dialog extends Dialog implements
 
             }
         });
+
+
 
 
 //        -------------Rates----------------
@@ -523,7 +529,32 @@ public class Subcash_dialog extends Dialog implements
         button12.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                if (select_categ_Ac.getText().length()>0
+                        && select_categ_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
 
+                        && select_custom.getText().length()>0
+                        && select_prod.getText().length()>0
+
+                        && select_rate_Ac.getText().length()>0
+                        && select_rate_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
+
+                        && quatity_add.getText().length()>0
+                        && textView10.getText().toString().compareToIgnoreCase("0")!=0)
+                {
+
+                    new Upload_Transact().execute(select_categ_Ac.getText().toString()
+                            ,select_custom.getText().toString()
+                            ,select_prod.getText().toString()
+                            ,select_rate_Ac.getText().toString()
+                            ,quatity_add.getText().toString()
+                            ,textView10.getText().toString()
+                            , Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
+                            , String.valueOf(Calendar.getInstance().getTime()));
+
+                }
+                else {
+                    Toaster("Entries can not be Empty");
+                }
             }
         });
 
@@ -735,5 +766,64 @@ public class Subcash_dialog extends Dialog implements
     @Override
     public void onClick(View view) {
 
+    }
+    class Upload_Transact extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+
+            FirebaseDatabase.getInstance().getReference("Payments")
+                    .child("Transactions")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.hasChildren())
+                            {
+                                DatabaseReference df = snapshot.getRef().child(String.valueOf(snapshot.getChildrenCount()));
+                                df.child("Category").setValue(strings[0]);
+                                df.child("Customer").setValue(strings[1]);
+                                df.child("Product").setValue(strings[2]);
+                                df.child("Rate").setValue(strings[3]);
+                                df.child("Quantity").setValue(strings[4]);
+                                df.child("Amount").setValue(strings[5]);
+                                df.child("User").setValue(strings[6]);
+                                df.child("Time").setValue(strings[7]);
+                                df.child("Type").setValue("Purchase");
+                            }
+                            else
+                            {
+                                DatabaseReference df = snapshot.getRef().child(String.valueOf(0));
+                                df.child("Category").setValue(strings[0]);
+                                df.child("Customer").setValue(strings[1]);
+                                df.child("Product").setValue(strings[2]);
+                                df.child("Rate").setValue(strings[3]);
+                                df.child("Quantity").setValue(strings[4]);
+                                df.child("Amount").setValue(strings[5]);
+                                df.child("User").setValue(strings[6]);
+                                df.child("Time").setValue(strings[7]);
+                                df.child("Type").setValue("Purchase");
+                            }
+                            Reset_Inputs();
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+            return null;
+        }
+    }
+
+    private void Reset_Inputs() {
+        select_categ_Ac.setText("");
+        select_prod.setText("");
+        select_rate_Ac.setText("");
+        quatity_add.setText("");
+        textView10.setText("");
+        select_custom.setText("");
     }
 }
