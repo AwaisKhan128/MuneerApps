@@ -562,6 +562,23 @@ public class Addcash_dialog extends Dialog implements
             @Override
             public void onClick(View view) {
 
+                if (select_categ_Ac.getText().length()>0
+                        && select_categ_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
+
+                        && select_custom.getText().length()>0
+                        && select_prod.getText().length()>0
+
+                        && select_rate_Ac.getText().length()>0
+                        && select_rate_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
+
+                        && quatity_add.getText().length()>0
+                        && textView10.getText().toString().compareToIgnoreCase("0")!=0)
+                {
+
+                }
+
+
+
             }
         });
 
