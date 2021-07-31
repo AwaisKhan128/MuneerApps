@@ -47,7 +47,7 @@
                 android:id="@+id/Customer_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="Customer"
                 android:textColor="#0027FF"
@@ -64,12 +64,11 @@
                 android:id="@+id/textView18"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="100dp"
                 android:text="Haris"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -84,7 +83,7 @@
                 android:id="@+id/Category_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="Category"
                 android:textColor="#0027FF"
@@ -101,12 +100,11 @@
                 android:id="@+id/Category_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="100dp"
                 android:text="Backery"
-                android:textSize="20sp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -121,7 +119,7 @@
                 android:id="@+id/Product_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="Product"
                 android:textColor="#0027FF"
@@ -138,12 +136,11 @@
                 android:id="@+id/textView16"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="100dp"
                 android:text="Papay"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -158,7 +155,7 @@
                 android:id="@+id/rate_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="Rate"
                 android:textColor="#0027FF"
@@ -175,12 +172,11 @@
                 android:id="@+id/rate_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="100dp"
                 android:text="22"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -195,7 +191,7 @@
                 android:id="@+id/user_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="User"
                 android:textColor="#0027FF"
@@ -212,12 +208,11 @@
                 android:id="@+id/user_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="50dp"
                 android:text="Farrukh"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -232,7 +227,7 @@
                 android:id="@+id/quanity_list"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
+                android:layout_marginStart="5dp"
                 android:layout_weight="1"
                 android:text="Quanity"
                 android:textColor="#0027FF"
@@ -249,12 +244,11 @@
                 android:id="@+id/quantity_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginEnd="10dp"
+                android:layout_marginEnd="5dp"
                 android:layout_weight="1"
                 android:gravity="right"
-                android:paddingStart="100dp"
                 android:text="100"
-                android:textSize="20dp" />
+                android:textSize="18sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -285,7 +279,7 @@
                     android:gravity="center"
                     android:text="40"
                     android:textColor="#000000"
-                    android:textSize="36sp" />
+                    android:textSize="30sp" />
             </LinearLayout>
 
             <LinearLayout

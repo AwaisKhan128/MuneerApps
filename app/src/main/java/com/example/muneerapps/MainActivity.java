@@ -40,6 +40,12 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     RadioButton radioButton,radioButton2,radioButton3,radioButton4;
 
+    public void Reset_Users(View view)
+    {
+        startActivity(new Intent(MainActivity.this,Reset_User.class));
+
+    }
+
     public void signin_transact(View view)
     {
         startActivity(new Intent(this,signin.class));

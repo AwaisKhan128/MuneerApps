@@ -13,30 +13,25 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.MuneerApps">
-        <activity android:name=".Payment"></activity>
-        <activity android:name=".Selector" >
+        <activity android:name=".Reset_User"></activity>
+        <activity android:name=".Payment" />
+        <activity android:name=".Selector">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-
         <activity android:name=".signin" />
         <activity
             android:name=".MainActivity"
-            android:screenOrientation="portrait" >
-
-
-        </activity>
-
-
-        <activity
-            android:name=".starter"
             android:screenOrientation="portrait">
 
         </activity>
+
+        <activity
+            android:name=".starter"
+            android:screenOrientation="portrait"></activity>
     </application>
 
 </manifest>
