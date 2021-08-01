@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.muneerapps"
-        minSdkVersion 21
+        minSdkVersion 22
         targetSdkVersion 30
         versionCode 1
         versionName "1.0"
@@ -47,5 +47,7 @@ dependencies {
     implementation 'com.auth0.android:auth0:2.+'
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.0.0'
-    
+    implementation 'com.github.tejpratap46:PDFCreatorAndroid:1.0'
+    implementation 'com.uttampanchasara.pdfgenerator:pdfgenerator:1.3'
+
 }

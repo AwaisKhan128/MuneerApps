@@ -42,6 +42,8 @@ public class Payment extends AppCompatActivity {
 
 
 
+
+
         FirebaseDatabase.getInstance().getReference("Payments")
                 .child("Transactions").addValueEventListener(new ValueEventListener() {
             @Override

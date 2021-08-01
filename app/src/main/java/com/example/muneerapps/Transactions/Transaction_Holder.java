@@ -1,6 +1,7 @@
 package com.example.muneerapps.Transactions;
 
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -11,6 +12,7 @@ import com.example.muneerapps.R;
 
 public class Transaction_Holder extends RecyclerView.ViewHolder {
     public TextView Order_title,Customer,Categories,Products,Rates,User,Quantity,Amount,Date_time;
+    public ImageView imageView7;
 
     public Transaction_Holder(@NonNull View itemView) {
         super(itemView);
@@ -23,6 +25,7 @@ public class Transaction_Holder extends RecyclerView.ViewHolder {
         Quantity = itemView.findViewById(R.id.quantity_data);
         Amount = itemView.findViewById(R.id.paycount);
         Date_time = itemView.findViewById(R.id.textView24);
+        imageView7 = itemView.findViewById(R.id.imageView7);
 
     }
 }
