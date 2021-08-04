@@ -15,17 +15,96 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import com.example.muneerapps.dialogs.Deadline;
+import com.example.muneerapps.dialogs.Reset_Pin;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import org.w3c.dom.Text;
 
 public class starter extends AppCompatActivity {
     Context mContext;
+    FirebaseAuth.AuthStateListener authStateListener;
+    FirebaseAuth mAuth;
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        authStateListener.onAuthStateChanged(mAuth);
+
+    }
+
+    TextView textView26;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starter);
         mContext = this;
+        mAuth = FirebaseAuth.getInstance();
+        textView26 = findViewById(R.id.textView26);
+        authStateListener = firebaseAuth -> {
+
+            FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if(snapshot.exists())
+                            {
+                                boolean key = snapshot.getValue(Boolean.class);
+                                if (key)
+                                {
+                                    Reset_deadline();
+                                }
+                                else {
+                                    FirebaseUser user = mAuth.getCurrentUser();
+                                    if (user != null) {
+                                        // Sign in logic here.
+                                        startActivity(new Intent(starter.this,Selector.class));
+                                    }
+                                }
+                            }
+                            else {
+                                FirebaseUser user = mAuth.getCurrentUser();
+                                if (user != null) {
+                                    // Sign in logic here.
+                                    startActivity(new Intent(starter.this,Selector.class));
+                                }
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+
+
+
+        };
         Check_Permissions();
+
+        FirebaseDatabase.getInstance().getReference("Deadline")
+                .child("Date").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists())
+                {
+                    textView26.setText("Deadline is "+ snapshot.getValue(String.class));
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
     }
@@ -105,16 +184,31 @@ public class starter extends AppCompatActivity {
                         (dialog, id) -> {
                             // get user input and set it to result
                             // edit text
-                            if (userInput.getText().toString().equals(getResources().getString(R.string.admin_key)))
-                            {
-                                Toaster("Verification Succeed");
-                                startActivity(new Intent(starter.this,MainActivity.class));
-                            }
-                            else
-                            {
-                                Toaster("Verification Failed");
+                            FirebaseDatabase.getInstance().getReference("PIN_CODE").addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.exists())
+                                    {
+                                        String pin = new Transaction_Encoder().getDecoded(snapshot.getValue(String.class));
+                                        if (userInput.getText().toString().equals(pin))
+                                        {
+                                            Toaster("Verification Succeed");
+                                            startActivity(new Intent(starter.this,MainActivity.class));
+                                        }
+                                        else
+                                        {
+                                            Toaster("Verification Failed");
 
-                            }
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
                         })
                 .setNegativeButton("Cancel",
                         new DialogInterface.OnClickListener() {
@@ -138,5 +232,14 @@ public class starter extends AppCompatActivity {
     public void Toaster(String s)
     {
         Toast.makeText(mContext,s,Toast.LENGTH_SHORT).show();
+    }
+
+    private void Reset_deadline() {
+
+        Deadline cdd=new Deadline(starter.this);
+        cdd.setCanceledOnTouchOutside(false);
+        cdd.setCancelable(false);
+        cdd.show();
+
     }
 }

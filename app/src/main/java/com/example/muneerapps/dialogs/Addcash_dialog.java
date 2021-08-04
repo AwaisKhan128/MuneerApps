@@ -24,6 +24,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.muneerapps.R;
+import com.example.muneerapps.Transaction_Encoder;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.textfield.TextInputLayout;
@@ -581,12 +582,13 @@ public class Addcash_dialog extends Dialog implements
                         && textView10.getText().toString().compareToIgnoreCase("0")!=0)
                 {
 
+
                     new Upload_Transact().execute(select_categ_Ac.getText().toString()
                             ,select_custom.getText().toString()
                             ,select_prod.getText().toString()
                             ,select_rate_Ac.getText().toString()
                             ,quatity_add.getText().toString()
-                            ,textView10.getText().toString()
+                            ,(textView10.getText().toString())
                             ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
                             , String.valueOf(Calendar.getInstance().getTime()));
 
@@ -822,29 +824,81 @@ public class Addcash_dialog extends Dialog implements
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.hasChildren())
                             {
+                                Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+
+
+
                                 DatabaseReference df = snapshot.getRef().child(String.valueOf(snapshot.getChildrenCount()));
                                 df.child("Category").setValue(strings[0]);
                                 df.child("Customer").setValue(strings[1]);
                                 df.child("Product").setValue(strings[2]);
                                 df.child("Rate").setValue(strings[3]);
                                 df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(strings[5]);
+                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
                                 df.child("User").setValue(strings[6]);
                                 df.child("Time").setValue(strings[7]);
                                 df.child("Type").setValue("Sell");
+                                FirebaseDatabase.getInstance()
+                                        .getReference("Payments").child("Balance")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists())
+                                                {
+                                                    String balance = snapshot.getValue(String.class);
+                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
+                                                    double newBalance = balance1 + Double.parseDouble(strings[5]);
+                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                                }
+                                                else
+                                                {
+                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                             }
                             else
                             {
+                                Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+
                                 DatabaseReference df = snapshot.getRef().child(String.valueOf(0));
                                 df.child("Category").setValue(strings[0]);
                                 df.child("Customer").setValue(strings[1]);
                                 df.child("Product").setValue(strings[2]);
                                 df.child("Rate").setValue(strings[3]);
                                 df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(strings[5]);
+                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
                                 df.child("User").setValue(strings[6]);
                                 df.child("Time").setValue(strings[7]);
                                 df.child("Type").setValue("Sell");
+                                FirebaseDatabase.getInstance()
+                                        .getReference("Payments").child("Balance")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists())
+                                                {
+                                                    String balance = snapshot.getValue(String.class);
+                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
+                                                    double newBalance = balance1 + Double.parseDouble(strings[5]);
+                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                                }
+                                                else
+                                                {
+                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                             }
                             Reset_Inputs();
                         }

@@ -21,6 +21,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 
 import com.example.muneerapps.R;
+import com.example.muneerapps.Transaction_Encoder;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -778,6 +779,8 @@ public class Subcash_dialog extends Dialog implements
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+
                             if (snapshot.hasChildren())
                             {
                                 DatabaseReference df = snapshot.getRef().child(String.valueOf(snapshot.getChildrenCount()));
@@ -786,10 +789,34 @@ public class Subcash_dialog extends Dialog implements
                                 df.child("Product").setValue(strings[2]);
                                 df.child("Rate").setValue(strings[3]);
                                 df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(strings[5]);
+                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
                                 df.child("User").setValue(strings[6]);
                                 df.child("Time").setValue(strings[7]);
                                 df.child("Type").setValue("Purchase");
+
+                                FirebaseDatabase.getInstance()
+                                        .getReference("Payments").child("Balance")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists())
+                                                {
+                                                    String balance = snapshot.getValue(String.class);
+                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
+                                                    double newBalance = balance1 - Double.parseDouble(strings[5]);
+                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                                }
+                                                else
+                                                {
+                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                             }
                             else
                             {
@@ -799,10 +826,34 @@ public class Subcash_dialog extends Dialog implements
                                 df.child("Product").setValue(strings[2]);
                                 df.child("Rate").setValue(strings[3]);
                                 df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(strings[5]);
+                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
                                 df.child("User").setValue(strings[6]);
                                 df.child("Time").setValue(strings[7]);
                                 df.child("Type").setValue("Purchase");
+
+                                FirebaseDatabase.getInstance()
+                                        .getReference("Payments").child("Balance")
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                            @Override
+                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                if (snapshot.exists())
+                                                {
+                                                    String balance = snapshot.getValue(String.class);
+                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
+                                                    double newBalance = balance1 - Double.parseDouble(strings[5]);
+                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                                }
+                                                else
+                                                {
+                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                }
+                                            }
+
+                                            @Override
+                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                            }
+                                        });
                             }
                             Reset_Inputs();
                         }

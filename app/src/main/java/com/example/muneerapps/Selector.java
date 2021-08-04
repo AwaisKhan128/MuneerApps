@@ -5,11 +5,17 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Customer_dialog;
+import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.Product_dialog;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
@@ -25,6 +31,27 @@ public class Selector extends AppCompatActivity {
     Button button5,button6,button7,button8;
 
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_selector, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if (item.getItemId() == R.id.signout) {
+            SignOut_Now();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+
+    }
+    public void Refresh_Now()
+    {
+
+    }
+
     public void Firebase_Selector()
     {
         if (FirebaseAuth.getInstance().getCurrentUser()!=null) {
@@ -39,64 +66,97 @@ public class Selector extends AppCompatActivity {
                     if (snapshot.child("Category").getValue(Boolean.class))
                     {
                         button6.setVisibility(View.VISIBLE);
+                        progressBar3.setVisibility(View.GONE);
                     }
                     else if (!(snapshot.child("Category").getValue(Boolean.class)))
                     {
                         button6.setVisibility(View.GONE);
+                        progressBar3.setVisibility(View.GONE);
                     }
 
                     if (snapshot.child("Customer").getValue(Boolean.class))
                     {
                         button5.setVisibility(View.VISIBLE);
+                        progressBar3.setVisibility(View.GONE);
                     }
                     else if (!(snapshot.child("Customer").getValue(Boolean.class)))
                     {
                         button5.setVisibility(View.GONE);
+                        progressBar3.setVisibility(View.GONE);
                     }
 
                     if (snapshot.child("Payment").getValue(Boolean.class))
                     {
                         button8.setVisibility(View.VISIBLE);
+                        progressBar3.setVisibility(View.GONE);
                     }
                     else if (!(snapshot.child("Payment").getValue(Boolean.class)))
                     {
                         button8.setVisibility(View.GONE);
+                        progressBar3.setVisibility(View.GONE);
                     }
 
 
                     if (snapshot.child("Product").getValue(Boolean.class))
                     {
                         button7.setVisibility(View.VISIBLE);
+                        progressBar3.setVisibility(View.GONE);
+
                     }
                     else if (!(snapshot.child("Product").getValue(Boolean.class)))
                     {
                         button7.setVisibility(View.GONE);
+                        progressBar3.setVisibility(View.GONE);
                     }
 
                 }
 
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
-
+                    Toast.makeText(getApplicationContext(),"Database error refresh again",Toast.LENGTH_SHORT).show();
+                    progressBar3.setVisibility(View.GONE);
                 }
             });
         }
+        else {
+            SignOut_Now();
+        }
     }
 
+    public void SignOut_Now()
+    {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(Selector.this, starter.class));
+    }
+
+    private void Reset_deadline() {
+
+        Deadline cdd=new Deadline(Selector.this);
+        cdd.setCanceledOnTouchOutside(false);
+        cdd.setCancelable(false);
+        cdd.show();
+
+    }
+
+    ProgressBar progressBar3;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getSupportActionBar().setTitle("Customer Portal");
         setContentView(R.layout.selectors);
         button5 = (Button) findViewById(R.id.button5);
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
         button8 = (Button) findViewById(R.id.button8);
+        progressBar3 = findViewById(R.id.progressBar3);
+        progressBar3.setVisibility(View.VISIBLE);
         button5.setVisibility(View.GONE);
         button6.setVisibility(View.GONE);
         button7.setVisibility(View.GONE);
         button8.setVisibility(View.GONE);
         FirebaseApp.initializeApp(this);
         Firebase_Selector();
+//        Reset_deadline();
 
 
     }

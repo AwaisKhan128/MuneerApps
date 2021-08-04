@@ -110,7 +110,7 @@ public class Transaction_Adaptor extends RecyclerView.Adapter<Transaction_Holder
                         ,holder.Date_time.getText().toString());
             }
         });
-
+        holder.setIsRecyclable(false);
 
     }
 

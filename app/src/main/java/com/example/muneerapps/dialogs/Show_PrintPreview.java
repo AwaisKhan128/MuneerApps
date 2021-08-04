@@ -57,10 +57,7 @@ public class Show_PrintPreview extends Dialog implements
 
     public Activity c;
     public Dialog d;
-
     public Uri myUri;
-
-
 
 
     public Show_PrintPreview(Activity a) {

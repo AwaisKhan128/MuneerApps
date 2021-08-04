@@ -2,12 +2,18 @@ package com.example.muneerapps;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.recyclerview.widget.SnapHelper;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.muneerapps.Transactions.Transaction_Adaptor;
@@ -15,6 +21,7 @@ import com.example.muneerapps.Transactions.Transaction_Class;
 import com.example.muneerapps.dialogs.Addcash_dialog;
 import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Subcash_dialog;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
@@ -28,6 +35,56 @@ public class Payment extends AppCompatActivity {
     Context context;
     LinearLayoutManager linearLayout;
 
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_payment, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                Refresh_Now();
+                return true;
+            case R.id.signout:
+                SignOut_Now();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+
+    }
+
+    public void Refresh_Now()
+    {
+        FirebaseDatabase.getInstance().getReference("Payments")
+                .child("Transactions").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.hasChildren())
+                {
+
+                    new Manage_Users().execute();
+                }
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+    }
+
+    public void SignOut_Now()
+    {
+        FirebaseAuth.getInstance().signOut();
+        startActivity(new Intent(Payment.this, starter.class));
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -40,12 +97,8 @@ public class Payment extends AppCompatActivity {
         recycler.setVisibility(View.GONE);
 
 
-
-
-
-
         FirebaseDatabase.getInstance().getReference("Payments")
-                .child("Transactions").addValueEventListener(new ValueEventListener() {
+                .child("Transactions").addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.hasChildren())
@@ -80,6 +133,7 @@ public class Payment extends AppCompatActivity {
     }
 
 
+
     public class Manage_Users extends AsyncTask<Void,Void,Void>
     {
 
@@ -90,7 +144,8 @@ public class Payment extends AppCompatActivity {
             Data_log.clear();
             recycler.removeAllViewsInLayout();
             recycler.removeAllViews();
-            recycler.getAdapter().notifyDataSetChanged();}
+            recycler.getAdapter().notifyDataSetChanged();
+            }
             catch (Exception e)
             {
                 e.printStackTrace();
@@ -107,6 +162,7 @@ public class Payment extends AppCompatActivity {
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     if (snapshot.hasChildren())
                     {
+                        Transaction_Encoder transaction_encoder = new Transaction_Encoder();
                         for (DataSnapshot dataSnapshot : snapshot.getChildren())
                         {
                             String Order = dataSnapshot.child("Type").getValue(String.class);
@@ -121,11 +177,11 @@ public class Payment extends AppCompatActivity {
 
                             if (Order.compareToIgnoreCase("Sell")==0)
                             Data_log.add(new Transaction_Class(Order,Customer,Category
-                                    ,Product,Rate,User,Quantity,Amount,Date_Time, getResources().getColor(R.color.green)));
+                                    ,Product,Rate,User,Quantity,transaction_encoder.getDecoded(Amount),Date_Time, getResources().getColor(R.color.green)));
                             else
                             {
                                 Data_log.add(new Transaction_Class(Order,Customer,Category
-                                        ,Product,Rate,User,Quantity,Amount,Date_Time, getResources().getColor(R.color.red)));
+                                        ,Product,Rate,User,Quantity,transaction_encoder.getDecoded(Amount),Date_Time, getResources().getColor(R.color.red)));
                             }
 
                         }
@@ -148,9 +204,30 @@ public class Payment extends AppCompatActivity {
 
                 }
             });
+
+            FirebaseDatabase.getInstance()
+                    .getReference("Payments").child("Balance").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists())
+                    {
+                        String balance = new Transaction_Encoder().getDecoded(snapshot.getValue(String.class));
+                        getSupportActionBar().setTitle("Balance Rs. "+balance);
+                    }
+                    else {
+                        getSupportActionBar().setTitle("Balance Rs. "+0);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             return null;
         }
     }
+
 
 
 }

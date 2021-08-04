@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -17,6 +20,8 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.muneerapps.dialogs.Customer_dialog;
+import com.example.muneerapps.dialogs.Reset_Pin;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -40,7 +45,42 @@ public class MainActivity extends AppCompatActivity {
     ProgressBar progressBar;
     RadioButton radioButton,radioButton2,radioButton3,radioButton4;
 
-    public void Reset_Users(View view)
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_admin, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.reset_pin:
+                Reset_Pin();
+                return true;
+            case R.id.reset_User:
+                Reset_Users();
+                return true;
+            case R.id.payments_reset:
+                Reset_Payments();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+//        return super.onOptionsItemSelected(item);
+    }
+
+    private void Reset_Payments() {
+    }
+
+    private void Reset_Pin() {
+
+        Reset_Pin cdd=new Reset_Pin(MainActivity.this);
+        cdd.show();
+
+    }
+
+    public void Reset_Users()
     {
         startActivity(new Intent(MainActivity.this,Reset_User.class));
 
@@ -55,9 +95,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        getSupportActionBar().setTitle("Signup");
         setContentView(R.layout.activity_main);
         mContext = this;
         userName = (EditText) findViewById(R.id.userName);
@@ -153,59 +193,91 @@ public class MainActivity extends AppCompatActivity {
             AtomicBoolean ans = new AtomicBoolean(false);
 
             {
-                FirebaseAuth.getInstance().createUserWithEmailAndPassword(strings[0], strings[1])
-                        .addOnCompleteListener(MainActivity.this, task -> {
-                            if (task.isSuccessful()) {
-                                Toaster("User Created Successfully");
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                        .getReference("Users").child(FirebaseAuth.getInstance()
-                                                .getCurrentUser().getUid());
+                FirebaseDatabase.getInstance().getReference("Users")
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if (snapshot.hasChildren())
+                                {
+                                    boolean hasName = false;
 
-                                databaseReference
-                                        .child("Name").setValue(strings[2]);
+                                    for (DataSnapshot db: snapshot.getChildren())
+                                    {
+                                        if (db.child("Name").getValue(String.class).compareToIgnoreCase(strings[2])==0){
+                                            hasName = true;
+                                        }
+
+                                    }
+                                    if (!hasName)
+                                    {
+                                        FirebaseAuth.getInstance().createUserWithEmailAndPassword(strings[0], strings[1])
+                                                .addOnCompleteListener(MainActivity.this, task -> {
+                                                    if (task.isSuccessful()) {
+                                                        Toaster("User Created Successfully");
+                                                        DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                                .getReference("Users").child(FirebaseAuth.getInstance()
+                                                                        .getCurrentUser().getUid());
+
+                                                        databaseReference
+                                                                .child("Name").setValue(strings[2]);
 
 
 
-                                databaseReference
-                                        .child("Access").child("Customer").setValue(access[0]);
+                                                        databaseReference
+                                                                .child("Access").child("Customer").setValue(access[0]);
 
-                                databaseReference
-                                        .child("Access").child("Category").setValue(access[1]);
+                                                        databaseReference
+                                                                .child("Access").child("Category").setValue(access[1]);
 
-                                databaseReference
-                                        .child("Access").child("Product").setValue(access[2]);
+                                                        databaseReference
+                                                                .child("Access").child("Product").setValue(access[2]);
 
-                                databaseReference
-                                        .child("Access").child("Payment").setValue(access[3]);
+                                                        databaseReference
+                                                                .child("Access").child("Payment").setValue(access[3]);
 
 
 
-                                progressBar.setVisibility(View.GONE);
-                                button3.setVisibility(View.VISIBLE);
-                                userName.setText("");
-                                emails.setText("");
-                                password.setText("");
-                                password2.setText("");
-                                radioButton.setChecked(false);
-                                radioButton2.setChecked(false);
-                                radioButton3.setChecked(false);
-                                radioButton4.setChecked(false);
+                                                        progressBar.setVisibility(View.GONE);
+                                                        button3.setVisibility(View.VISIBLE);
+                                                        userName.setText("");
+                                                        emails.setText("");
+                                                        password.setText("");
+                                                        password2.setText("");
+                                                        radioButton.setChecked(false);
+                                                        radioButton2.setChecked(false);
+                                                        radioButton3.setChecked(false);
+                                                        radioButton4.setChecked(false);
 
-                                access[0] = false;
-                                access[1] = false;
-                                access[2] = false;
-                                access[3] = false;
-                                ans.set(true);
+                                                        access[0] = false;
+                                                        access[1] = false;
+                                                        access[2] = false;
+                                                        access[3] = false;
+                                                        ans.set(true);
 
-                                FirebaseAuth.getInstance().signOut();
+                                                        FirebaseAuth.getInstance().signOut();
 
-                            } else {
-                                Toaster(task.getException().getMessage());
-                                progressBar.setVisibility(View.GONE);
-                                button3.setVisibility(View.VISIBLE);
-                                ans.set(false);
+                                                    } else {
+                                                        Toaster(task.getException().getMessage());
+                                                        progressBar.setVisibility(View.GONE);
+                                                        button3.setVisibility(View.VISIBLE);
+                                                        ans.set(false);
+                                                    }
+                                                });
+                                    }
+                                    else {
+                                        Toaster("Name already in database try different");
+                                    }
+
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
                             }
                         });
+
+
             }
             if (ans.get())
             {
