@@ -17,6 +17,7 @@ import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Customer_dialog;
 import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.Product_dialog;
+import com.example.muneerapps.dialogs.update_prod_dlg;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -182,6 +183,12 @@ public class Selector extends AppCompatActivity {
     public void create_prod(View view)
     {
         Product_dialog cdd=new Product_dialog(Selector.this);
+        cdd.show();
+    }
+
+    public void update_prod(View view)
+    {
+        update_prod_dlg cdd=new update_prod_dlg(Selector.this);
         cdd.show();
     }
 

@@ -58,6 +58,19 @@
             android:text="Create Product"
             android:textSize="18sp" />
 
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/button18"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginEnd="20dp"
+            android:background="@drawable/create_acc"
+
+            android:onClick="update_prod"
+            android:text="Update Product"
+            android:textSize="18sp" />
+
         <ProgressBar
             android:id="@+id/progressBar3"
             style="?android:attr/progressBarStyle"
