@@ -48,7 +48,6 @@ public class update_prod_dlg extends Dialog implements
         unit = findViewById(R.id.unit);
 
 
-
     }
 
 
