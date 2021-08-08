@@ -450,7 +450,6 @@ public class Addcash_dialog extends Dialog implements
                 });
         select_categ_Ac.setOnItemClickListener((adapterView, view, i, l) -> {
             Category =  ChaptersArrayAdapter.getItem(i).toString();
-
             select_categ_Ac.setText(ChaptersArrayAdapter.getItem(i).toString());
 
 
