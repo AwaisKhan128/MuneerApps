@@ -145,59 +145,12 @@ public class Show_PrintPreview extends Dialog implements
     {
         {
 
-//            String[] textInTable = {"Order", "Customer", "Category", "Product"
-//                    , "Rate", "User", "Quantity", "Amount", "Date_time"};
-//
-//// Create table column headers
-//            PDFTableView.PDFTableRowView tableHeader = new PDFTableView.PDFTableRowView(c.getApplicationContext());
-//            for (String s : textInTable) {
-//                PDFTextView pdfTextView = new PDFTextView(c.getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-//                pdfTextView.setText("Header Title: " + s);
-//                tableHeader.addToRow(pdfTextView);
-//            }
-//// Create first row
-//            PDFTableView.PDFTableRowView tableRowView1 = new PDFTableView.PDFTableRowView(c.getApplicationContext());
-//            for (String s : data) {
-//                PDFTextView pdfTextView = new PDFTextView(c.getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-//                pdfTextView.setText("Row 1 : " + s);
-//                tableRowView1.addToRow(pdfTextView);
-//            }
-//
-//// PDFTableView takes table header and first row at once because if page ends after adding header then first row will be on next page. To avoid confusion to user, table header and first row is printed together.
-//            PDFTableView tableView = new PDFTableView(c.getApplicationContext(), tableHeader, tableRowView1);
-//            for (int i = 0; i < 9; i++) {
-//                // Create 10 rows and add to table.
-//                PDFTableView.PDFTableRowView tableRowView = new PDFTableView.PDFTableRowView(c.getApplicationContext());
-//                for (String s : data) {
-//                    PDFTextView pdfTextView = new PDFTextView(c.getApplicationContext(), PDFTextView.PDF_TEXT_SIZE.P);
-//                    pdfTextView.setText("" + textInTable[i] + ": " + s);
-//                    tableRowView.addToRow(pdfTextView);
-//                }
-//                tableView.addRow(tableRowView);
-//            }
-//
-////                tableView.getView().setMinimumHeight(20);
-////                tableView.getView().setMinimumWidth(20);
-//            LayoutInflater vi = (LayoutInflater) c.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-//            View myText = tableView.getView();
-//
-//            PDFLineSeparatorView lineSeparatorWhite = new PDFLineSeparatorView(c.getApplicationContext()).setBackgroundColor(Color.WHITE);
-//            PDFLineSeparatorView lineSeparatorBlack = new PDFLineSeparatorView(c.getApplicationContext()).setBackgroundColor(Color.BLACK);
-//// Get View
-//            View separatorView = lineSeparatorWhite.getView();
-//
-
-// Get View
-
             List<View> mylist = new ArrayList<>();
-
             mylist.add(textView14);
 
 
-
-//                final File savedPDFFile = FileManager.getInstance().createTempFile(context, "pdf", false);
-//                Uri pdfUri = Uri.fromFile(savedPDFFile);
             try {
+
 
                 PDFUtil.getInstance().generatePDF(mylist, String.valueOf(Environment.getExternalStorageDirectory().getAbsolutePath()+"/"+"muneer.pdf"), new PDFUtil.PDFUtilListener() {
                     @Override
@@ -210,9 +163,6 @@ public class Show_PrintPreview extends Dialog implements
                             Log.e("URI : ", String.valueOf(pdfUri));
                             button16.setVisibility(View.VISIBLE);
                             myUri = pdfUri;
-
-
-
 
 
 //                            Uri uri = Uri.fromFile(savedPDFFile);

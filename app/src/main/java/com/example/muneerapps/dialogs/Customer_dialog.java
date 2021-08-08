@@ -54,70 +54,97 @@ public class Customer_dialog extends Dialog implements
 
         button10.setOnClickListener(view -> {
 
-            if (FirebaseAuth.getInstance().getCurrentUser()!=null)
-            {
-                if (c_name.getText().toString().length()>0 && c_cnic.getText().toString().length()>0 && c_address.getText().toString().length()>0) {
-                    FirebaseDatabase.getInstance().getReference("Customers").addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.hasChildren()) {
+            if  (c_name.getText().toString().length()>0) {
+                if (FirebaseAuth.getInstance().getCurrentUser() != null) {
+                    FirebaseDatabase.getInstance().getReference("Customers")
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                    if (snapshot.hasChildren()) {
+                                        boolean isfound = false;
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren()) {
+                                            if (dataSnapshot.child("Name")
+                                                    .getValue(String.class).compareToIgnoreCase(c_name.getText().toString()) == 0) {
+                                                isfound = true;
+                                            }
+                                        }
 
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                        .getReference("Customers")
-                                        .child(String.valueOf(snapshot.getChildrenCount()));
+                                        if (!isfound) {
+                                            if (c_name.getText().toString().length() > 0 && c_cnic.getText().toString().length() > 0 && c_address.getText().toString().length() > 0) {
+                                                FirebaseDatabase.getInstance().getReference("Customers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if (snapshot.hasChildren()) {
+
+                                                            DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                                    .getReference("Customers")
+                                                                    .child(String.valueOf(snapshot.getChildrenCount()));
 
 
-                                databaseReference.child("Name").setValue(c_name.getText().toString());
-                                databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
-                                databaseReference.child("Address").setValue(c_address.getText().toString());
+                                                            databaseReference.child("Name").setValue(c_name.getText().toString());
+                                                            databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
+                                                            databaseReference.child("Address").setValue(c_address.getText().toString());
 
 
-                            } else {
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                        .getReference("Customers")
-                                        .child(String.valueOf(0));
+                                                        } else {
+                                                            DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                                    .getReference("Customers")
+                                                                    .child(String.valueOf(0));
 
 
-                                databaseReference.child("Name").setValue(c_name.getText().toString());
-                                databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
-                                databaseReference.child("Address").setValue(c_address.getText().toString());
-                            }
-                            Toaster("Success");
-                            c_name.setText("");
-                            c_cnic.setText("");
-                            c_address.setText("");
+                                                            databaseReference.child("Name").setValue(c_name.getText().toString());
+                                                            databaseReference.child("CNIC").setValue(c_cnic.getText().toString());
+                                                            databaseReference.child("Address").setValue(c_address.getText().toString());
+                                                        }
+                                                        Toaster("Success");
+                                                        c_name.setText("");
+                                                        c_cnic.setText("");
+                                                        c_address.setText("");
 
-                        }
+                                                    }
 
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
 
-                            Toaster("Failed to Saved Try again");
-                        }
-                    });
+                                                        Toaster("Failed to Saved Try again");
+                                                    }
+                                                });
+                                            } else {
+                                                Toaster("Failed to put empty blocks");
+                                                if (c_name.getText().toString().length() == 0) {
+                                                    c_name.setError("Empty");
+                                                }
+                                                if (c_cnic.getText().toString().length() == 0) {
+                                                    c_cnic.setError("Empty");
+                                                }
+                                                if (c_address.getText().toString().length() == 0) {
+                                                    c_address.setError("Empty");
+                                                }
+                                            }
+                                        } else {
+                                            Toaster("Already Exist");
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+
                 }
-                else
-                {
-                    Toaster("Failed to put empty blocks");
-                    if(c_name.getText().toString().length()==0)
-                    {
-                        c_name.setError("Empty");
-                    }
-                    if(c_cnic.getText().toString().length()==0)
-                    {
-                        c_cnic.setError("Empty");
-                    }
-                    if(c_address.getText().toString().length()==0)
-                    {
-                        c_address.setError("Empty");
-                    }
-                }
-
             }
+            else {
+                Toaster("Customer name is empty");
+                c_name.setError("Missing");
+            }
+
+
         });
 
     }
-
 
 
     public void Toaster(String s)

@@ -85,15 +85,38 @@ public class Product_dialog extends Dialog implements
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.hasChildren()) {
 
-                                DatabaseReference databaseReference = FirebaseDatabase.getInstance()
-                                        .getReference("Products")
-                                        .child(String.valueOf(snapshot.getChildrenCount()));
+                                boolean isProduct = false;
+
+                                for (DataSnapshot dataSnapshot :snapshot.getChildren())
+                                {
+                                    if (dataSnapshot.child("Name")
+                                            .getValue(String.class).compareToIgnoreCase(product_name.getText().toString())==0)
+                                    {
+                                        isProduct= true;
+                                    }
+                                }
+
+                                if (!isProduct) {
+                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                            .getReference("Products")
+                                            .child(String.valueOf(snapshot.getChildrenCount()));
 
 
-                                databaseReference.child("Category").setValue(product_cat.getText().toString());
-                                databaseReference.child("Name").setValue(product_name.getText().toString());
-                                databaseReference.child("Unit").setValue(product_unit.getText().toString());
-                                databaseReference.child("Price").setValue(price.getText().toString());
+                                    databaseReference.child("Category").setValue(product_cat.getText().toString());
+                                    databaseReference.child("Name").setValue(product_name.getText().toString());
+                                    databaseReference.child("Unit").setValue(product_unit.getText().toString());
+                                    databaseReference.child("Price").setValue(price.getText().toString());
+
+                                    Toaster("Success");
+                                    product_cat.setText("");
+                                    product_name.setText("");
+                                    product_unit.setText("");
+                                    price.setText("");
+                                }
+                                else {
+                                    Toaster("Product Name Already exist");
+                                    product_name.setError("Matched");
+                                }
 
 
                             } else {
@@ -106,12 +129,14 @@ public class Product_dialog extends Dialog implements
                                 databaseReference.child("Name").setValue(product_name.getText().toString());
                                 databaseReference.child("Unit").setValue(product_unit.getText().toString());
                                 databaseReference.child("Price").setValue(price.getText().toString());
+
+                                Toaster("Success");
+                                product_cat.setText("");
+                                product_name.setText("");
+                                product_unit.setText("");
+                                price.setText("");
                             }
-                            Toaster("Success");
-                            product_cat.setText("");
-                            product_name.setText("");
-                            product_unit.setText("");
-                            price.setText("");
+
 
                         }
 

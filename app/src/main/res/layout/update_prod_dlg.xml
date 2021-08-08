@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical">
@@ -35,8 +36,7 @@
         <ListView
             android:id="@+id/previous_prod_list"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:visibility="gone" />
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
     <EditText
@@ -52,8 +52,31 @@
         android:inputType="textPersonName"
         android:paddingStart="10dp" />
 
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/product_cat_hint"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:hint="Category"
+        android:textColorHint="#000000"
+        app:placeholderTextColor="#000000"
+        app:prefixTextColor="#000000"
+        app:suffixTextColor="#000000">
+
+        <AutoCompleteTextView
+            android:id="@+id/product_cat"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:enabled="false"
+            android:inputType="none"
+            android:textColor="@color/black" />
+    </com.google.android.material.textfield.TextInputLayout>
+
     <EditText
-        android:id="@+id/categ"
+        android:id="@+id/unit"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="10dp"
@@ -61,7 +84,7 @@
         android:layout_marginBottom="10dp"
         android:background="@drawable/dialog_text"
         android:ems="10"
-        android:hint="Category"
+        android:hint="Unit"
         android:inputType="textPersonName"
         android:paddingStart="10dp" />
 
@@ -75,19 +98,6 @@
         android:background="@drawable/dialog_text"
         android:ems="10"
         android:hint="Price"
-        android:inputType="textPersonName"
-        android:paddingStart="10dp" />
-
-    <EditText
-        android:id="@+id/unit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="Unit"
         android:inputType="textPersonName"
         android:paddingStart="10dp" />
 
