@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     TextView signin;
     Button button3;
     ProgressBar progressBar;
-    RadioButton radioButton,radioButton2,radioButton3,radioButton4;
+    RadioButton radioButton,radioButton2,radioButton3,radioButton4,radioButton14,radioButton13,radioButton12,radioButton15;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -107,10 +107,14 @@ public class MainActivity extends AppCompatActivity {
         signin = (TextView) findViewById(R.id.signin);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         button3 = (Button) findViewById(R.id.button3);
-        radioButton = (RadioButton) findViewById(R.id.radioButton);
-        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);
-        radioButton3 = (RadioButton) findViewById(R.id.radioButton3);
-        radioButton4 = (RadioButton) findViewById(R.id.radioButton4);
+        radioButton = (RadioButton) findViewById(R.id.radioButton); //Customer Registration
+        radioButton2 = (RadioButton) findViewById(R.id.radioButton2);//Category Registration
+        radioButton3 = (RadioButton) findViewById(R.id.radioButton3);//Product Registration
+        radioButton4 = (RadioButton) findViewById(R.id.radioButton4);//Payment Check
+        radioButton12 = (RadioButton) findViewById(R.id.radioButton12);//Product Update
+        radioButton13 = (RadioButton) findViewById(R.id.radioButton13);//Customer Update
+        radioButton14 = (RadioButton) findViewById(R.id.radioButton14);//Supplier Registration
+        radioButton15 = (RadioButton) findViewById(R.id.radioButton15);//Supplier Update
         progressBar.setVisibility(View.GONE);
         FirebaseApp.initializeApp(this);
     }
@@ -235,6 +239,19 @@ public class MainActivity extends AppCompatActivity {
                                                         databaseReference
                                                                 .child("Access").child("Payment").setValue(access[3]);
 
+                                                        databaseReference
+                                                                .child("Access").child("Product_Update").setValue(access[4]);
+
+                                                        databaseReference
+                                                                .child("Access").child("Customer_Update").setValue(access[5]);
+
+                                                        databaseReference
+                                                                .child("Access").child("Supplier").setValue(access[6]);
+
+                                                        databaseReference
+                                                                .child("Access").child("Supplier_Update").setValue(access[7]);
+
+
 
 
                                                         progressBar.setVisibility(View.GONE);
@@ -248,10 +265,20 @@ public class MainActivity extends AppCompatActivity {
                                                         radioButton3.setChecked(false);
                                                         radioButton4.setChecked(false);
 
+                                                        radioButton12.setChecked(false);
+                                                        radioButton13.setChecked(false);
+                                                        radioButton14.setChecked(false);
+                                                        radioButton15.setChecked(false);
+
                                                         access[0] = false;
                                                         access[1] = false;
                                                         access[2] = false;
                                                         access[3] = false;
+
+                                                        access[4] = false;
+                                                        access[5] = false;
+                                                        access[6] = false;
+                                                        access[7] = false;
                                                         ans.set(true);
 
                                                         FirebaseAuth.getInstance().signOut();
@@ -292,7 +319,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean access[] = {false,false,false,false};
+    private boolean access[] = {false,false,false,false, false,false,false,false};
     public void Access(View view)
     {
         switch (view.getId())
@@ -319,6 +346,30 @@ public class MainActivity extends AppCompatActivity {
 //                radioButton4.toggle();
                 access[3]= !access[3];
                 radioButton4.setChecked(access[3]);
+                break;
+
+            case R.id.radioButton12:
+//                radioButton4.toggle();
+                access[4]= !access[4];
+                radioButton12.setChecked(access[4]);
+                break;
+
+            case R.id.radioButton13:
+//                radioButton4.toggle();
+                access[5]= !access[5];
+                radioButton13.setChecked(access[5]);
+                break;
+
+            case R.id.radioButton14:
+//                radioButton4.toggle();
+                access[6]= !access[6];
+                radioButton14.setChecked(access[6]);
+                break;
+
+            case R.id.radioButton15:
+//                radioButton4.toggle();
+                access[7]= !access[7];
+                radioButton15.setChecked(access[7]);
                 break;
         }
     }

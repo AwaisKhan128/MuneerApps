@@ -4,86 +4,99 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView28"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:text="Update Customer"
-        android:textSize="30sp" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/prev_name"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Previous Name"
-            android:inputType="textPersonName"
-            android:paddingStart="15dp" />
+            android:orientation="vertical" >
 
-        <ListView
-            android:id="@+id/list_name"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textView28"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="Update Customer"
+                android:textSize="30sp" />
 
-    <EditText
-        android:id="@+id/new_name"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="New Name"
-        android:inputType="textPersonName"
-        android:paddingStart="15dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-    <EditText
-        android:id="@+id/person_cnic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="CNIC"
-        android:inputType="textPersonName"
-        android:paddingStart="15dp" />
+                <EditText
+                    android:id="@+id/prev_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dialog_text"
+                    android:ems="10"
+                    android:hint="Previous Name"
+                    android:inputType="textPersonName"
+                    android:paddingStart="@dimen/padding_start" />
 
-    <EditText
-        android:id="@+id/person_address"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="Address"
-        android:inputType="textPersonName"
-        android:paddingStart="15dp" />
+                <ListView
+                    android:id="@+id/list_name"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button20"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/create_acc"
-        android:text="Update"
-        android:textSize="18sp" />
+            <EditText
+                android:id="@+id/new_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="New Name"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
+
+            <EditText
+                android:id="@+id/person_cnic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="CNIC"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
+
+            <EditText
+                android:id="@+id/person_address"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Address"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button20"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/create_acc"
+                android:text="Update"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

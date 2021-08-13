@@ -46,7 +46,7 @@ public class Show_user_dlg extends Dialog implements
     public Activity c;
     public Dialog d;
     public RadioButton radioButton5,radioButton6
-            ,radioButton7,radioButton8;
+            ,radioButton7,radioButton8,radioButton15,radioButton16,radioButton17,radioButton18;
     public Button cancel,ok;
 
 
@@ -72,7 +72,7 @@ public class Show_user_dlg extends Dialog implements
 
     }
 
-    boolean[] radios = {false,false,false,false};
+    boolean[] radios = {false,false,false,false, false,false,false,false};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -83,6 +83,14 @@ public class Show_user_dlg extends Dialog implements
         radioButton6 = findViewById(R.id.radioButton6);
         radioButton7 = findViewById(R.id.radioButton7);
         radioButton8 = findViewById(R.id.radioButton8);
+
+        radioButton15 = findViewById(R.id.radioButton15);//Supplier
+        radioButton16 = findViewById(R.id.radioButton16);//Supplier Update
+        radioButton17 = findViewById(R.id.radioButton17);//Customer Update
+        radioButton18 = findViewById(R.id.radioButton18);//Product Update
+
+
+
         cancel = findViewById(R.id.button14);
         ok = findViewById(R.id.button15);
 
@@ -119,6 +127,39 @@ public class Show_user_dlg extends Dialog implements
         });
 
 
+        radioButton15.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radios[4] = !radios[4];
+                radioButton15.setChecked(radios[4]);
+            }
+        });
+
+        radioButton16.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radios[5] = !radios[5];
+                radioButton16.setChecked(radios[5]);
+            }
+        });
+
+        radioButton17.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radios[6] = !radios[6];
+                radioButton17.setChecked(radios[6]);
+            }
+        });
+
+        radioButton18.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radios[7] = !radios[7];
+                radioButton18.setChecked(radios[7]);
+            }
+        });
+
+
         try{
             FirebaseDatabase.getInstance().getReference("Users")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -138,10 +179,23 @@ public class Show_user_dlg extends Dialog implements
                                 radioButton6.setChecked(db.child("Access").child("Customer").getValue(Boolean.class));
                                 radioButton7.setChecked(db.child("Access").child("Payment").getValue(Boolean.class));
                                 radioButton8.setChecked(db.child("Access").child("Product").getValue(Boolean.class));
+
+                                radioButton15.setChecked(db.child("Access").child("Supplier").getValue(Boolean.class));
+                                radioButton16.setChecked(db.child("Access").child("Supplier_Update").getValue(Boolean.class));
+                                radioButton17.setChecked(db.child("Access").child("Customer_Update").getValue(Boolean.class));
+                                radioButton18.setChecked(db.child("Access").child("Product_Update").getValue(Boolean.class));
+
+
+
                                 radios[0] = db.child("Access").child("Category").getValue(Boolean.class);
                                 radios[1] = db.child("Access").child("Customer").getValue(Boolean.class);
                                 radios[2] = db.child("Access").child("Payment").getValue(Boolean.class);
                                 radios[3] = db.child("Access").child("Product").getValue(Boolean.class);
+
+                                radios[4] = db.child("Access").child("Supplier").getValue(Boolean.class);
+                                radios[5] = db.child("Access").child("Supplier_Update").getValue(Boolean.class);
+                                radios[6] = db.child("Access").child("Customer_Update").getValue(Boolean.class);
+                                radios[7] = db.child("Access").child("Product_Update").getValue(Boolean.class);
                             }
 
                         }
@@ -184,6 +238,11 @@ public class Show_user_dlg extends Dialog implements
                                     df.child("Customer").setValue(radioButton6.isChecked());
                                     df.child("Payment").setValue(radioButton7.isChecked());
                                     df.child("Product").setValue(radioButton8.isChecked());
+
+                                    df.child("Supplier").setValue(radioButton15.isChecked());
+                                    df.child("Supplier_Update").setValue(radioButton16.isChecked());
+                                    df.child("Customer_Update").setValue(radioButton17.isChecked());
+                                    df.child("Product_Update").setValue(radioButton18.isChecked());
 
                                 }
                             }

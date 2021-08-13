@@ -60,5 +60,12 @@
             android:textAllCaps="false"
             android:textSize="24sp" />
 
+        <ProgressBar
+            android:id="@+id/progressBar4"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
     </LinearLayout>
+
 </RelativeLayout>

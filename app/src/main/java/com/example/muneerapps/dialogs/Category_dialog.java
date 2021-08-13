@@ -34,6 +34,7 @@ public class Category_dialog extends Dialog implements
         // TODO Auto-generated constructor stub
         this.c = a;
     }
+    Progress_Monitor progress_monitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,9 +43,11 @@ public class Category_dialog extends Dialog implements
         setContentView(R.layout.create_categ);
         category_reg = (EditText) findViewById(R.id.category_reg);
         button9 = (Button) findViewById(R.id.button9);
+        progress_monitor = new Progress_Monitor(c);
 
         button9.setOnClickListener(view -> {
 
+            progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
             if (category_reg.getText().toString().length()>0) {
                 FirebaseDatabase.getInstance().getReference("Categories")
                         .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -61,17 +64,20 @@ public class Category_dialog extends Dialog implements
                                 }
                                 category_reg.setText("");
                                 Toaster("Success");
+                                progress_monitor.Drop_Progressing();
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
                                 Toaster("Error due to "+error.getDetails());
+                                progress_monitor.Drop_Progressing();
                             }
                         });
             }
             else {
                 Toaster("Empty Blocks");
                 category_reg.setError("Empty Blocks");
+                progress_monitor.Drop_Progressing();
             }
 
 

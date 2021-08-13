@@ -5,110 +5,123 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView27"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginBottom="10dp"
-        android:gravity="center"
-        android:text="Update Product"
-        android:textSize="28sp" />
+        android:layout_height="match_parent">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:orientation="vertical">
-
-        <EditText
-            android:id="@+id/prev_prod"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Previous Product"
-            android:inputType="textPersonName"
-            android:paddingStart="10dp" />
+            android:orientation="vertical" >
 
-        <ListView
-            android:id="@+id/previous_prod_list"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </LinearLayout>
+            <TextView
+                android:id="@+id/textView27"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="10dp"
+                android:gravity="center"
+                android:text="Update Product"
+                android:textSize="28sp" />
 
-    <EditText
-        android:id="@+id/new_prod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="New Product"
-        android:inputType="textPersonName"
-        android:paddingStart="10dp" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/product_cat_hint"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:hint="Category"
-        android:textColorHint="#000000"
-        app:placeholderTextColor="#000000"
-        app:prefixTextColor="#000000"
-        app:suffixTextColor="#000000">
+                <EditText
+                    android:id="@+id/prev_prod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dialog_text"
+                    android:ems="10"
+                    android:hint="Previous Product"
+                    android:inputType="textPersonName"
+                    android:paddingStart="@dimen/padding_start" />
 
-        <AutoCompleteTextView
-            android:id="@+id/product_cat"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:enabled="false"
-            android:inputType="none"
-            android:textColor="@color/black" />
-    </com.google.android.material.textfield.TextInputLayout>
+                <ListView
+                    android:id="@+id/previous_prod_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+            </LinearLayout>
 
-    <EditText
-        android:id="@+id/unit"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="Unit"
-        android:inputType="textPersonName"
-        android:paddingStart="10dp" />
+            <EditText
+                android:id="@+id/new_prod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="New Product"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
 
-    <EditText
-        android:id="@+id/price"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
-        android:hint="Price"
-        android:inputType="textPersonName"
-        android:paddingStart="10dp" />
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_cat_hint"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:hint="Category"
+                android:textColorHint="#000000"
+                app:placeholderTextColor="#000000"
+                app:prefixTextColor="#000000"
+                app:suffixTextColor="#000000">
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/update_Prod"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="10dp"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/create_acc"
-        android:text="Update"
-        android:textSize="18sp" />
+                <AutoCompleteTextView
+                    android:id="@+id/product_cat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <EditText
+                android:id="@+id/unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Unit"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
+
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Price"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/update_Prod"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/create_acc"
+                android:text="Update"
+                android:textSize="18sp" />
+
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

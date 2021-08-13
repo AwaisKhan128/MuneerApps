@@ -1,189 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@drawable/dialog_back"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     app:cardCornerRadius="20dp"
     app:cardUseCompatPadding="true"
-    app:cardBackgroundColor="@android:color/transparent" >
+    app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/dialog_back"
-        android:orientation="vertical">
-
-        <TextView
-            android:id="@+id/textView8"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center"
-            android:text="Subtract Cash"
-            android:textSize="30sp" />
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/select_categ"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Category"
-            android:text="Name"
-            app:placeholderTextColor="#000000"
-            app:prefixTextColor="#000000"
-            app:suffixTextColor="#000000">
-
-            <AutoCompleteTextView
-                android:id="@+id/select_categ_Ac"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:inputType="none"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
+            android:background="@drawable/dialog_back"
             android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/select_cutom"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dialog_text"
-                android:ems="10"
-                android:hint="Customer"
-                android:inputType="text"
-                android:paddingStart="15dp"
-                android:textColorHint="#373737" />
-
-            <ListView
-                android:id="@+id/custom_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="vertical">
-
-            <EditText
-                android:id="@+id/select_prod"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="@drawable/dialog_text"
-                android:ems="10"
-                android:hint="Product"
-                android:inputType="text"
-                android:paddingStart="15dp"
-                android:textColorHint="#373737" />
-
-            <ListView
-                android:id="@+id/product_list"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="visible" />
-        </LinearLayout>
-
-
-        <com.google.android.material.textfield.TextInputLayout
-            android:id="@+id/select_rate"
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:ems="10"
-            android:hint="Rate"
-            android:text="Name"
-            app:placeholderTextColor="#000000"
-            app:prefixTextColor="#000000"
-            app:suffixTextColor="#000000">
-            <AutoCompleteTextView
-                android:id="@+id/select_rate_Ac"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:inputType="none"
-                android:textColor="@color/black" />
-
-        </com.google.android.material.textfield.TextInputLayout>
-
-        <EditText
-            android:id="@+id/quatity_add"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Quantity"
-            android:inputType="number"
-            android:paddingStart="15dp"
-            android:textColorHint="#373737" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/textView9"
-                android:layout_width="wrap_content"
+                android:id="@+id/textView8"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingStart="15dp"
-                android:text="Estimated Total (in Rs) :"
-                android:textColor="#000000"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:text="Purchase"
+                android:textSize="30sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/select_categ"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:ems="10"
+                android:hint="Category"
+                android:text="Name"
+                app:placeholderTextColor="#000000"
+                app:prefixTextColor="#000000"
+                app:suffixTextColor="#000000">
+
+                <AutoCompleteTextView
+                    android:id="@+id/select_categ_Ac"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/select_cutom"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dialog_text"
+                    android:ems="10"
+                    android:hint="Supplier"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/padding_start"
+                    android:textColorHint="#373737" />
+
+                <ListView
+                    android:id="@+id/custom_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
+
+                <ListView
+                    android:id="@+id/products_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/select_prod"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dialog_text"
+                    android:ems="10"
+                    android:hint="Product"
+                    android:inputType="text"
+                    android:paddingStart="@dimen/padding_start"
+                    android:textColorHint="#373737" />
+
+                <ListView
+                    android:id="@+id/product_list"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone" />
+            </LinearLayout>
+
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="vertical">
+
+                <EditText
+                    android:id="@+id/partial_amount"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/dialog_text"
+                    android:ems="10"
+                    android:hint="Partial Amount"
+                    android:inputType="number"
+                    android:paddingStart="@dimen/padding_start"
+                    android:textColorHint="#373737" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <RadioButton
+                        android:id="@+id/radioButton9"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Paid" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton10"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Partial Paid" />
+
+                    <RadioButton
+                        android:id="@+id/radioButton11"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="UnPaid" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/textView9"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="15dp"
+                    android:text="Estimated Total (in Rs) :"
+                    android:textColor="#000000"
+                    android:textSize="18sp" />
+
+                <TextView
+                    android:id="@+id/textView10"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="end"
+                    android:text="0"
+                    android:textColor="#00FF0A"
+                    android:textSize="24sp" />
+            </LinearLayout>
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button12"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/create_acc"
+                android:drawableLeft="@drawable/arrow_forward_24"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
+                android:text="Cash Out"
+                android:textColor="#FFFFFF"
                 android:textSize="18sp" />
 
-            <TextView
-                android:id="@+id/textView10"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="end"
-                android:text="0"
-                android:textColor="#EF0000"
-                android:textSize="24sp" />
         </LinearLayout>
+    </ScrollView>
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button12"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="10dp"
-            android:background="@drawable/create_acc"
-            android:drawableLeft="@drawable/arrow_back_24"
-            android:paddingStart="50dp"
-            android:paddingEnd="50dp"
-            android:text="Cash Out"
-            android:textColor="#FFFFFF"
-            android:textSize="18sp" />
-
-    </LinearLayout>
 </androidx.cardview.widget.CardView>

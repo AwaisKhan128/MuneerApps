@@ -12,14 +12,21 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.Reset_Pin;
+import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
@@ -33,6 +40,7 @@ public class starter extends AppCompatActivity {
     Context mContext;
     FirebaseAuth.AuthStateListener authStateListener;
     FirebaseAuth mAuth;
+    ProgressBar progressBar4;
 
     @Override
     protected void onStart() {
@@ -41,13 +49,103 @@ public class starter extends AppCompatActivity {
 
     }
 
+    public void Enable_Button()
+    {
+        button.setVisibility(View.VISIBLE);
+        button2.setVisibility(View.VISIBLE);
+        progressBar4.setVisibility(View.GONE);
+        button.setClickable(true);
+        button2.setClickable(true);
+
+    }
+    public void Disable_Button()
+    {
+        button.setVisibility(View.GONE);
+        button2.setVisibility(View.GONE);
+        progressBar4.setVisibility(View.VISIBLE);
+        button.setClickable(false);
+        button2.setClickable(false);
+    }
+
+    public boolean internetIsConnected() {
+        try {
+            String command = "ping -c 1 google.com";
+            return (Runtime.getRuntime().exec(command).waitFor() == 0);
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_front, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.refresh:
+                Refresh_Internet();
+                return true;
+            default:
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    private void Refresh_Internet() {
+        if (internetIsConnected())
+        {
+            Enable_Button();
+            button.setClickable(true);
+            button2.setClickable(true);
+        }
+        else
+        {
+            Enable_Button();
+            button.setClickable(false);
+            button2.setClickable(false);
+        }
+    }
+
     TextView textView26;
+    Button button,button2;
+    Handler handler;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_starter);
         mContext = this;
+        FirebaseApp.initializeApp(this);
         mAuth = FirebaseAuth.getInstance();
+        progressBar4 = findViewById(R.id.progressBar4);
+        button = findViewById(R.id.button);
+        button2 = findViewById(R.id.button2);
+        Disable_Button();
+        handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (internetIsConnected() )
+                {
+                    Enable_Button();
+                    button.setClickable(true);
+                    button2.setClickable(true);
+                }
+                else
+                {
+                    Enable_Button();
+                    button.setClickable(false);
+                    button2.setClickable(false);
+                }
+
+                Toaster("Check your Network Connection");
+
+            }
+        },10000);
+
+
         textView26 = findViewById(R.id.textView26);
         authStateListener = firebaseAuth -> {
 
@@ -66,22 +164,29 @@ public class starter extends AppCompatActivity {
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     if (user != null) {
                                         // Sign in logic here.
+
                                         startActivity(new Intent(starter.this,Selector.class));
                                     }
+
+
                                 }
+
                             }
                             else {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null) {
                                     // Sign in logic here.
+
                                     startActivity(new Intent(starter.this,Selector.class));
                                 }
+
                             }
+                            Enable_Button();
                         }
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            Enable_Button();
                         }
                     });
 
@@ -96,13 +201,14 @@ public class starter extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
                 {
+                    Enable_Button();
                     textView26.setText("Deadline is "+ snapshot.getValue(String.class));
                 }
             }
 
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Enable_Button();
             }
         });
 
@@ -236,6 +342,7 @@ public class starter extends AppCompatActivity {
 
     private void Reset_deadline() {
 
+        Enable_Button();
         Deadline cdd=new Deadline(starter.this);
         cdd.setCanceledOnTouchOutside(false);
         cdd.setCancelable(false);

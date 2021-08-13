@@ -5,41 +5,53 @@
     android:layout_margin="10dp"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/textView17"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:layout_marginBottom="5dp"
-        android:gravity="center"
-        android:text="Update Admin Pin"
-        android:textSize="24sp" />
+        android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/input_admin_pin"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@drawable/dialog_text"
-        android:ems="10"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
 
-        android:hint="Pin"
-        android:inputType="number"
-        android:paddingStart="10dp" />
+            <TextView
+                android:id="@+id/textView17"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginBottom="5dp"
+                android:gravity="center"
+                android:text="Update Admin Pin"
+                android:textSize="24sp" />
 
-    <TextView
-        android:id="@+id/textView19"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:text="Make sure to keep it secure!" />
+            <EditText
+                android:id="@+id/input_admin_pin"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
 
-    <androidx.appcompat.widget.AppCompatButton
-        android:id="@+id/button17"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/create_acc"
-        android:text="Update"
-        android:textSize="18sp" />
+                android:hint="Pin"
+                android:inputType="number"
+                android:paddingStart="@dimen/padding_start" />
+
+            <TextView
+                android:id="@+id/textView19"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:text="Make sure to keep it secure!" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button17"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/create_acc"
+                android:text="Update"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </ScrollView>
+
 </LinearLayout>

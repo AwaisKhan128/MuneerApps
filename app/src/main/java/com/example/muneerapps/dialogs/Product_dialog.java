@@ -56,6 +56,7 @@ public class Product_dialog extends Dialog implements
         this.c = a;
     }
     ArrayAdapter<String> ChaptersArrayAdapter;
+    Progress_Monitor progress_monitor;
 
 
 
@@ -70,10 +71,12 @@ public class Product_dialog extends Dialog implements
         price = (EditText) findViewById(R.id.price);
         product_cat_hint = findViewById(R.id.product_cat_hint);
         button11 = (Button) findViewById(R.id.button11);
+        progress_monitor = new Progress_Monitor(c);
 
         button11.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
                 if(product_cat.getText().toString().length()>0
                         && product_name.getText().toString().length()>0
                         && product_unit.getText().toString().length()>0
@@ -112,10 +115,12 @@ public class Product_dialog extends Dialog implements
                                     product_name.setText("");
                                     product_unit.setText("");
                                     price.setText("");
+                                    progress_monitor.Drop_Progressing();
                                 }
                                 else {
                                     Toaster("Product Name Already exist");
                                     product_name.setError("Matched");
+                                    progress_monitor.Drop_Progressing();
                                 }
 
 
@@ -135,6 +140,7 @@ public class Product_dialog extends Dialog implements
                                 product_name.setText("");
                                 product_unit.setText("");
                                 price.setText("");
+                                progress_monitor.Drop_Progressing();
                             }
 
 
@@ -144,6 +150,7 @@ public class Product_dialog extends Dialog implements
                         public void onCancelled(@NonNull DatabaseError error) {
 
                             Toaster("Failed to Saved Try again");
+                            progress_monitor.Drop_Progressing();
                         }
                     });
 
@@ -154,6 +161,7 @@ public class Product_dialog extends Dialog implements
                     product_name.setError("Check Empty");
                     product_unit.setError("Check Empty");
                     price.setError("Check Empty");
+                    progress_monitor.Drop_Progressing();
                 }
             }
         });

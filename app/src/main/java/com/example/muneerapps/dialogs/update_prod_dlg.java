@@ -52,12 +52,14 @@ public class update_prod_dlg extends Dialog implements
         // TODO Auto-generated constructor stub
         this.c = a;
     }
+    Progress_Monitor progress_monitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.update_prod_dlg);
+        progress_monitor = new Progress_Monitor(c);
         update_Prod = (Button) findViewById(R.id.update_Prod);
         prev_prod = findViewById(R.id.prev_prod);
         new_prod = findViewById(R.id.new_prod);
@@ -73,6 +75,7 @@ public class update_prod_dlg extends Dialog implements
         update_Prod.setOnClickListener(view -> {
 
             Toaster("Updating Product");
+
             new Executing_update().execute(prev_prod.getText().toString().toLowerCase()
                     ,new_prod.getText().toString(),product_cat.getText().toString(),unit.getText().toString(),price.getText().toString());
         });
@@ -191,6 +194,12 @@ public class update_prod_dlg extends Dialog implements
     {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
+        }
+
+        @Override
         protected Void doInBackground(String... strings) {
             FirebaseDatabase.getInstance().getReference("Products")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -245,6 +254,7 @@ public class update_prod_dlg extends Dialog implements
 //        categ.setText("");
         price.setText("");
         unit.setText("");
+        progress_monitor.Drop_Progressing();
         try
         {
             productAdapter.clear();

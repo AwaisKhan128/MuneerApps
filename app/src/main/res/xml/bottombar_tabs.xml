@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<tabs xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+        <tab
+            id="@+id/sell"
+            icon="@drawable/add_amount"
+            title="Sell" />
+        <tab
+            id="@+id/purchase"
+            icon="@drawable/purchase"
+            title="Purchase" />
+
+        <tab
+            id="@+id/search_bar"
+            icon="@drawable/ic_action_action_search"
+            title="Search" />
+
+        <tab
+            id="@+id/return_sell"
+            icon="@drawable/return_"
+            title="Return Sell" />
+        <tab
+            id="@+id/return_purchase"
+            icon="@drawable/return_"
+            title="Return Purchase" />
+
+
+</tabs>

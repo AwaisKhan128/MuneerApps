@@ -2,9 +2,13 @@ package com.example.muneerapps.dialogs;
 
 import android.app.Activity;
 import android.app.Dialog;
+import android.content.DialogInterface;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.DeadObjectException;
+import android.os.Handler;
 import android.renderscript.Sampler;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -35,11 +39,18 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
+
+import static android.content.Context.MODE_PRIVATE;
 
 public class Addcash_dialog extends Dialog implements
         View.OnClickListener {
@@ -48,16 +59,18 @@ public class Addcash_dialog extends Dialog implements
     public Dialog d;
 
     public TextInputLayout  select_categ,  select_rate;
-    public EditText quatity_add,select_custom,select_prod;
+    public EditText select_custom,select_prod,partial_amount;
     public TextView textView10;
     public Button button12;
     public ListView custom_list,product_list;
-    public AutoCompleteTextView select_categ_Ac,select_rate_Ac;
+    public AutoCompleteTextView select_categ_Ac;
 
     public ValueEventListener customer,product;
     private String Category,Rates;
     ArrayAdapter<String> ChaptersArrayAdapter, RateArrayAdapter;
-
+    public ListView products_list_update;
+    public RadioButton radioButton9, radioButton10, radioButton11;
+    Progress_Monitor progress_monitor;
 
     public void SetValueEvents()
     {
@@ -94,6 +107,10 @@ public class Addcash_dialog extends Dialog implements
         this.c = a;
     }
 
+    ArrayList arrayList_products = new ArrayList();
+    ArrayAdapter<String> productAdapter_new ;
+//    HashMap mMap = new HashMap();
+    private Map<String, Integer> mMap = new HashMap<String, Integer>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,118 +118,105 @@ public class Addcash_dialog extends Dialog implements
         setContentView(R.layout.add_amount);
         button12 = (Button) findViewById(R.id.button12);
         textView10 = (TextView) findViewById(R.id.textView10);
-        quatity_add = (EditText) findViewById(R.id.quatity_add);
         select_custom = (EditText) findViewById(R.id.select_cutom);
         select_categ = (TextInputLayout) findViewById(R.id.select_categ);
         select_prod = (EditText) findViewById(R.id.select_prod);
-        select_rate = (TextInputLayout) findViewById(R.id.select_rate);
+        progress_monitor = new Progress_Monitor(c);
+
+
         custom_list = (ListView) findViewById(R.id.custom_list);
         product_list = (ListView) findViewById(R.id.product_list);
         select_categ_Ac = findViewById(R.id.select_categ_Ac);
-        select_rate_Ac = findViewById(R.id.select_rate_Ac);
+        products_list_update = findViewById(R.id.products_list);
+        radioButton9 = findViewById(R.id.radioButton9);
+        radioButton10 = findViewById(R.id.radioButton10);
+        radioButton11 = findViewById(R.id.radioButton11);
+        partial_amount = findViewById(R.id.partial_amount);
+        partial_amount.setVisibility(View.GONE);
 
 
-//        ------------Quantity Add---------------
-        quatity_add.addTextChangedListener(new TextWatcher() {
+
+        radioButton9.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
+            public void onClick(View view) {
+                radioButton9.setChecked(true);
+                radioButton10.setChecked(false);
+                radioButton11.setChecked(false);
+                partial_amount.setVisibility(View.GONE);
+                partial_amount.setText("");
             }
+        });
 
+        radioButton10.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+            public void onClick(View view) {
+                radioButton9.setChecked(false);
+                radioButton10.setChecked(true);
+                radioButton11.setChecked(false);
+                partial_amount.setVisibility(View.VISIBLE);
+            }
+        });
 
-                if (quatity_add.getText().toString().length()>0)
-                {
-                    if ( !select_rate_Ac.getText().toString().isEmpty() &&
-                            select_rate_Ac.getText().toString().compareToIgnoreCase("Empty")!=0 && !quatity_add.getText().toString().isEmpty())
-                    new Background_Calc().execute(select_rate_Ac.getText().toString(),charSequence.toString());
-                    else
-                    {
-//                        textView10.setText("0");
-                        new Background_Calc().execute("0","0");
+        radioButton11.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                radioButton9.setChecked(false);
+                radioButton10.setChecked(false);
+                radioButton11.setChecked(true);
+                partial_amount.setVisibility(View.GONE);
+                partial_amount.setText("");
+            }
+        });
+
+
+        products_list_update.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
+                try{
+//                    select_prod.setText(adapterView.getAdapter().getItem(i).toString());
+//                    mMap.remove(adapterView.getAdapter().getItem(i).toString())
+                    mMap.clear();
+                    arrayList_products.clear();
+                    synchronized(arrayList_products){
+                        arrayList_products.notify();
                     }
-                }
-                else {
-//                    textView10.setText("0");
-                    new Background_Calc().execute(select_rate_Ac.getText().toString(),"0");
-                }
-            }
+                    arrayList_products.add(mMap);
 
-            @Override
-            public void afterTextChanged(Editable editable) {
+                    productAdapter_new = new ArrayAdapter<String>(
+                            c.getApplicationContext(),
+                            android.R.layout.simple_list_item_1,
+                            arrayList_products);
+
+                    products_list_update.setAdapter(productAdapter_new);
+                    arrayAdapter.notifyDataSetChanged();
+                    products_list_update.setVisibility(View.GONE);
+                    textView10.setText("0");
+                    Toaster("Removed Successfully");
+
+                    return true;
+                }catch (Exception e)
+                {
+                    Toaster("Removed Failed");
+                    return false;
+                }
+
+
 
             }
         });
+
+
+
+
+
+//        ------------Quantity Add---------------
 
 
 
 
 
 //        -------------Rates----------------
-        select_rate_Ac.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                Rates =  ChaptersArrayAdapter.getItem(i).toString();
 
-                select_categ_Ac.setText(ChaptersArrayAdapter.getItem(i).toString());
-
-                FirebaseDatabase.getInstance().getReference("Products")
-                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                List<String> rate = new ArrayList<String>();;
-                                if (snapshot.hasChildren()) {
-                                    try {
-
-                                        for (DataSnapshot d : snapshot.getChildren()) {
-
-                                            if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-                                                    && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-                                            {
-                                                String data = String.valueOf((d.child("Price").getValue()));
-                                                rate.add(data);
-                                            }
-                                            else {
-                                                select_rate_Ac.setText("");
-                                            }
-
-                                        }
-
-                                    }
-                                    catch (Exception e)
-                                    {
-//                                e.printStackTrace();
-                                        Log.e("Error is",e.getLocalizedMessage());
-//                                Toaster(e.getMessage());
-//                                if(Categories!=null)
-//                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-
-                                    }
-
-
-
-                                    if (rate != null) {
-                                        RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-                                    } else {
-                                        List<String> none_values = Arrays.asList(new String[]{"Empty"});
-                                        RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-                                    }
-                                    RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-                                    select_rate_Ac.setAdapter(RateArrayAdapter);
-                                }
-
-
-                            }
-
-                            @Override
-                            public void onCancelled(@NonNull DatabaseError error) {
-
-                            }
-                        });
-            }
-        });
 //        ----------------------------------
 
 
@@ -229,56 +233,76 @@ public class Addcash_dialog extends Dialog implements
 
 
 
+
 //        ------------------Product ListView----------------------
         product_list.setOnItemClickListener((adapterView, view, i, l) -> {
             select_prod.setText(adapterView.getAdapter().getItem(i).toString());
+            Quanity_Class quanity_class = new Quanity_Class(c);
+            quanity_class.setCanceledOnTouchOutside(false);
+            quanity_class.setOnDismissListener(new OnDismissListener() {
+                @Override
+                public void onDismiss(DialogInterface dialogInterface) {
+                            try{
+                                if(!mMap.containsKey(select_prod.getText().toString())) {
+
+                                    mMap.put(select_prod.getText().toString(), Receive_Preference());
+
+                                }
+                                else
+                                {
+//                                    mMap.put(select_prod.getText().toString(), Receive_Preference());
+
+                                        mMap.remove(select_prod.getText().toString());
+                                        mMap.put(select_prod.getText().toString(), Receive_Preference());
+
+
+                                }
+                                arrayList_products.clear();
+                                synchronized(arrayList_products){
+                                    arrayList_products.notify();
+                                }
+                                arrayList_products.add(mMap);
+
+                                productAdapter_new = new ArrayAdapter<String>(
+                                        c.getApplicationContext(),
+                                        android.R.layout.simple_list_item_1,
+                                        arrayList_products);
+
+                                products_list_update.setAdapter(productAdapter_new);
+                                arrayAdapter.notifyDataSetChanged();
+                                products_list_update.setVisibility(View.VISIBLE);
+
+
+                                        {
+//                                    Updating Total Amount...
             FirebaseDatabase.getInstance().getReference("Products")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            List<String> rate = new ArrayList<String>();;
-                            if (snapshot.hasChildren()) {
-                                try {
 
-                                    for (DataSnapshot d : snapshot.getChildren()) {
+                            if (snapshot.hasChildren())
+                            {
+                                float total_in = 0;
 
-                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-                                        {
-                                            String data = String.valueOf((d.child("Price").getValue()));
-                                            rate.add(data);
-                                        }
-                                        else {
-                                            select_rate_Ac.setText("");
-                                        }
-
-                                    }
-
-                                }
-                                catch (Exception e)
+                                String total = "";
+                                for (String key : mMap.keySet())
                                 {
-//                                e.printStackTrace();
-                                    Log.e("Error is",e.getLocalizedMessage());
-//                                Toaster(e.getMessage());
-//                                if(Categories!=null)
-//                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
+                                    for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                    {
+                                        if (dataSnapshot.child("Name").getValue(String.class).toLowerCase().contains(key.toLowerCase()))
+                                        {
+                                            int quanity = mMap.get(key);
+                                            int rate = Integer.parseInt(dataSnapshot.child("Price").getValue(String.class));
+                                            int answer = rate * quanity;
 
+                                            total_in += (float) (answer);
+
+                                        }
+                                    }
                                 }
+                                textView10.setText(""+total_in);
 
-
-
-                                if (rate != null) {
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-                                } else {
-                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-                                }
-                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-                                select_rate_Ac.setAdapter(RateArrayAdapter);
                             }
-
-
                         }
 
                         @Override
@@ -286,6 +310,75 @@ public class Addcash_dialog extends Dialog implements
 
                         }
                     });
+        }
+
+
+                            }
+                            catch (Exception e)
+                            {
+                                e.printStackTrace();
+                                Log.e("Mapping error",e.getLocalizedMessage());
+                            }
+                }
+            });
+            quanity_class.show();
+
+
+
+//            FirebaseDatabase.getInstance().getReference("Products")
+//                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            List<String> rate = new ArrayList<String>();;
+//                            if (snapshot.hasChildren()) {
+//                                try {
+//
+//                                    for (DataSnapshot d : snapshot.getChildren()) {
+//
+//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
+//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
+//                                        {
+//                                            String data = String.valueOf((d.child("Price").getValue()));
+//                                            rate.add(data);
+//                                        }
+//                                        else {
+//                                            select_rate_Ac.setText("");
+//                                        }
+//
+//                                    }
+//
+//                                }
+//                                catch (Exception e)
+//                                {
+////                                e.printStackTrace();
+//                                    Log.e("Error is",e.getLocalizedMessage());
+////                                Toaster(e.getMessage());
+////                                if(Categories!=null)
+////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
+//
+//                                }
+//
+//
+//
+//                                if (rate != null) {
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
+//                                } else {
+//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
+//                                }
+//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
+//                                select_rate_Ac.setAdapter(RateArrayAdapter);
+//                            }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
             product_list.setVisibility(View.GONE);
 
         });
@@ -330,8 +423,15 @@ public class Addcash_dialog extends Dialog implements
                 else
                 {
                     try {
+                        if (select_categ_Ac.getText().toString().length()>0
+                                && select_categ_Ac.getText().toString().compareToIgnoreCase("Empty")!=0)
+                        {
                         product_list.setVisibility(View.VISIBLE);
-                        new Product_Class().execute(charSequence.toString().toLowerCase());
+                        new Product_Class().execute(charSequence.toString().toLowerCase(), select_categ_Ac.getText().toString());}
+                        else
+                        {
+                            Toaster("Category is Empty");
+                        }
                     }
                     catch (Exception e)
                     {
@@ -503,60 +603,60 @@ public class Addcash_dialog extends Dialog implements
                         }
                     });
 
-            FirebaseDatabase.getInstance().getReference("Products")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            List<String> rate = new ArrayList<String>();;
-                            if (snapshot.hasChildren()) {
-                                try {
-
-                                    for (DataSnapshot d : snapshot.getChildren()) {
-
-                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-                                        {
-                                            String data = String.valueOf((d.child("Price").getValue()));
-                                            rate.add(data);
-                                        }
-                                        else {
-                                            select_rate_Ac.setText("");
-                                        }
-
-                                    }
-
-                                }
-                                catch (Exception e)
-                                {
-//                                e.printStackTrace();
-                                    Log.e("Error is",e.getLocalizedMessage());
-//                                Toaster(e.getMessage());
-//                                if(Categories!=null)
-//                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-
-                                }
-
-
-
-                                if (rate != null) {
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-                                } else {
-                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-                                }
-                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-                                select_rate_Ac.setAdapter(RateArrayAdapter);
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+//            FirebaseDatabase.getInstance().getReference("Products")
+//                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            List<String> rate = new ArrayList<String>();;
+//                            if (snapshot.hasChildren()) {
+//                                try {
+//
+//                                    for (DataSnapshot d : snapshot.getChildren()) {
+//
+//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
+//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
+//                                        {
+//                                            String data = String.valueOf((d.child("Price").getValue()));
+//                                            rate.add(data);
+//                                        }
+//                                        else {
+//                                            select_rate_Ac.setText("");
+//                                        }
+//
+//                                    }
+//
+//                                }
+//                                catch (Exception e)
+//                                {
+////                                e.printStackTrace();
+//                                    Log.e("Error is",e.getLocalizedMessage());
+////                                Toaster(e.getMessage());
+////                                if(Categories!=null)
+////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
+//
+//                                }
+//
+//
+//
+//                                if (rate != null) {
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
+//                                } else {
+//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
+//                                }
+//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
+//                                select_rate_Ac.setAdapter(RateArrayAdapter);
+//                            }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
 
 
 
@@ -570,26 +670,51 @@ public class Addcash_dialog extends Dialog implements
 
                 if (select_categ_Ac.getText().length()>0
                         && select_categ_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
-
                         && select_custom.getText().length()>0
-                        && select_prod.getText().length()>0
-
-                        && select_rate_Ac.getText().length()>0
-                        && select_rate_Ac.getText().toString().compareToIgnoreCase("Empty")!=0
-
-                        && quatity_add.getText().length()>0
-                        && textView10.getText().toString().compareToIgnoreCase("0")!=0)
+                        && textView10.getText().toString().compareToIgnoreCase("0")!=0
+                        && mMap.size()>0
+                        && (radioButton9.isChecked() || radioButton10.isChecked() || radioButton11.isChecked()))
                 {
+                    if (radioButton10.isChecked())
+                    {
+                        if (partial_amount.getText().toString().length()>0)
+                        {
+                            Date c = Calendar.getInstance().getTime();
+                            System.out.println("Current time => " + c);
+
+                            SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                            String formattedDate = df.format(c);
+
+                            new Upload_Transact().execute(select_categ_Ac.getText().toString()
+                                    ,select_custom.getText().toString()
+                                    ,(textView10.getText().toString())
+                                    ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
+                                    , String.valueOf(formattedDate)
+                                    ,partial_amount.getText().toString());
+                        }
+                        else
+                        {
+                            Toaster("Partial Amount can not empty");
+                            partial_amount.setError("Empty");
+                        }
+                    }
+                    else
+                    {
+                        Date c = Calendar.getInstance().getTime();
+                        System.out.println("Current time => " + c);
+
+                        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                        String formattedDate = df.format(c);
+
+                        new Upload_Transact().execute(select_categ_Ac.getText().toString()
+                                ,select_custom.getText().toString()
+                                ,(textView10.getText().toString())
+                                ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
+                                , String.valueOf(formattedDate)
+                                ,partial_amount.getText().toString());
+                    }
 
 
-                    new Upload_Transact().execute(select_categ_Ac.getText().toString()
-                            ,select_custom.getText().toString()
-                            ,select_prod.getText().toString()
-                            ,select_rate_Ac.getText().toString()
-                            ,quatity_add.getText().toString()
-                            ,(textView10.getText().toString())
-                            ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
-                            , String.valueOf(Calendar.getInstance().getTime()));
 
                 }
                 else {
@@ -690,7 +815,8 @@ public class Addcash_dialog extends Dialog implements
                             {
                                 for(DataSnapshot d : snapshot.getChildren())
                                 {
-                                    if (d.child("Name").getValue(String.class).toLowerCase().contains(voids[0]))
+                                    if (d.child("Name").getValue(String.class).toLowerCase().contains(voids[0].toLowerCase())
+                                            && d.child("Category").getValue(String.class).toLowerCase().contains(voids[1].toLowerCase()))
                                     {
                                         product_array_list.add(d.child("Name").getValue(String.class));
 //                                        Toaster("Matched");
@@ -724,60 +850,60 @@ public class Addcash_dialog extends Dialog implements
 
                         }
                     });
-            FirebaseDatabase.getInstance().getReference("Products")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            List<String> rate = new ArrayList<String>();;
-                            if (snapshot.hasChildren()) {
-                                try {
-
-                                    for (DataSnapshot d : snapshot.getChildren()) {
-
-                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-                                        {
-                                            String data = String.valueOf((d.child("Price").getValue()));
-                                            rate.add(data);
-                                        }
-                                        else {
-                                            select_rate_Ac.setText("");
-                                        }
-
-                                    }
-
-                                }
-                                catch (Exception e)
-                                {
-//                                e.printStackTrace();
-                                    Log.e("Error is",e.getLocalizedMessage());
-//                                Toaster(e.getMessage());
-//                                if(Categories!=null)
-//                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-
-                                }
-
-
-
-                                if (rate != null) {
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-                                } else {
-                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-                                }
-                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-//                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-                                select_rate_Ac.setAdapter(RateArrayAdapter);
-                            }
-
-
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
+//            FirebaseDatabase.getInstance().getReference("Products")
+//                    .addListenerForSingleValueEvent(new ValueEventListener() {
+//                        @Override
+//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                            List<String> rate = new ArrayList<String>();;
+//                            if (snapshot.hasChildren()) {
+//                                try {
+//
+//                                    for (DataSnapshot d : snapshot.getChildren()) {
+//
+//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
+//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
+//                                        {
+//                                            String data = String.valueOf((d.child("Price").getValue()));
+//                                            rate.add(data);
+//                                        }
+//                                        else {
+//                                            select_rate_Ac.setText("");
+//                                        }
+//
+//                                    }
+//
+//                                }
+//                                catch (Exception e)
+//                                {
+////                                e.printStackTrace();
+//                                    Log.e("Error is",e.getLocalizedMessage());
+////                                Toaster(e.getMessage());
+////                                if(Categories!=null)
+////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
+//
+//                                }
+//
+//
+//
+//                                if (rate != null) {
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
+//                                } else {
+//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
+//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
+//                                }
+//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
+//                                select_rate_Ac.setAdapter(RateArrayAdapter);
+//                            }
+//
+//
+//                        }
+//
+//                        @Override
+//                        public void onCancelled(@NonNull DatabaseError error) {
+//
+//                        }
+//                    });
             return null;
         }
     }
@@ -810,86 +936,550 @@ public class Addcash_dialog extends Dialog implements
         }
     }
 
+    String rate = "0";
+
     class Upload_Transact extends AsyncTask<String,Void,Void>
     {
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
+        }
 
         @Override
         protected Void doInBackground(String... strings) {
 
             FirebaseDatabase.getInstance().getReference("Payments")
-                    .child("Transactions")
+                    .child("Transactions").child("Sell")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if (snapshot.hasChildren())
                             {
-                                Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+                                {
+                                    Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+                                    DatabaseReference df = snapshot.getRef().child(String.valueOf(snapshot.getChildrenCount()));
+                                    for (DataSnapshot snapshot1 : snapshot.getChildren())
+                                    {
+                                        if (snapshot1.child("Customer").getValue(String.class).toLowerCase().contains(strings[1].toLowerCase()))
+                                        {
+                                            df = snapshot1.getRef();
+                                        }
+                                    }
+//                                df.child("Category").setValue(strings[0]);
+                                    df.child("Customer").setValue(strings[1]);
+                                    df.child("Product").child(strings[4])
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if (snapshot.hasChildren())
+                                                    {
+                                                        long count= snapshot.getChildrenCount();
+                                                        DatabaseReference mRef1 = snapshot.getRef();
+                                                        DatabaseReference mRef1_replace = null;
+                                                        boolean ref_found = false;
+
+
+                                                        for (String key : mMap.keySet())
+                                                        {
+                                                            mRef1 = snapshot.child(String.valueOf(count)).getRef();
+
+                                                            for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                                            {
+                                                                if(dataSnapshot.child("Name").getValue(String.class)
+                                                                        .toLowerCase().contains(key.toLowerCase()))
+                                                                {
+                                                                    mRef1_replace = dataSnapshot.getRef();
+                                                                    ref_found = true;
+                                                                }
+                                                                else {
+                                                                    ref_found = false;
+                                                                }
+                                                            }
+
+                                                            DatabaseReference mRef = mRef1;
+
+                                                            long finalCount = count;
+
+                                                            boolean finalRef_found = ref_found;
+
+                                                            if (mRef1_replace!=null)
+                                                            {
+                                                                mRef1_replace.getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                    @Override
+                                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                        if(snapshot.hasChildren())
+                                                                        {
+                                                                            long quantity = (snapshot
+                                                                                    .child("Quantity").getValue(Long.class));
+                                                                            long new_quantity = (mMap.get(key));
+                                                                            snapshot.getRef().child("Quantity").setValue((quantity+new_quantity));
+
+                                                                            snapshot.getRef()
+                                                                                    .child("Name").setValue(key);
+                                                                        }
+
+
+                                                                    }
+
+                                                                    @Override
+                                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                    }
+                                                                });
+                                                            }
+                                                            else
+                                                            {
+                                                                mRef.getRef()
+                                                                        .child("Quantity").setValue((mMap.get(key)));
+                                                                mRef.getRef()
+                                                                        .child("Name").setValue(key);
+                                                            }
+
+
+                                                            DatabaseReference finalMRef1_replace = mRef1_replace;
+                                                            FirebaseDatabase.getInstance()
+                                                                    .getReference("Products")
+                                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if(snapshot.exists())
+                                                                    {
+                                                                        String rate = "0";
+                                                                        String cat = "0";
+                                                                        for (DataSnapshot df : snapshot.getChildren())
+                                                                        {
+                                                                            if(df.child("Name").getValue(String.class).toLowerCase()
+                                                                                    .contains(key.toLowerCase()))
+                                                                            {
+                                                                                rate= df.child("Price").getValue(String.class);
+                                                                                cat= df.child("Category").getValue(String.class);
+//                                                                    Toaster("Runned "+rate);
+//                                                                    Add2Preference("Price_Now",df.child("Price").getValue(String.class));
+                                                                            }
+
+                                                                        }
+
+                                                                        if (finalMRef1_replace !=null)
+                                                                        {
+                                                                            String finalCat = cat;
+                                                                            String finalRate = rate;
+                                                                            finalMRef1_replace.getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                @Override
+                                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                    if(snapshot.hasChildren())
+                                                                                    {
+                                                                                        snapshot.getRef()
+                                                                                                .child("Category").setValue(""+ finalCat);
+
+                                                                                        snapshot.getRef()
+                                                                                                .child("Rate").setValue(finalRate);
+
+
+                                                                                        double amount = Double.parseDouble(finalRate.toString())
+                                                                                                * Double.parseDouble(String.valueOf(mMap.get(key)));
+
+                                                                                        double pre_amount = Double.parseDouble(String.valueOf(snapshot.child("Amount")
+                                                                                                .getValue(String.class)));
+
+                                                                                        snapshot.getRef()
+                                                                                                .child("Amount").setValue(String.valueOf(amount+pre_amount));
+                                                                                    }
+
+
+                                                                                }
+
+                                                                                @Override
+                                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                                }
+                                                                            });
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            mRef.getRef()
+                                                                                    .child("Category").setValue(""+cat);
+
+                                                                            mRef.getRef()
+                                                                                    .child("Rate").setValue(rate);
+
+
+                                                                            double amount = Double.parseDouble(rate.toString())
+                                                                                    * Double.parseDouble(String.valueOf(mMap.get(key)));
+
+
+                                                                            mRef.getRef()
+                                                                                    .child("Amount").setValue("" + amount);
+                                                                        }
 
 
 
-                                DatabaseReference df = snapshot.getRef().child(String.valueOf(snapshot.getChildrenCount()));
-                                df.child("Category").setValue(strings[0]);
-                                df.child("Customer").setValue(strings[1]);
-                                df.child("Product").setValue(strings[2]);
-                                df.child("Rate").setValue(strings[3]);
-                                df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
-                                df.child("User").setValue(strings[6]);
-                                df.child("Time").setValue(strings[7]);
-                                df.child("Type").setValue("Sell");
-                                FirebaseDatabase.getInstance()
-                                        .getReference("Payments").child("Balance")
-                                        .addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (snapshot.exists())
-                                                {
-                                                    String balance = snapshot.getValue(String.class);
-                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
-                                                    double newBalance = balance1 + Double.parseDouble(strings[5]);
-                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        Toaster("Not exists");
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
+                                                            if(mRef1_replace==null)
+                                                            {
+                                                                count++;
+                                                            }
+
+                                                            ref_found = false;
+                                                            mRef1_replace = null;
+                                                        }
+                                                    }
+                                                    else
+                                                    {
+                                                        {
+                                                            long count= 0;
+
+                                                            DatabaseReference mRef = snapshot.getRef();
+                                                            for (String key : mMap.keySet())
+                                                            {
+                                                                mRef
+                                                                        .child(String.valueOf(count))
+                                                                        .child("Name").setValue(key);
+
+                                                                mRef
+                                                                        .child(String.valueOf(count))
+                                                                        .child("Quantity").setValue(String.valueOf(mMap.get(key)));
+
+
+                                                                long finalCount = count;
+                                                                FirebaseDatabase.getInstance()
+                                                                        .getReference("Products")
+                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                if(snapshot.exists())
+                                                                                {
+                                                                                    String rate = "0";
+                                                                                    String cat = "0";
+                                                                                    for (DataSnapshot df : snapshot.getChildren())
+                                                                                    {
+                                                                                        if(df.child("Name").getValue(String.class).toLowerCase().contains(key.toLowerCase()))
+                                                                                        {
+                                                                                            rate = df.child("Price").getValue(String.class);
+                                                                                            cat= df.child("Category").getValue(String.class);
+//                                                                                Toaster("Runned "+rate);
+//                                                                                Add2Preference("Price_Now",df.child("Price").getValue(String.class));
+                                                                                        }
+
+                                                                                    }
+                                                                                    mRef
+                                                                                            .child(String.valueOf(finalCount))
+                                                                                            .child("Category").setValue(""+cat);
+
+                                                                                    mRef
+                                                                                            .child(String.valueOf(finalCount))
+                                                                                            .child("Rate").setValue(rate);
+
+                                                                                    double amount = Double.parseDouble(rate.toString())
+                                                                                            * Double.parseDouble(String.valueOf(mMap.get(key)));
+
+                                                                                    mRef
+                                                                                            .child(String.valueOf(finalCount))
+                                                                                            .child("Amount").setValue(""+amount);
+                                                                                }
+                                                                                else
+                                                                                {
+                                                                                    Toaster("Not exists");
+                                                                                }
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                            }
+                                                                        });
+
+
+
+
+                                                                count+=1;
+                                                            }
+                                                        }
+                                                    }
                                                 }
-                                                else
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+
+                                    df.child("Amount").getRef()
+                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                    if(snapshot.exists())
+                                                    {
+                                                        double val = Double.parseDouble(transaction_encoder
+                                                                .getDecoded(snapshot.getValue(String.class)));
+                                                        double finalVal = val + Double.parseDouble(strings[2]);
+                                                        snapshot.getRef()
+                                                                .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                                    }
+                                                    else
+                                                    {
+                                                        snapshot.getRef().setValue(transaction_encoder.getEncoded(strings[2]));
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                }
+                                            });
+                                    df.child("User").setValue(strings[3]);
+                                    df.child("Time").setValue(strings[4]);
+                                    df.child("Type").setValue("Sell");
+                                    df.child("Credit").addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if(snapshot.exists())
+                                            {
+                                                if(radioButton10.isChecked()) { //Partial
+                                                    double val = Double.parseDouble(transaction_encoder
+                                                            .getDecoded(snapshot.getValue(String.class)));
+                                                    double finalVal = val + Double.parseDouble(strings[5]);
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                                }
+
+                                                if(radioButton9.isChecked()) // Paid
                                                 {
-                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                    double val = Double.parseDouble(transaction_encoder
+                                                            .getDecoded(snapshot.getValue(String.class)));
+                                                    double finalVal = val + Double.parseDouble(strings[2]);
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                                }
+
+                                                if(radioButton11.isChecked()) // Unpaid
+                                                {
+                                                    double val = Double.parseDouble(transaction_encoder
+                                                            .getDecoded(snapshot.getValue(String.class)));
+                                                    double finalVal = val + (0);
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
                                                 }
                                             }
+                                            else
+                                            {
+                                                if(radioButton10.isChecked()) {
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(strings[5])));
+                                                }
+                                                if(radioButton9.isChecked())
+                                                {
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(strings[2])));
 
-                                            @Override
-                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                }
+
+                                                if(radioButton11.isChecked())
+                                                {
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(0)));
+
+                                                }
 
                                             }
-                                        });
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+                                }
+
                             }
                             else
                             {
                                 Transaction_Encoder transaction_encoder = new Transaction_Encoder();
-
                                 DatabaseReference df = snapshot.getRef().child(String.valueOf(0));
-                                df.child("Category").setValue(strings[0]);
+//                                df.child("Category").setValue(strings[0]);
                                 df.child("Customer").setValue(strings[1]);
-                                df.child("Product").setValue(strings[2]);
-                                df.child("Rate").setValue(strings[3]);
-                                df.child("Quantity").setValue(strings[4]);
-                                df.child("Amount").setValue(transaction_encoder.getEncoded(strings[5]));
-                                df.child("User").setValue(strings[6]);
-                                df.child("Time").setValue(strings[7]);
-                                df.child("Type").setValue("Sell");
-                                FirebaseDatabase.getInstance()
-                                        .getReference("Payments").child("Balance")
+                                df.child("Product").child(strings[4])
+                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if (snapshot.hasChildren())
+                                        {
+                                            long count= snapshot.getChildrenCount();
+                                            DatabaseReference mRef = snapshot.getRef();
+                                            for (String key : mMap.keySet())
+                                            {
+                                                mRef
+                                                        .child(String.valueOf(count))
+                                                        .child("Name").setValue(key);
+
+                                                mRef
+                                                        .child(String.valueOf(count))
+                                                        .child("Quantity").setValue(mMap.get(key));
+
+
+                                                long finalCount = count;
+                                                FirebaseDatabase.getInstance()
+                                                        .getReference("Products").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                    @Override
+                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                        if(snapshot.exists())
+                                                        {
+                                                            String rate = "0";
+                                                            String cat = "0";
+                                                            for (DataSnapshot df : snapshot.getChildren())
+                                                            {
+                                                                if(df.child("Name").getValue(String.class).contains(key.toLowerCase()))
+                                                                {
+                                                                    rate= df.child("Price").getValue(String.class);
+                                                                    cat= df.child("Category").getValue(String.class);
+//                                                                    Toaster("Runned "+rate);
+//                                                                    Add2Preference("Price_Now",df.child("Price").getValue(String.class));
+                                                                }
+
+                                                            }
+
+                                                            mRef
+                                                                    .child(String.valueOf(finalCount))
+                                                                    .child("Category").setValue(""+cat);
+
+                                                            mRef
+                                                                    .child(String.valueOf(finalCount))
+                                                                    .child("Rate").setValue(rate);
+
+                                                            double amount = Double.parseDouble(rate.toString())
+                                                                    * Double.parseDouble(String.valueOf(mMap.get(key)));
+
+                                                            mRef
+                                                                    .child(String.valueOf(finalCount))
+                                                                    .child("Amount").setValue(""+amount);
+
+                                                        }
+                                                        else
+                                                        {
+                                                            Toaster("Not exists");
+                                                        }
+                                                    }
+
+                                                    @Override
+                                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                                    }
+                                                });
+
+
+                                                count++;
+                                            }
+                                        }
+                                        else
+                                        {
+                                            {
+                                                long count= 0;
+
+                                                DatabaseReference mRef = snapshot.getRef();
+                                                for (String key : mMap.keySet())
+                                                {
+                                                    mRef
+                                                            .child(String.valueOf(count))
+                                                            .child("Name").setValue(key);
+
+                                                    mRef
+                                                            .child(String.valueOf(count))
+                                                            .child("Quantity").setValue(mMap.get(key));
+
+
+                                                    long finalCount = count;
+                                                    FirebaseDatabase.getInstance()
+                                                            .getReference("Products")
+                                                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                @Override
+                                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                    if(snapshot.exists())
+                                                                    {
+                                                                        String rate = "0";
+                                                                        String cat = "0";
+                                                                        for (DataSnapshot df : snapshot.getChildren())
+                                                                        {
+                                                                            if(df.child("Name").getValue(String.class).toLowerCase().contains(key.toLowerCase()))
+                                                                            {
+                                                                                rate = df.child("Price").getValue(String.class);
+                                                                                cat= df.child("Category").getValue(String.class);
+//                                                                                Toaster("Runned "+rate);
+//                                                                                Add2Preference("Price_Now",df.child("Price").getValue(String.class));
+                                                                            }
+
+                                                                        }
+                                                                        mRef
+                                                                                .child(String.valueOf(finalCount))
+                                                                                .child("Category").setValue(""+cat);
+
+                                                                        mRef
+                                                                                .child(String.valueOf(finalCount))
+                                                                                .child("Rate").setValue(rate);
+
+                                                                        double amount = Double.parseDouble(rate.toString())
+                                                                                * Double.parseDouble(String.valueOf(mMap.get(key)));
+
+                                                                        mRef
+                                                                                .child(String.valueOf(finalCount))
+                                                                                .child("Amount").setValue(""+amount);
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        Toaster("Not exists");
+                                                                    }
+                                                                }
+
+                                                                @Override
+                                                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                }
+                                                            });
+
+
+
+
+                                                    count+=1;
+                                                }
+                                            }
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
+                                df.child("Amount").getRef()
                                         .addListenerForSingleValueEvent(new ValueEventListener() {
                                             @Override
                                             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                if (snapshot.exists())
+                                                if(snapshot.exists())
                                                 {
-                                                    String balance = snapshot.getValue(String.class);
-                                                    double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
-                                                    double newBalance = balance1 + Double.parseDouble(strings[5]);
-                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                                    double val = Double.parseDouble(transaction_encoder
+                                                            .getDecoded(snapshot.getValue(String.class)));
+                                                    double finalVal = val + Double.parseDouble(strings[2]);
+                                                    snapshot.getRef()
+                                                            .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
                                                 }
                                                 else
                                                 {
-                                                    snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[5])));
+                                                    snapshot.getRef().setValue(transaction_encoder.getEncoded(strings[2]));
                                                 }
                                             }
 
@@ -898,7 +1488,114 @@ public class Addcash_dialog extends Dialog implements
 
                                             }
                                         });
+                                df.child("User").setValue(strings[3]);
+                                df.child("Time").setValue(strings[4]);
+                                df.child("Type").setValue("Sell");
+                                df.child("Credit").addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                        if(snapshot.exists())
+                                        {
+                                            if(radioButton10.isChecked()) {
+                                                double val = Double.parseDouble(transaction_encoder
+                                                        .getDecoded(snapshot.getValue(String.class)));
+                                                double finalVal = val + Double.parseDouble(strings[5]);
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                            }
+
+                                            if(radioButton9.isChecked())
+                                            {
+                                                double val = Double.parseDouble(transaction_encoder
+                                                        .getDecoded(snapshot.getValue(String.class)));
+                                                double finalVal = val + Double.parseDouble(strings[2]);
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                            }
+
+                                            if(radioButton11.isChecked())
+                                            {
+                                                double val = Double.parseDouble(transaction_encoder
+                                                        .getDecoded(snapshot.getValue(String.class)));
+                                                double finalVal = val + (0);
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(finalVal)));
+                                            }
+                                        }
+                                        else
+                                        {
+                                            if(radioButton10.isChecked()) {
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(strings[5])));
+                                            }
+                                            if(radioButton9.isChecked())
+                                            {
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(strings[2])));
+
+                                            }
+
+                                            if(radioButton11.isChecked())
+                                            {
+                                                snapshot.getRef()
+                                                        .setValue(transaction_encoder.getEncoded(String.valueOf(0)));
+
+                                            }
+
+                                        }
+                                    }
+
+                                    @Override
+                                    public void onCancelled(@NonNull DatabaseError error) {
+
+                                    }
+                                });
+
                             }
+                            Transaction_Encoder transaction_encoder = new Transaction_Encoder();
+                            FirebaseDatabase.getInstance()
+                                    .getReference("Payments").child("Balance").child("Sell")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                            if (snapshot.exists())
+                                            {
+                                                String balance = snapshot.getValue(String.class);
+                                                double balance1 = Double.parseDouble(transaction_encoder.getDecoded(balance));
+                                                double newBalance = balance1 + Double.parseDouble(strings[2]);
+                                                snapshot.getRef().setValue(transaction_encoder.getEncoded(String.valueOf(newBalance)));
+                                            }
+                                            else
+                                            {
+                                                snapshot.getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[2])));
+                                            }
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+//                            ------------------------------>
+                            FirebaseDatabase.getInstance()
+                                    .getReference("Payments").child("History").child("Sell")
+                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                        @Override
+                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                snapshot.child(String.valueOf(snapshot.getChildrenCount()))
+                                                        .getRef().setValue(String.valueOf(transaction_encoder.getEncoded(strings[2])));
+
+                                        }
+
+                                        @Override
+                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                        }
+                                    });
+
+//                            ----------Update Product Count------------
+
+
                             Reset_Inputs();
                         }
 
@@ -914,11 +1611,88 @@ public class Addcash_dialog extends Dialog implements
     }
 
     private void Reset_Inputs() {
-        select_categ_Ac.setText("");
-        select_prod.setText("");
-        select_rate_Ac.setText("");
-        quatity_add.setText("");
-        textView10.setText("");
-        select_custom.setText("");
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            public void run() {
+                // Actions to do after 5 seconds
+                select_categ_Ac.setText("");
+                select_prod.setText("");
+//        select_rate_Ac.setText("");
+                textView10.setText("0");
+                select_custom.setText("");
+                progress_monitor.Drop_Progressing();
+                try{
+//                    select_prod.setText(adapterView.getAdapter().getItem(i).toString());
+//                    mMap.remove(adapterView.getAdapter().getItem(i).toString())
+                    mMap.clear();
+                    arrayList_products.clear();
+                    synchronized(arrayList_products){
+                        arrayList_products.notify();
+                    }
+                    arrayList_products.add(mMap);
+
+                    productAdapter_new = new ArrayAdapter<String>(
+                            c.getApplicationContext(),
+                            android.R.layout.simple_list_item_1,
+                            arrayList_products);
+
+                    products_list_update.setAdapter(productAdapter_new);
+                    arrayAdapter.notifyDataSetChanged();
+                    products_list_update.setVisibility(View.GONE);
+                    
+
+                }catch (Exception e)
+                {
+                    Toaster("Removed Failed");
+
+                }
+            }
+        }, 2000);
+
+
+
     }
+
+    private String Retrieve_preference(String key)
+    {
+        SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        return pref.getString(key, "");         // getting you_bool
+    }
+
+
+    private void Add2Preference(String key, String quantity)
+    {
+        SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(key, quantity);  // Saving string
+        // Save the changes in SharedPreferences
+        editor.apply(); // commit changes
+    }
+
+    private int Receive_Preference()
+    {
+        SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        return pref.getInt("product_quant", 0);         // getting you_bool
+    }
+
+    class Manage_Payments extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            try{
+            double total = Double.parseDouble(strings[0].toString());
+            double partial = Double.parseDouble(strings[1].toString());
+            double final_cal = total-partial;
+            textView10.setText(""+String.valueOf(final_cal));}
+            catch (Exception e)
+            {
+                Log.e("Error Except: ",e.getLocalizedMessage());
+            }
+            return null;
+        }
+    }
+
+
+
 }

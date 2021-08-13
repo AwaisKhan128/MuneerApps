@@ -53,6 +53,7 @@ public class Update_Customer extends Dialog implements
         // TODO Auto-generated constructor stub
         this.c = a;
     }
+    Progress_Monitor progress_monitor;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,6 +67,7 @@ public class Update_Customer extends Dialog implements
         person_address = findViewById(R.id.person_address);
         list_name = findViewById(R.id.list_name);
         update = findViewById(R.id.button20);
+        progress_monitor = new Progress_Monitor(c);
 
 
 
@@ -216,6 +218,12 @@ public class Update_Customer extends Dialog implements
     {
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
+        }
+
+        @Override
         protected Void doInBackground(String... strings) {
             FirebaseDatabase.getInstance().getReference("Customers")
                     .addListenerForSingleValueEvent(new ValueEventListener() {
@@ -268,6 +276,7 @@ public class Update_Customer extends Dialog implements
         new_name.setText("");
         person_cnic.setText("");
         person_address.setText("");
+        progress_monitor.Drop_Progressing();
 
         try
         {

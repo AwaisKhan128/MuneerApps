@@ -8,101 +8,108 @@
     app:cardUseCompatPadding="true"
     app:cardBackgroundColor="@android:color/transparent">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/dialog_back"
-        android:orientation="vertical">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/textView7"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="10dp"
-            android:layout_marginEnd="20dp"
-            android:gravity="center"
-            android:text="Create Product"
-            android:textSize="24sp" />
+            android:background="@drawable/dialog_back"
+            android:orientation="vertical">
 
-        <com.google.android.material.textfield.TextInputLayout
-            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"
-            android:hint="Category"
-            android:id="@+id/product_cat_hint"
-            android:textColorHint="#000000"
-            app:placeholderTextColor="#000000"
-            app:prefixTextColor="#000000"
-            app:suffixTextColor="#000000">
-            <AutoCompleteTextView
-                android:id="@+id/product_cat"
+            <TextView
+                android:id="@+id/textView7"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:enabled="false"
-                android:inputType="none"
-                android:textColor="@color/black" />
-        </com.google.android.material.textfield.TextInputLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:gravity="center"
+                android:text="Create Product"
+                android:textSize="24sp" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/product_cat_hint"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"
+                android:hint="Category"
+                android:textColorHint="#000000"
+                app:placeholderTextColor="#000000"
+                app:prefixTextColor="#000000"
+                app:suffixTextColor="#000000">
+
+                <AutoCompleteTextView
+                    android:id="@+id/product_cat"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:enabled="false"
+                    android:inputType="none"
+                    android:textColor="@color/black" />
+            </com.google.android.material.textfield.TextInputLayout>
 
 
-        <EditText
-            android:id="@+id/product_name"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_margin="20dp"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Name"
-            android:inputType="textPersonName"
-            android:paddingStart="15dp"
-            android:textAlignment="textStart" >
+            <EditText
+                android:id="@+id/product_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Name"
+                android:inputType="textPersonName"
+                android:paddingStart="@dimen/padding_start"
+                android:textAlignment="textStart">
 
-        </EditText>
+            </EditText>
 
-        <EditText
-            android:id="@+id/product_unit"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Unit"
-            android:inputType="text"
-            android:paddingStart="15dp"
-            android:textAlignment="textStart" />
+            <EditText
+                android:id="@+id/product_unit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Unit"
+                android:inputType="text"
+                android:paddingStart="@dimen/padding_start"
+                android:textAlignment="textStart" />
 
-        <EditText
-            android:id="@+id/price"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/dialog_text"
-            android:ems="10"
-            android:hint="Price"
-            android:inputType="number"
-            android:paddingStart="15dp"
-            android:textAlignment="textStart" />
+            <EditText
+                android:id="@+id/price"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/dialog_text"
+                android:ems="10"
+                android:hint="Price"
+                android:inputType="number"
+                android:paddingStart="@dimen/padding_start"
+                android:textAlignment="textStart" />
 
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/button11"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginBottom="20dp"
-            android:background="@drawable/create_acc"
-            android:drawableLeft="@drawable/add_task_24"
-            android:paddingStart="50dp"
-            android:paddingEnd="50dp"
-            android:text="Register"
-            android:textSize="18sp" />
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button11"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginBottom="20dp"
+                android:background="@drawable/create_acc"
+                android:drawableLeft="@drawable/add_task_24"
+                android:paddingStart="50dp"
+                android:paddingEnd="50dp"
+                android:text="Register"
+                android:textSize="18sp" />
 
-    </LinearLayout>
+        </LinearLayout>
+    </ScrollView>
+
 </androidx.cardview.widget.CardView>
