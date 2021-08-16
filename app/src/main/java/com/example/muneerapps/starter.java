@@ -154,7 +154,7 @@ public class starter extends AppCompatActivity {
         progressBar4 = findViewById(R.id.progressBar4);
         button = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
-        Disable_Button();
+//        Disable_Button();
 
 
 
