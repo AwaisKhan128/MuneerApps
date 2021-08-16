@@ -1,6 +1,7 @@
 package com.example.muneerapps;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -11,8 +12,12 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Handler;
+import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -109,6 +114,33 @@ public class starter extends AppCompatActivity {
         }
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 2000) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+
+                if (Environment.isExternalStorageManager()) {
+
+                    Toaster("Permission Granted Successfully");
+                    // do your Work here
+//
+//                    CreatePDFFile(context.getExternalFilesDir(null).getAbsolutePath() +"/test_pdf.pdf");
+//                    Toast.makeText(context, "PDF Generated", Toast.LENGTH_SHORT).show();
+
+                } else {
+
+                    Toaster("Permission Failed Executed");
+//                    Toast.makeText(context, "PDF Not Generated because of permission restriction", Toast.LENGTH_LONG).show();
+                }
+            }
+
+        }
+    }
+
+
+
+
     TextView textView26;
     Button button,button2;
     Handler handler;
@@ -123,27 +155,7 @@ public class starter extends AppCompatActivity {
         button = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
         Disable_Button();
-        handler = new Handler();
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                if (internetIsConnected() )
-                {
-                    Enable_Button();
-                    button.setClickable(true);
-                    button2.setClickable(true);
-                }
-                else
-                {
-                    Enable_Button();
-                    button.setClickable(false);
-                    button2.setClickable(false);
-                }
 
-                Toaster("Check your Network Connection");
-
-            }
-        },10000);
 
 
         textView26 = findViewById(R.id.textView26);
@@ -193,7 +205,28 @@ public class starter extends AppCompatActivity {
 
 
         };
-        Check_Permissions();
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
+        {
+            try {
+                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                intent.addCategory("android.intent.category.DEFAULT");
+                intent.setData(Uri.parse(String.format("package:%s", new Object[] {getApplicationContext().getPackageName()})));
+                startActivityIfNeeded(intent, 2000);
+
+
+            }catch (Exception e){
+
+                Intent obj = new Intent();
+                obj.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                startActivityForResult(obj, 2000);
+
+            }
+        }
+        else
+        {
+            Check_Permissions();
+        }
 
         FirebaseDatabase.getInstance().getReference("Deadline")
                 .child("Date").addValueEventListener(new ValueEventListener() {
