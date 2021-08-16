@@ -88,7 +88,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
         holder.imageView2.setOnClickListener(view -> {
 
-
+            Permission_Monitor();
         });
         holder.setIsRecyclable(false);
 
