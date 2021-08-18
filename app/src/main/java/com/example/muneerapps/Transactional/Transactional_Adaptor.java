@@ -70,6 +70,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
     Document document;
     String Path = "";
     Progress_Monitor progress_monitor;
+    ArrayList<String> Categories_list,Dates_list;
 
 
 
@@ -81,6 +82,8 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
         mRef = mDatabase.getReference("Payments");
         Path = Common.getAppPath(context)+"/MuneerApps.pdf";
         progress_monitor = new Progress_Monitor(context);
+        Categories_list = new ArrayList<>();
+        Dates_list = new ArrayList<>();
     }
 
     @Override
@@ -207,14 +210,23 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 //                                                    document.open();
 
                                                             for (String cat : arrayList) { //Category wise
-
+                                                                document.newPage();
                                                                 double Total = 0;
                                                                 for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren()) {
 
                                                                     Map<String, Object> TransProduct_Val = (Map<String, Object>) mySnapshot.getValue();
 //
-                                                                    if (TransProduct_Val.get("Category").toString().toLowerCase().contains(cat.toLowerCase())) {
+                                                                    if (TransProduct_Val.get("Category").toString().toLowerCase().contains(cat.toLowerCase()))
+                                                                    {
 //                                                            mTV.append("\n Quantity : " + TransProduct_Val.get("Quantity"));
+                                                                        if(!Categories_list.contains(TransProduct_Val.get("Category").toString())) {
+                                                                            initialPrint(Status, datesKey, customer_val, cat);
+                                                                            Categories_list.add(TransProduct_Val.get("Category").toString());
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                        }
 
                                                                         CreatePDFFile(Path
                                                                                 , Status, datesKey, customer_val,
@@ -240,20 +252,26 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
                                                                 Grand_Total[0] = Grand_Total[0] + Total;
-                                                                document.newPage();
+
 //                                                        addLineSpace(document);
 //                                                        addLineSeparator(document);
 //                                                        addLineSeparator(document);
+                                                                Categories_list = new ArrayList<>();
                                                             }
 
                                                         }
 
-                                                        document.newPage();
+//                                                        document.newPage();
 
 //                                                    }
 
 
                                                         try {
+
+                                                                        addLineSpace(document);
+                                                                        addLineSeparator(document);
+                                                            addNewItem(document, "Grand Total", Element.ALIGN_CENTER);
+                                                                        addLineSeparator(document);
                                                             addNewItemWithLeftAndRight(document,
                                                                     " Grand Total ", "", "", "" + Grand_Total[0]);
                                                             addNewItemWithLeftAndRight(document,
@@ -366,6 +384,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                     for (String datesKey : Date_wise)
                                                     {
+                                                        document.newPage();
 
                                                         for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren())
                                                         {
@@ -383,9 +402,13 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 //                                                    document.open();
 
                                                             for (String cat : arrayList)
-                                                            { //Category wise
+                                                            { //Category wis
 
+                                                                document.newPage();
                                                                 double Total = 0;
+
+
+
                                                                 for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren())
                                                                 {
 
@@ -393,6 +416,15 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 //
                                                                     if (TransProduct_Val.get("Category").toString().toLowerCase().contains(cat.toLowerCase())) {
 //                                                            mTV.append("\n Quantity : " + TransProduct_Val.get("Quantity"));
+
+                                                                        if(!Categories_list.contains(TransProduct_Val.get("Category").toString())) {
+                                                                            initialPrint(Status, datesKey, customer_val, cat);
+                                                                            Categories_list.add(TransProduct_Val.get("Category").toString());
+                                                                        }
+                                                                        else
+                                                                        {
+
+                                                                        }
 
                                                                         CreatePDFFile(Path
                                                                                 , Status, datesKey, customer_val,
@@ -418,20 +450,25 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
                                                                 Grand_Total[0] = Grand_Total[0] + Total;
-                                                                document.newPage();
+
 //                                                        addLineSpace(document);
 //                                                        addLineSeparator(document);
 //                                                        addLineSeparator(document);
+                                                                Categories_list = new ArrayList<>();
                                                             }
 
                                                         }
 
-                                                        document.newPage();
+
 
                                                     }
 
 
                                                     try {
+                                                        addLineSpace(document);
+                                                        addLineSeparator(document);
+                                                        addNewItem(document, "Grand Total", Element.ALIGN_CENTER);
+                                                        addLineSeparator(document);
                                                         addNewItemWithLeftAndRight(document,
                                                                 " Grand Total ", "", "", "" + Grand_Total[0]);
                                                         addNewItemWithLeftAndRight(document,
@@ -582,6 +619,20 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
         Log.e("ItemQuantity",ItemQuantity);
         Log.e("ItemQuantity",ItemQuantity);
 
+//        if (Dates_list.contains(Date))
+//        {
+//            if(!Categories_list.contains(CategoryName))
+//            {
+//                Categories_list.add(CategoryName);
+//            }
+//
+//        }
+//        else
+//        {
+//            Categories_list = new ArrayList<>()
+//            Dates_list.add(Date);
+//        }
+
 
 
         try {
@@ -597,43 +648,19 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
 
-            addNewItem(document, "Muneer Sweets and Bakers Mirpurkhas", Element.ALIGN_CENTER);
-            addNewItem(document, "Invoice (Generated)", Element.ALIGN_CENTER);
-            addLineSeparator(document);
-            addLineSeparator(document);
-
-            addLineSpace(document);
-            addNewItem(document, "\n", Element.ALIGN_CENTER);
-
-            addNewItem(document, "Order Details" , Element.ALIGN_CENTER);
-
-            addNewItem(document, "Order Title : "+Order_Title, Element.ALIGN_LEFT); // purchase or sell
-            addNewItem(document, "Order Date and Time : "+Date , Element.ALIGN_LEFT);
-
-            addLineSeparator(document);
-            addNewItem(document, "Customer Details", Element.ALIGN_CENTER);
-
-            addLineSpace(document);
-            addNewItem(document, "Customer Name : "+CustomerName, Element.ALIGN_LEFT);
-//            addNewItem(document, "Customer Email : Abcd@gmail.com " , Element.ALIGN_LEFT);
-
-            addLineSpace(document);
 
 
-            addNewItem(document, "Category : "+CategoryName , Element.ALIGN_LEFT);
 
-            addLineSeparator(document);
-            addNewItemWithLeftAndRight(document, "Item Name", "Rate" , "Quantity", "Amount");
 
-            addLineSeparator(document);
+
+
 
             addNewItemWithLeftAndRight(document,""+ItemName, ""+ItemRate ,""+ItemQuantity, ""+ItemAmount);
 
-
             // Total
-            addLineSpace(document);
-            addLineSeparator(document);
-            addLineSeparator(document);
+//            addLineSpace(document);
+//            addLineSeparator(document);
+//            addLineSeparator(document);
 
 
 
@@ -722,6 +749,42 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 //            addNewItem(document, "Invoice (Generated)", Element.ALIGN_CENTER);
 //            addLineSeparator(document);
 //            addLineSeparator(document);
+
+    private void initialPrint(String Order_Title,String Date,String CustomerName,String CategoryName)
+    {
+        try {
+            addNewItem(document, "Muneer Sweets and Bakers Mirpurkhas", Element.ALIGN_CENTER);
+            addNewItem(document, "Invoice (Generated)", Element.ALIGN_CENTER);
+            addLineSeparator(document);
+            addLineSeparator(document);
+
+            addLineSpace(document);
+            addNewItem(document, "\n", Element.ALIGN_CENTER);
+
+            addNewItem(document, "Order Details", Element.ALIGN_CENTER);
+            addNewItem(document, "Order Title : "+Order_Title, Element.ALIGN_LEFT); // purchase or sell
+            addNewItem(document, "Order Date and Time : "+Date , Element.ALIGN_LEFT);
+
+            addLineSeparator(document);
+            addNewItem(document, "Customer Details", Element.ALIGN_CENTER);
+
+            addLineSpace(document);
+            addNewItem(document, "Customer Name : "+CustomerName, Element.ALIGN_LEFT);
+//            addNewItem(document, "Customer Email : Abcd@gmail.com " , Element.ALIGN_LEFT);
+
+            addLineSpace(document);
+            addNewItem(document, "Category : "+CategoryName , Element.ALIGN_LEFT);
+
+            addLineSeparator(document);
+            addNewItemWithLeftAndRight(document, "Item Name", "Rate" , "Quantity", "Amount");
+
+            addLineSeparator(document);
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+    }
 
 
     private void PrintPDF() {
