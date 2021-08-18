@@ -42,12 +42,14 @@ import com.example.muneerapps.Transactions.Transaction_Class;
 import com.example.muneerapps.dialogs.Addcash_dialog;
 import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Date_Pick;
+import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.ReturnPurchase_dialog;
 import com.example.muneerapps.dialogs.ReturnSell_dialog;
 import com.example.muneerapps.dialogs.SignOut_Toast;
 import com.example.muneerapps.dialogs.Subcash_dialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -84,6 +86,44 @@ public class Payment extends AppCompatActivity {
     FloatingActionButton floatingActionButton2;
     String Path ="";
     DatePicker datePicker;
+    private void Reset_deadline() {
+
+
+        Deadline cdd=new Deadline(Payment.this);
+        cdd.setCanceledOnTouchOutside(false);
+        cdd.setCancelable(false);
+        cdd.show();
+
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            boolean key = snapshot.getValue(Boolean.class);
+                            if (key)
+                            {
+                                Reset_deadline();
+                            }
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
 
     public void Bottom_bars()
     {

@@ -229,8 +229,11 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                                 }
                                                                 try {
-                                                                    addNewItemWithLeftAndRight(document,
-                                                                            " Total ", "", "", "" + Total);
+                                                                    if (Total > 0) {
+                                                                        addNewItemWithLeftAndRight(document,
+                                                                                " Total ", "", "", "" + Total);
+                                                                    }
+
                                                                 } catch (DocumentException e) {
                                                                     e.printStackTrace();
                                                                 }
@@ -266,6 +269,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                             e.printStackTrace();
                                                         }
                                                         document.close();
+                                                        Toaster("PDF Generated Success");
                                                     }
                                                     else {
                                                         Toaster("No Document for the Selected Date");
@@ -403,8 +407,11 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                                 }
                                                                 try {
-                                                                    addNewItemWithLeftAndRight(document,
-                                                                            " Total ", "", "", "" + Total);
+                                                                    if  (Total > 0) {
+                                                                        addNewItemWithLeftAndRight(document,
+                                                                                " Total ", "", "", "" + Total);
+                                                                    }
+
                                                                 } catch (DocumentException e) {
                                                                     e.printStackTrace();
                                                                 }
@@ -440,6 +447,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                         e.printStackTrace();
                                                     }
                                                     document.close();
+                                                    Toaster("PDF Generated Success");
 
                                                 }
 

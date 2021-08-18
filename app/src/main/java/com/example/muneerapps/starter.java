@@ -382,4 +382,32 @@ public class starter extends AppCompatActivity {
         cdd.show();
 
     }
+
+    @Override
+    protected void onRestart() {
+        super.onRestart();
+        FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
+                .addListenerForSingleValueEvent(new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            boolean key = snapshot.getValue(Boolean.class);
+                            if (key)
+                            {
+                                Reset_deadline();
+                            }
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
 }

@@ -43,6 +43,35 @@ public class Selector extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
+                .addListenerForSingleValueEvent(
+                        new ValueEventListener()
+                {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            boolean key = snapshot.getValue(Boolean.class);
+                            if (key)
+                            {
+                                Reset_deadline();
+                            }
+
+                        }
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+    }
+
+    @Override
     public boolean onOptionsItemSelected(@NonNull MenuItem item) {
         if (item.getItemId() == R.id.signout) {
             SignOut_Now();
