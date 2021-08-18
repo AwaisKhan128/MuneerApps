@@ -139,7 +139,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
     {
         if (checkPermission()) {
 //            CreatePDFFile(context.getExternalFilesDir(null).getAbsolutePath() +"/test_pdf.pdf");
-            Toaster("Generating PDF Please Wait");
+
             progress_monitor.Setup_Progressing("Please Wait", "While System is generating PDF");
             if (!Retrieve_preference("Current_Date").isEmpty() && Retrieve_preference("Current_Date")!=null)
             {
@@ -190,6 +190,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 //                                                    {
 
                                                     if (snapshot3.child(datesKey).exists()) {
+                                                        Toaster("Generating PDF Please Wait");
                                                         document.open();
                                                         for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren()) {
 
@@ -357,6 +358,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                     ArrayList<String> arrayList = new ArrayList<>();
 //                                                String datesKey = "12-Aug-2021";
                                                     document.open();
+                                                    Toaster("Generating PDF Please Wait");
 
                                                     for (String datesKey : Date_wise)
                                                     {
@@ -720,17 +722,19 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
         progress_monitor.Drop_Progressing();
         PrintManager printManager = (PrintManager) context.getSystemService(Context.PRINT_SERVICE);
 
-        try
-        {
-
-            PrintDocumentAdapter printDocumentAdapter =
-                    new PdfDocumentAdapter(context, Path);
-            printManager.print("Document", printDocumentAdapter, new PrintAttributes.Builder().build());
-
-        } catch (Exception ex)
-        {
-            Toast.makeText(context, "error " + ex.getMessage(), Toast.LENGTH_SHORT).show();
-        }
+//        try
+//        {
+//
+//            if (new File(Path).exists()) {
+//                PrintDocumentAdapter printDocumentAdapter =
+//                        new PdfDocumentAdapter(context, Path);
+//                printManager.print("Document", printDocumentAdapter, new PrintAttributes.Builder().build());
+//            }
+//
+//        } catch (Exception ex)
+//        {
+//            Toast.makeText(context, "error " + ex.getMessage(), Toast.LENGTH_SHORT).show();
+//        }
 
     }
 
