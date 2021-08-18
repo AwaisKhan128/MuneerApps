@@ -14,10 +14,13 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.StrictMode;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +34,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.muneerapps.PDFManager.Common;
 import com.example.muneerapps.Transactional.Transactional_Adaptor;
 import com.example.muneerapps.Transactional.Transactional_Class;
 import com.example.muneerapps.Transactions.Transaction_Adaptor;
@@ -42,6 +46,7 @@ import com.example.muneerapps.dialogs.ReturnPurchase_dialog;
 import com.example.muneerapps.dialogs.ReturnSell_dialog;
 import com.example.muneerapps.dialogs.SignOut_Toast;
 import com.example.muneerapps.dialogs.Subcash_dialog;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -59,6 +64,7 @@ import com.roughike.bottombar.BottomBar;
 import com.roughike.bottombar.OnTabReselectListener;
 import com.roughike.bottombar.OnTabSelectListener;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -75,7 +81,8 @@ public class Payment extends AppCompatActivity {
     LinearLayoutManager linearLayout;
     String current_status = "Sell";
     BottomBar bottomBar;
-
+    FloatingActionButton floatingActionButton2;
+    String Path ="";
     DatePicker datePicker;
 
     public void Bottom_bars()
@@ -523,6 +530,7 @@ public class Payment extends AppCompatActivity {
         setContentView(R.layout.balance_sheet);
         recycler = findViewById(R.id.recycler);
         context = this;
+        Path = Common.getAppPath(context)+"/MuneerApps.pdf";
         linearLayout = new LinearLayoutManager(context);
         recycler.setLayoutManager(linearLayout);
         recycler.addItemDecoration(new RecyclerMainSpacing(16));
@@ -533,6 +541,46 @@ public class Payment extends AppCompatActivity {
         searcher = findViewById(R.id.searcher);
         listView = findViewById(R.id.listView);
         reset_date = findViewById(R.id.reset_date);
+        floatingActionButton2 = findViewById(R.id.floatingActionButton2);
+        StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+        StrictMode.setVmPolicy(builder.build());
+
+        floatingActionButton2.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if (new File(Path).exists())
+                {
+                    Uri uri = Uri.fromFile(new File(Path));
+                    try {
+                        Intent share = new Intent(Intent.ACTION_SEND);
+
+                        // If you want to share a png image only, you can do:
+                        // setType("image/png"); OR for jpeg: setType("image/jpeg");
+                        share.setType("pdf/*");
+
+                        // Make sure you put example png image named myImage.png in your
+                        // directory
+//                    String imagePath = Environment.getExternalStorageDirectory()
+//                            + "/myImage.png";
+//
+//                    File imageFileToShare = new File(imagePath);
+//
+//                    Uri uri = Uri.fromFile(imageFileToShare);
+//                        Toaster(String.valueOf(myUri));
+                        share.putExtra(Intent.EXTRA_STREAM, uri);
+
+                        context.startActivity(Intent.createChooser(share, "Share PDF!"));
+
+// Try to invoke the intent.
+
+//                    c.startActivity(chooser);
+                    } catch (Exception e) {
+                        // Define what your app should do if no activity can handle the intent.
+                        Log.e("Share error",e.getLocalizedMessage());
+                    }
+                }
+            }
+        });
 
         reset_date.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1033,6 +1081,7 @@ public class Payment extends AppCompatActivity {
         SharedPreferences pref = context.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         return pref.getString(key, "");         // getting you_bool
     }
+//
 
 
 }
