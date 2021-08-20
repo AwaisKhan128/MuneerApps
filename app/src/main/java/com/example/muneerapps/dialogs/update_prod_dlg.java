@@ -19,6 +19,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.android.material.textfield.TextInputLayout;
@@ -62,14 +63,58 @@ public class update_prod_dlg extends Dialog implements
         progress_monitor = new Progress_Monitor(c);
         update_Prod = (Button) findViewById(R.id.update_Prod);
         prev_prod = findViewById(R.id.prev_prod);
+        prev_prod.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                prev_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                prev_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
         new_prod = findViewById(R.id.new_prod);
+        new_prod.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                new_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                new_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
 //        categ = findViewById(R.id.categ);
         price = findViewById(R.id.price);
+        price.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         unit = findViewById(R.id.unit);
+        unit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         previous_prod_list = findViewById(R.id.previous_prod_list);
         previous_prod_list.setVisibility(View.GONE);
         product_cat_hint = findViewById(R.id.product_cat_hint);
+
         product_cat = findViewById(R.id.product_cat);
+
         Update();
 
         update_Prod.setOnClickListener(view -> {
@@ -184,6 +229,9 @@ public class update_prod_dlg extends Dialog implements
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
+                    Toaster(error.getMessage());
+                    prev_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+
                 }
             });
             return null;
@@ -196,6 +244,7 @@ public class update_prod_dlg extends Dialog implements
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
+
             progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
         }
 
@@ -218,6 +267,7 @@ public class update_prod_dlg extends Dialog implements
                         if (strings[1].length()==0)
                         {
                             new_prod.setError("Missing");
+                            new_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                             return;
                         }
                         ref.child("Name").setValue(strings[1]);
@@ -254,6 +304,12 @@ public class update_prod_dlg extends Dialog implements
 //        categ.setText("");
         price.setText("");
         unit.setText("");
+        prev_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        new_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        product_cat.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        product_cat_hint.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
         progress_monitor.Drop_Progressing();
         try
         {

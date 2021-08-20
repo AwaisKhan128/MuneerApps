@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -51,6 +52,35 @@ public class Customer_dialog extends Dialog implements
         c_name = (EditText) findViewById(R.id.c_name);
         c_cnic = (EditText) findViewById(R.id.c_cnic);
         c_address = (EditText) findViewById(R.id.c_address);
+        c_name.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
+
+        c_cnic.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
+
+        c_address.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
         button10 = (Button) findViewById(R.id.button10);
         progress_monitor = new Progress_Monitor(c);
 
@@ -75,7 +105,8 @@ public class Customer_dialog extends Dialog implements
                                         if (!isfound) {
                                             if (c_name.getText().toString().length() > 0 && c_cnic.getText().toString().length() > 0
                                                     && c_address.getText().toString().length() > 0) {
-                                                FirebaseDatabase.getInstance().getReference("Customers").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                FirebaseDatabase.getInstance().getReference("Customers")
+                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         if (snapshot.hasChildren()) {
@@ -102,8 +133,11 @@ public class Customer_dialog extends Dialog implements
                                                         }
                                                         Toaster("Success");
                                                         c_name.setText("");
+                                                        c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         c_cnic.setText("");
+                                                        c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         c_address.setText("");
+                                                        c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         progress_monitor.Drop_Progressing();
 
 
@@ -114,24 +148,29 @@ public class Customer_dialog extends Dialog implements
 
                                                         Toaster("Failed to Saved Try again");
                                                         progress_monitor.Drop_Progressing();
+                                                        c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                     }
                                                 });
                                             } else {
                                                 Toaster("Failed to put empty blocks");
                                                 if (c_name.getText().toString().length() == 0) {
                                                     c_name.setError("Empty");
+                                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                                 if (c_cnic.getText().toString().length() == 0) {
                                                     c_cnic.setError("Empty");
+                                                    c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                                 if (c_address.getText().toString().length() == 0) {
                                                     c_address.setError("Empty");
+                                                    c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                                 progress_monitor.Drop_Progressing();
                                             }
                                         } else {
                                             Toaster("Already Exist");
                                             progress_monitor.Drop_Progressing();
+                                            c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                         }
                                     }
                                     else {
@@ -164,8 +203,11 @@ public class Customer_dialog extends Dialog implements
                                                     }
                                                     Toaster("Success");
                                                     c_name.setText("");
+                                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     c_cnic.setText("");
+                                                    c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     c_address.setText("");
+                                                    c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     progress_monitor.Drop_Progressing();
 
                                                 }
@@ -175,18 +217,24 @@ public class Customer_dialog extends Dialog implements
 
                                                     Toaster("Failed to Saved Try again");
                                                     progress_monitor.Drop_Progressing();
+                                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                                                    c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                                                    c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                             });
                                         } else {
                                             Toaster("Failed to put empty blocks");
                                             if (c_name.getText().toString().length() == 0) {
                                                 c_name.setError("Empty");
+                                                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                             }
                                             if (c_cnic.getText().toString().length() == 0) {
                                                 c_cnic.setError("Empty");
+                                                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                             }
                                             if (c_address.getText().toString().length() == 0) {
                                                 c_address.setError("Empty");
+                                                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                             }
                                             progress_monitor.Drop_Progressing();
                                         }
@@ -196,6 +244,7 @@ public class Customer_dialog extends Dialog implements
                                 @Override
                                 public void onCancelled(@NonNull DatabaseError error) {
                                     progress_monitor.Drop_Progressing();
+                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                 }
                             });
 
@@ -206,6 +255,7 @@ public class Customer_dialog extends Dialog implements
                 Toaster("Customer name is empty");
                 c_name.setError("Missing");
                 progress_monitor.Drop_Progressing();
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
             }
 
 

@@ -12,6 +12,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -55,6 +56,36 @@ public class Supplier_dialog extends Dialog implements
         c_cnic = (EditText) findViewById(R.id.c_cnic);
         c_address = (EditText) findViewById(R.id.c_address);
         button10 = (Button) findViewById(R.id.button10);
+
+        c_name.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
+
+        c_cnic.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
+
+        c_address.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+            }
+        });
 
         button10.setOnClickListener(view -> {
             progress_monitor.Setup_Progressing("Please Wait","Working in Progress");
@@ -107,8 +138,11 @@ public class Supplier_dialog extends Dialog implements
                                                         }
                                                         Toaster("Success");
                                                         c_name.setText("");
+                                                        c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         c_cnic.setText("");
+                                                        c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         c_address.setText("");
+                                                        c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                         progress_monitor.Drop_Progressing();
 
                                                     }
@@ -124,12 +158,16 @@ public class Supplier_dialog extends Dialog implements
                                                 Toaster("Failed to put empty blocks");
                                                 if (c_name.getText().toString().length() == 0) {
                                                     c_name.setError("Empty");
+                                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                                 if (c_cnic.getText().toString().length() == 0) {
                                                     c_cnic.setError("Empty");
+                                                    c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+
                                                 }
                                                 if (c_address.getText().toString().length() == 0) {
                                                     c_address.setError("Empty");
+                                                    c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                                 }
                                                 progress_monitor.Drop_Progressing();
                                             }
@@ -170,8 +208,11 @@ public class Supplier_dialog extends Dialog implements
                                                     }
                                                     Toaster("Success");
                                                     c_name.setText("");
+                                                    c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     c_cnic.setText("");
+                                                    c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     c_address.setText("");
+                                                    c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                                     progress_monitor.Drop_Progressing();
 
                                                 }
@@ -187,12 +228,16 @@ public class Supplier_dialog extends Dialog implements
                                             Toaster("Failed to put empty blocks");
                                             if (c_name.getText().toString().length() == 0) {
                                                 c_name.setError("Empty");
+                                                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+
                                             }
                                             if (c_cnic.getText().toString().length() == 0) {
                                                 c_cnic.setError("Empty");
+                                                c_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                             }
                                             if (c_address.getText().toString().length() == 0) {
                                                 c_address.setError("Empty");
+                                                c_address.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                             }
                                             progress_monitor.Drop_Progressing();
                                         }
@@ -209,12 +254,14 @@ public class Supplier_dialog extends Dialog implements
                 }
                 else {
                     progress_monitor.Drop_Progressing();
+                    Toaster("User Session over, Sign In again!");
                 }
 
             }
             else {
                 Toaster("Customer name is empty");
                 c_name.setError("Missing");
+                c_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                 progress_monitor.Drop_Progressing();
             }
 
@@ -235,4 +282,6 @@ public class Supplier_dialog extends Dialog implements
     public void onClick(View view) {
 
     }
+
+
 }

@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.example.muneerapps.Transaction_Encoder;
@@ -28,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
@@ -62,9 +65,57 @@ public class Update_Customer extends Dialog implements
         setContentView(R.layout.update_custom);
 
         prev_name = findViewById(R.id.prev_name);
+        prev_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         new_name = findViewById(R.id.new_name);
+        new_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         person_cnic = findViewById(R.id.person_cnic);
+        person_cnic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    person_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    person_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         person_address = findViewById(R.id.person_address);
+        person_address.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    person_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    person_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         list_name = findViewById(R.id.list_name);
         update = findViewById(R.id.button20);
         progress_monitor = new Progress_Monitor(c);
@@ -128,16 +179,22 @@ public class Update_Customer extends Dialog implements
                             ,person_cnic.getText().toString()
                             ,person_address.getText().toString());
 
+
+                    new UpdateAllCustomer().execute(prev_name.getText().toString(),new_name.getText().toString());
+
                 }
                 else
                 {
                     if (prev_name.getText().toString().length()==0)
                     {
                         prev_name.setError("Missing");
+                        prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+
                     }
                     if (new_name.getText().toString().length()==0)
                     {
                         new_name.setError("Missing");
+                        new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                     }
                 }
             }
@@ -253,7 +310,9 @@ public class Update_Customer extends Dialog implements
                                     {
                                         isFound.child("Address").setValue(strings[3]);
                                     }
-                                    ResetAll();
+
+
+
                                 }
                                 else
                                 {
@@ -264,9 +323,12 @@ public class Update_Customer extends Dialog implements
 
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
-
+                            new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                            Toaster(error.getMessage()+" Failed");
                         }
                     });
+
+
             return null;
         }
     }
@@ -276,6 +338,10 @@ public class Update_Customer extends Dialog implements
         new_name.setText("");
         person_cnic.setText("");
         person_address.setText("");
+        prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        person_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+        person_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
         progress_monitor.Drop_Progressing();
 
         try
@@ -291,6 +357,58 @@ public class Update_Customer extends Dialog implements
 
     }
 
+
+    public class UpdateAllCustomer extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            FirebaseDatabase.getInstance().getReference("Payments")
+                    .child("Transactions")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists())
+                            {
+                                if (snapshot.hasChild("Sell"))
+                                {
+
+                                    for (DataSnapshot snapshot1: snapshot.child("Sell").getChildren())
+                                    {
+                                        if(strings[0] !=null && snapshot1.hasChild("Customer")) {
+                                            if (snapshot1.child("Customer").getValue(String.class).toLowerCase()
+                                                    .compareTo(strings[0].toLowerCase()) == 0) {
+                                                snapshot1.getRef().child("Customer").setValue(strings[1]);
+                                            }
+
+                                        }
+                                    }
+                                }
+                                if (snapshot.hasChild("Return_Sell"))
+                                {
+
+                                    for (DataSnapshot snapshot2: snapshot.child("Return_Sell").getChildren())
+                                    {
+                                        if(strings[0] !=null && snapshot2.hasChild("Customer")) {
+                                            if (snapshot2.child("Customer").getValue(String.class).toLowerCase()
+                                                    .compareTo(strings[0].toLowerCase())==0)
+                                            {
+                                                snapshot2.getRef().child("Customer").setValue(strings[1]);
+                                            }}
+                                    }
+                                }
+                                ResetAll();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+            return null;
+        }
+    }
 
 
 }

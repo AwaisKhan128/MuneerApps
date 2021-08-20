@@ -22,6 +22,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.example.muneerapps.Transaction_Encoder;
@@ -113,8 +114,32 @@ public class ReturnPurchase_dialog extends Dialog implements
         button12 = (Button) findViewById(R.id.button12);
         textView10 = (TextView) findViewById(R.id.textView10);
         select_custom = (EditText) findViewById(R.id.select_cutom);
+        select_custom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         select_categ = (TextInputLayout) findViewById(R.id.select_categ);
         select_prod = (EditText) findViewById(R.id.select_prod);
+        select_prod.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         progress_monitor = new Progress_Monitor(c);
 
         custom_list = (ListView) findViewById(R.id.custom_list);
@@ -285,60 +310,7 @@ public class ReturnPurchase_dialog extends Dialog implements
 
 
 
-//            FirebaseDatabase.getInstance().getReference("Products")
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            List<String> rate = new ArrayList<String>();;
-//                            if (snapshot.hasChildren()) {
-//                                try {
-//
-//                                    for (DataSnapshot d : snapshot.getChildren()) {
-//
-//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-//                                        {
-//                                            String data = String.valueOf((d.child("Price").getValue()));
-//                                            rate.add(data);
-//                                        }
-//                                        else {
-//                                            select_rate_Ac.setText("");
-//                                        }
-//
-//                                    }
-//
-//                                }
-//                                catch (Exception e)
-//                                {
-////                                e.printStackTrace();
-//                                    Log.e("Error is",e.getLocalizedMessage());
-////                                Toaster(e.getMessage());
-////                                if(Categories!=null)
-////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-//
-//                                }
-//
-//
-//
-//                                if (rate != null) {
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-//                                } else {
-//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-//                                }
-//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-//                                select_rate_Ac.setAdapter(RateArrayAdapter);
-//                            }
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
+
             product_list.setVisibility(View.GONE);
 
         });
@@ -640,6 +612,7 @@ public class ReturnPurchase_dialog extends Dialog implements
 
                 {
 
+
                     {
                         Date c = Calendar.getInstance().getTime();
                         System.out.println("Current time => " + c);
@@ -792,138 +765,7 @@ public class ReturnPurchase_dialog extends Dialog implements
                         }
                     });
 
-//            FirebaseDatabase.getInstance().getReference("Payments")
-//                    .child("Transactions").child("Sell")
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if(snapshot.hasChildren())
-//                    {
-//                        product_array_list = new ArrayList<>();
-//                        DatabaseReference mRef = null;
-//                        for (DataSnapshot dataSnapshot: snapshot.getChildren())
-//                        {
-//                            if (dataSnapshot.child("Customer").getValue(String.class)
-//                                    .toLowerCase().contains(voids[2].toLowerCase()))
-//                            {
-//                                mRef = snapshot.getRef();
-//                            }
-//                        }
-//
-//                        if(mRef !=null)
-//                        {
-//                            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//                                @Override
-//                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                    for (DataSnapshot snapshot1 : snapshot.child("Product").getChildren())
-//                                    {
-//                                        for (DataSnapshot snapshot2 : snapshot1.getChildren())
-//                                        {
-//                                            if (snapshot2.child("Name").getValue(String.class).toLowerCase().contains(voids[0].toLowerCase())
-//                                                    && snapshot2.child("Category").getValue(String.class).toLowerCase().contains(voids[1].toLowerCase()))
-//                                            {
-//                                                product_array_list.add(snapshot2.child("Name").getValue(String.class));
-////                                        Toaster("Matched");
-//                                            }
-//                                            else{
-//                                                product_array_list.add("No Matched Found");
-//                                            }
-//                                        }
-//                                    }
-//
-//                                    productAdapter = new ArrayAdapter<String>(
-//                                            c.getApplicationContext(),
-//                                            android.R.layout.simple_list_item_1,
-//                                            product_array_list );
-//
-//                                    product_list.setAdapter(productAdapter);
-//                                    product_list.setVisibility(View.VISIBLE);
-//                                    Log.e("Array_Size",""+product_array_list.size());
-//
-//
-//                                }
-//
-//                                @Override
-//                                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                                }
-//                            });
-//                        }
-//                        else {
-//                            try
-//                            {
-//                                arrayAdapter.clear();
-//                                arrayAdapter.notifyDataSetChanged();
-//                            }
-//
-//                            catch (Exception e)
-//                            {
-//                                e.printStackTrace();
-//                            }
-//                        }
-//                    }
-//
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
-//            FirebaseDatabase.getInstance().getReference("Products")
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            List<String> rate = new ArrayList<String>();;
-//                            if (snapshot.hasChildren()) {
-//                                try {
-//
-//                                    for (DataSnapshot d : snapshot.getChildren()) {
-//
-//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-//                                        {
-//                                            String data = String.valueOf((d.child("Price").getValue()));
-//                                            rate.add(data);
-//                                        }
-//                                        else {
-//                                            select_rate_Ac.setText("");
-//                                        }
-//
-//                                    }
-//
-//                                }
-//                                catch (Exception e)
-//                                {
-////                                e.printStackTrace();
-//                                    Log.e("Error is",e.getLocalizedMessage());
-////                                Toaster(e.getMessage());
-////                                if(Categories!=null)
-////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-//
-//                                }
-//
-//
-//
-//                                if (rate != null) {
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-//                                } else {
-//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-//                                }
-//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-//                                select_rate_Ac.setAdapter(RateArrayAdapter);
-//                            }
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
+
             return null;
         }
     }
@@ -1598,9 +1440,11 @@ public class ReturnPurchase_dialog extends Dialog implements
                 // Actions to do after 2 seconds
                 select_categ_Ac.setText("");
                 select_prod.setText("");
+                select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
 //        select_rate_Ac.setText("");
                 textView10.setText("0");
                 select_custom.setText("");
+                select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                 progress_monitor.Drop_Progressing();
                 try{
 //                    select_prod.setText(adapterView.getAdapter().getItem(i).toString());
@@ -1672,6 +1516,32 @@ public class ReturnPurchase_dialog extends Dialog implements
             }
             return null;
         }
+    }
+    public boolean IsCustomerValid(String s)
+    {
+        final boolean[] isCustom = {false};
+        FirebaseDatabase.getInstance().getReference("Supplier")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChildren())
+                        {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren())
+                            {
+                                if (snapshot1.child("Name").getValue(String.class).compareToIgnoreCase(s)==0)
+                                {
+                                    isCustom[0] = true;
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        return isCustom[0];
     }
 
 

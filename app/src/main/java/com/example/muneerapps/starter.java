@@ -154,6 +154,7 @@ public class starter extends AppCompatActivity {
         progressBar4 = findViewById(R.id.progressBar4);
         button = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
+        cdd=new Deadline(starter.this);
         Disable_Button();
 
 
@@ -162,7 +163,7 @@ public class starter extends AppCompatActivity {
         authStateListener = firebaseAuth -> {
 
             FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                    .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
                             if(snapshot.exists())
@@ -173,6 +174,7 @@ public class starter extends AppCompatActivity {
                                     Reset_deadline();
                                 }
                                 else {
+                                    cdd.dismiss();
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     if (user != null) {
                                         // Sign in logic here.
@@ -373,10 +375,11 @@ public class starter extends AppCompatActivity {
         Toast.makeText(mContext,s,Toast.LENGTH_SHORT).show();
     }
 
+    Deadline cdd;
+
     private void Reset_deadline() {
 
         Enable_Button();
-        Deadline cdd=new Deadline(starter.this);
         cdd.setCanceledOnTouchOutside(false);
         cdd.setCancelable(false);
         cdd.show();

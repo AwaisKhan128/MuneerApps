@@ -16,6 +16,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.firebase.database.DataSnapshot;
@@ -53,9 +54,57 @@ public class Update_Supplier extends Dialog implements
         setContentView(R.layout.update_supplier);
 
         prev_name = findViewById(R.id.prev_name);
+        prev_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         new_name = findViewById(R.id.new_name);
+        new_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         person_cnic = findViewById(R.id.person_cnic);
+        person_cnic.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    person_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    person_cnic.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         person_address = findViewById(R.id.person_address);
+        person_address.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    person_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    person_address.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         list_name = findViewById(R.id.list_name);
         update = findViewById(R.id.button20);
         progress_monitor = new Progress_Monitor(c);
@@ -125,10 +174,13 @@ public class Update_Supplier extends Dialog implements
                     if (prev_name.getText().toString().length()==0)
                     {
                         prev_name.setError("Missing");
+                        prev_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+
                     }
                     if (new_name.getText().toString().length()==0)
                     {
                         new_name.setError("Missing");
+                        new_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                     }
                 }
             }
@@ -201,6 +253,8 @@ public class Update_Supplier extends Dialog implements
 
                 }
             });
+
+
             return null;
         }
     }
@@ -244,7 +298,7 @@ public class Update_Supplier extends Dialog implements
                                     {
                                         isFound.child("Address").setValue(strings[3]);
                                     }
-                                    ResetAll();
+
                                 }
                                 else
                                 {
@@ -256,6 +310,45 @@ public class Update_Supplier extends Dialog implements
                         @Override
                         public void onCancelled(@NonNull DatabaseError error) {
                             progress_monitor.Drop_Progressing();
+                        }
+                    });
+            FirebaseDatabase.getInstance().getReference("Payments")
+                    .child("Transactions")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.exists())
+                            {
+
+                                if (snapshot.hasChild("Purchase"))
+                                {
+                                    for (DataSnapshot snapshot1: snapshot.child("Purchase").getChildren())
+                                    {
+                                        if (snapshot1.child("Supplier").getValue(String.class)
+                                                .compareToIgnoreCase(strings[0])==0)
+                                        {
+                                            snapshot1.getRef().child("Supplier").setValue(strings[1]);
+                                        }
+                                    }
+                                }
+                                if (snapshot.hasChild("Return_Purchase"))
+                                {
+                                    for (DataSnapshot snapshot1: snapshot.child("Return_Purchase").getChildren())
+                                    {
+                                        if (snapshot1.child("Supplier").getValue(String.class)
+                                                .compareToIgnoreCase(strings[0])==0)
+                                        {
+                                            snapshot1.getRef().child("Supplier").setValue(strings[1]);
+                                        }
+                                    }
+                                }
+                                ResetAll();
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
                         }
                     });
             return null;

@@ -14,8 +14,8 @@
         android:type="linear" />
 
 
-    <stroke android:color="#F2F5F3"
-         android:width="1dp" ></stroke>
+    <stroke android:color="#00a5ff"
+         android:width="2dp" ></stroke>
     <corners android:radius="50dp">
 
     </corners>

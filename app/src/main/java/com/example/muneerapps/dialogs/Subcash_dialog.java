@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.example.muneerapps.Transaction_Encoder;
@@ -65,6 +66,7 @@ public class Subcash_dialog extends Dialog implements
     ArrayAdapter<String> ChaptersArrayAdapter, RateArrayAdapter;
     public ListView products_list_update;
     Progress_Monitor progress_monitor;
+    boolean isCustomSelect = false;
 
     public RadioButton radioButton9, radioButton10, radioButton11;
 
@@ -79,7 +81,7 @@ public class Subcash_dialog extends Dialog implements
     ArrayAdapter<String> productAdapter_new ;
     //    HashMap mMap = new HashMap();
     private Map<String, Integer> mMap = new HashMap<String, Integer>();
-
+    TextView textView12,textView14;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -87,11 +89,59 @@ public class Subcash_dialog extends Dialog implements
         setContentView(R.layout.sub_amount);
         button12 = (Button) findViewById(R.id.button12);
         textView10 = (TextView) findViewById(R.id.textView10);
+        textView10.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (charSequence.toString().length()>0)
+                {
+                    if(Float.parseFloat(charSequence.toString())>0) {
+                        new CalcFin_Due().execute(charSequence.toString(),textView12.getText().toString());
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+        textView12 = (TextView) findViewById(R.id.textView12);
+        textView14 = (TextView) findViewById(R.id.textView14);
 
         progress_monitor = new Progress_Monitor(c);
         select_custom = (EditText) findViewById(R.id.select_cutom);
+        select_custom.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         select_categ = (TextInputLayout) findViewById(R.id.select_categ);
         select_prod = (EditText) findViewById(R.id.select_prod);
+        select_prod.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
 
         custom_list = (ListView) findViewById(R.id.custom_list);
         product_list = (ListView) findViewById(R.id.product_list);
@@ -101,8 +151,60 @@ public class Subcash_dialog extends Dialog implements
         radioButton10 = findViewById(R.id.radioButton10);
         radioButton11 = findViewById(R.id.radioButton11);
         partial_amount = findViewById(R.id.partial_amount);
+        partial_amount.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    partial_amount.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    partial_amount.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         partial_amount.setVisibility(View.GONE);
 
+        partial_amount.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (charSequence.toString().length()>0) {
+                    try {
+                        if (Float.parseFloat(charSequence.toString()) > 0 && Float.parseFloat(textView14.getText().toString()) > 0) {
+                            if (Float.parseFloat(textView14.getText().toString()) >= Float.parseFloat(charSequence.toString())) {
+                                partial_amount.setBackground(ContextCompat.getDrawable(c, R.drawable.pass_match));
+
+                            } else {
+                                partial_amount.setBackground(ContextCompat.getDrawable(c, R.drawable.pass_unmatch));
+                            }
+                        }
+
+
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                        Log.e("Error",e.getLocalizedMessage());
+                    }
+                }
+                else{
+
+
+
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
 
 
         radioButton9.setOnClickListener(new View.OnClickListener() {
@@ -113,6 +215,7 @@ public class Subcash_dialog extends Dialog implements
                 radioButton11.setChecked(false);
                 partial_amount.setVisibility(View.GONE);
                 partial_amount.setText("");
+                textView14.setText(textView12.getText().toString());
             }
         });
 
@@ -123,6 +226,10 @@ public class Subcash_dialog extends Dialog implements
                 radioButton10.setChecked(true);
                 radioButton11.setChecked(false);
                 partial_amount.setVisibility(View.VISIBLE);
+                float val1 = Float.parseFloat(textView10.getText().toString());
+                float val2 = Float.parseFloat(textView12.getText().toString());
+                float finl = val1 + val2;
+                textView14.setText(""+finl);
             }
         });
 
@@ -134,6 +241,10 @@ public class Subcash_dialog extends Dialog implements
                 radioButton11.setChecked(true);
                 partial_amount.setVisibility(View.GONE);
                 partial_amount.setText("");
+                float val1 = Float.parseFloat(textView10.getText().toString());
+                float val2 = Float.parseFloat(textView12.getText().toString());
+                float finl = val1 + val2;
+                textView14.setText(""+finl);
             }
         });
 
@@ -160,6 +271,7 @@ public class Subcash_dialog extends Dialog implements
                     arrayAdapter.notifyDataSetChanged();
                     products_list_update.setVisibility(View.GONE);
                     textView10.setText("0");
+                    textView14.setText("0");
                     Toaster("Removed Successfully");
 
                     return true;
@@ -192,6 +304,7 @@ public class Subcash_dialog extends Dialog implements
 //        -----------------Customer ListView---------------------
         custom_list.setOnItemClickListener((adapterView, view, i, l) -> {
             select_custom.setText(adapterView.getAdapter().getItem(i).toString());
+            new DueSync().execute(adapterView.getAdapter().getItem(i).toString());
             custom_list.setVisibility(View.GONE);
 
 
@@ -294,60 +407,7 @@ public class Subcash_dialog extends Dialog implements
 
 
 
-//            FirebaseDatabase.getInstance().getReference("Products")
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            List<String> rate = new ArrayList<String>();;
-//                            if (snapshot.hasChildren()) {
-//                                try {
-//
-//                                    for (DataSnapshot d : snapshot.getChildren()) {
-//
-//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-//                                        {
-//                                            String data = String.valueOf((d.child("Price").getValue()));
-//                                            rate.add(data);
-//                                        }
-//                                        else {
-//                                            select_rate_Ac.setText("");
-//                                        }
-//
-//                                    }
-//
-//                                }
-//                                catch (Exception e)
-//                                {
-////                                e.printStackTrace();
-//                                    Log.e("Error is",e.getLocalizedMessage());
-////                                Toaster(e.getMessage());
-////                                if(Categories!=null)
-////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-//
-//                                }
-//
-//
-//
-//                                if (rate != null) {
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-//                                } else {
-//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-//                                }
-//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-//                                select_rate_Ac.setAdapter(RateArrayAdapter);
-//                            }
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
+
             product_list.setVisibility(View.GONE);
 
         });
@@ -449,6 +509,7 @@ public class Subcash_dialog extends Dialog implements
                 {
                     try {
                         custom_list.setVisibility(View.VISIBLE);
+
                         new Customers_Class().execute(charSequence.toString().toLowerCase());
                     }
                     catch (Exception e)
@@ -566,64 +627,6 @@ public class Subcash_dialog extends Dialog implements
                         }
                     });
 
-//            FirebaseDatabase.getInstance().getReference("Products")
-//                    .addListenerForSingleValueEvent(new ValueEventListener() {
-//                        @Override
-//                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                            List<String> rate = new ArrayList<String>();;
-//                            if (snapshot.hasChildren()) {
-//                                try {
-//
-//                                    for (DataSnapshot d : snapshot.getChildren()) {
-//
-//                                        if (d.child("Category").getValue(String.class).compareToIgnoreCase(select_categ_Ac.getText().toString())==0
-//                                                && d.child("Name").getValue(String.class).compareToIgnoreCase(select_prod.getText().toString())==0)
-//                                        {
-//                                            String data = String.valueOf((d.child("Price").getValue()));
-//                                            rate.add(data);
-//                                        }
-//                                        else {
-//                                            select_rate_Ac.setText("");
-//                                        }
-//
-//                                    }
-//
-//                                }
-//                                catch (Exception e)
-//                                {
-////                                e.printStackTrace();
-//                                    Log.e("Error is",e.getLocalizedMessage());
-////                                Toaster(e.getMessage());
-////                                if(Categories!=null)
-////                                Log.e("Categories are ",Categories.get(0) +" "+ Categories.get(1));
-//
-//                                }
-//
-//
-//
-//                                if (rate != null) {
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, rate);
-//                                } else {
-//                                    List<String> none_values = Arrays.asList(new String[]{"Empty"});
-//                                    RateArrayAdapter = new ArrayAdapter<String>(c.getApplicationContext(), R.layout.option_item, none_values);
-//                                }
-//                                RateArrayAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-////                            product_cat.setText(ChaptersArrayAdapter.getItem(0).toString(), false);
-//                                select_rate_Ac.setAdapter(RateArrayAdapter);
-//                            }
-//
-//
-//                        }
-//
-//                        @Override
-//                        public void onCancelled(@NonNull DatabaseError error) {
-//
-//                        }
-//                    });
-
-
-
-//                product_cat_hint.setPlaceholderText();
         });
 //        -------------------------------
 
@@ -640,7 +643,35 @@ public class Subcash_dialog extends Dialog implements
                 {
                     if (radioButton10.isChecked())
                     {
-                        if (partial_amount.getText().toString().length()>0)
+
+                        {
+                            if (partial_amount.getText().toString().length() > 0
+                                    && Float.parseFloat(partial_amount.getText().toString()) <=
+                                    Float.parseFloat(textView14.getText().toString())) {
+                                Date c = Calendar.getInstance().getTime();
+                                System.out.println("Current time => " + c);
+
+                                SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
+                                String formattedDate = df.format(c);
+
+                                new Upload_Transact().execute(select_categ_Ac.getText().toString()
+                                        , select_custom.getText().toString()
+                                        , (textView10.getText().toString())
+                                        , Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
+                                        , String.valueOf(formattedDate)
+                                        , partial_amount.getText().toString());
+                            } else {
+                                Toaster("Partial Amount can not empty or greater than max due");
+                                partial_amount.setError("Empty");
+                                partial_amount.setBackground(ContextCompat.getDrawable(c, R.drawable.pass_unmatch));
+                            }
+                        }
+
+
+                    }
+                    else
+                    {
+
                         {
                             Date c = Calendar.getInstance().getTime();
                             System.out.println("Current time => " + c);
@@ -649,38 +680,29 @@ public class Subcash_dialog extends Dialog implements
                             String formattedDate = df.format(c);
 
                             new Upload_Transact().execute(select_categ_Ac.getText().toString()
-                                    ,select_custom.getText().toString()
-                                    ,(textView10.getText().toString())
-                                    ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
+                                    , select_custom.getText().toString()
+                                    , (textView10.getText().toString())
+                                    , Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
                                     , String.valueOf(formattedDate)
-                                    ,partial_amount.getText().toString());
+                                    , partial_amount.getText().toString());
                         }
-                        else
-                        {
-                            Toaster("Partial Amount can not empty");
-                            partial_amount.setError("Empty");
-                        }
-                    }
-                    else
-                    {
-                        Date c = Calendar.getInstance().getTime();
-                        System.out.println("Current time => " + c);
 
-                        SimpleDateFormat df = new SimpleDateFormat("dd-MMM-yyyy", Locale.getDefault());
-                        String formattedDate = df.format(c);
-
-                        new Upload_Transact().execute(select_categ_Ac.getText().toString()
-                                ,select_custom.getText().toString()
-                                ,(textView10.getText().toString())
-                                ,Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getEmail()
-                                , String.valueOf(formattedDate)
-                                ,partial_amount.getText().toString());
                     }
 
 
                 }
                 else {
                     Toaster("Entries can not be Empty");
+                    if(select_custom.getText().toString().length()==0)
+                    {
+                        select_custom.setError("Empty");
+                        select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    }
+                    if(select_prod.getText().toString().length()==0)
+                    {
+                        select_prod.setError("Empty");
+                        select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    }
                 }
 
 
@@ -967,10 +989,10 @@ public class Subcash_dialog extends Dialog implements
                                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                                         if(snapshot.hasChildren())
                                                                         {
-                                                                            long quantity = (snapshot
-                                                                                    .child("Quantity").getValue(Long.class));
+                                                                            long quantity = Long.parseLong(snapshot
+                                                                                    .child("Quantity").getValue(String.class));
                                                                             long new_quantity = (mMap.get(key));
-                                                                            snapshot.getRef().child("Quantity").setValue((quantity+new_quantity));
+                                                                            snapshot.getRef().child("Quantity").setValue(""+(quantity+new_quantity));
 
                                                                             snapshot.getRef()
                                                                                     .child("Name").setValue(key);
@@ -988,7 +1010,7 @@ public class Subcash_dialog extends Dialog implements
                                                             else
                                                             {
                                                                 mRef.getRef()
-                                                                        .child("Quantity").setValue((mMap.get(key)));
+                                                                        .child("Quantity").setValue(""+(mMap.get(key)));
                                                                 mRef.getRef()
                                                                         .child("Name").setValue(key);
                                                             }
@@ -1123,7 +1145,8 @@ public class Subcash_dialog extends Dialog implements
                                                                                     String cat = "0";
                                                                                     for (DataSnapshot df : snapshot.getChildren())
                                                                                     {
-                                                                                        if(df.child("Name").getValue(String.class).toLowerCase().contains(key.toLowerCase()))
+                                                                                        if(df.child("Name").getValue(String.class)
+                                                                                                .toLowerCase().contains(key.toLowerCase()))
                                                                                         {
                                                                                             rate = df.child("Price").getValue(String.class);
                                                                                             cat= df.child("Category").getValue(String.class);
@@ -1285,7 +1308,7 @@ public class Subcash_dialog extends Dialog implements
 
                                                         mRef
                                                                 .child(String.valueOf(count))
-                                                                .child("Quantity").setValue(mMap.get(key));
+                                                                .child("Quantity").setValue(""+mMap.get(key));
 
 
                                                         long finalCount = count;
@@ -1355,7 +1378,7 @@ public class Subcash_dialog extends Dialog implements
 
                                                             mRef
                                                                     .child(String.valueOf(count))
-                                                                    .child("Quantity").setValue(mMap.get(key));
+                                                                    .child("Quantity").setValue(""+mMap.get(key));
 
 
                                                             long finalCount = count;
@@ -1573,6 +1596,16 @@ public class Subcash_dialog extends Dialog implements
 //        select_rate_Ac.setText("");
                 textView10.setText("0");
                 select_custom.setText("");
+                textView12.setText("0");
+                textView14.setText("0");
+                select_custom.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+                select_prod.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+                if(radioButton10.isChecked())
+                {
+                    partial_amount.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+                    partial_amount.setText("");
+                }
+
                 progress_monitor.Drop_Progressing();
                 try{
 //                    select_prod.setText(adapterView.getAdapter().getItem(i).toString());
@@ -1607,6 +1640,111 @@ public class Subcash_dialog extends Dialog implements
     {
         SharedPreferences pref = c.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
         return pref.getInt("product_quant", 0);         // getting you_bool
+    }
+    public class DueSync extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            FirebaseDatabase.getInstance().getReference("Payments")
+                    .child("Transactions").child("Purchase")
+                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            if (snapshot.hasChildren())
+                            {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                {
+                                    if (dataSnapshot.child("Supplier")
+                                            .getValue(String.class)
+                                            .compareToIgnoreCase(strings[0])==0)
+                                    {
+                                        float Amount = Float.parseFloat(new Transaction_Encoder()
+                                                .getDecoded(dataSnapshot
+                                                        .child("Amount").getValue(String.class)));
+                                        float Credit = Float.parseFloat(new Transaction_Encoder()
+                                                .getDecoded(dataSnapshot
+                                                        .child("Credit").getValue(String.class)));
+                                        float AmountToCredit = Amount-Credit;
+                                        textView12.setText(""+ (AmountToCredit));
+
+                                    }
+                                    else {
+//                                        textView12.setText(""+ (0));
+                                    }
+
+                                }
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+
+                        }
+                    });
+            return null;
+        }
+    }
+
+    public class CalcFin_Due extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            float Total = Float.parseFloat(strings[0].toString());
+            float Due = Float.parseFloat(strings[1].toString());
+            float final_val = Total+Due;
+            textView14.setText(""+final_val);
+            return null;
+        }
+    }
+
+    public class Remain_Due extends AsyncTask<String,Void,String>
+    {
+
+        @Override
+        protected String doInBackground(String... strings) {
+            float total_due = Float.parseFloat(strings[1]);
+            float partial = Float.parseFloat(strings[0]);
+            float remain = total_due-partial;
+
+            return ""+remain;
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+
+        }
+    }
+
+    public boolean IsCustomerValid(String s)
+    {
+        final boolean[] isCustom = {false};
+        FirebaseDatabase.getInstance().getReference("Supplier")
+                .addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.hasChildren())
+                        {
+                            for (DataSnapshot snapshot1 : snapshot.getChildren())
+                            {
+                                if (snapshot1.child("Name").getValue(String.class).compareToIgnoreCase(s)==0)
+                                {
+                                    isCustom[0] = true;
+                                }
+                            }
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
+        return isCustom[0];
     }
 
 }

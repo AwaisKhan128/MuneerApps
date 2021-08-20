@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.android.material.textfield.TextInputLayout;
@@ -66,10 +67,48 @@ public class Product_dialog extends Dialog implements
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.create_product);
         product_cat = findViewById(R.id.product_cat);
+
         product_name = (EditText) findViewById(R.id.product_name);
+        product_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         product_unit = (EditText) findViewById(R.id.product_unit);
+        product_unit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    product_unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    product_unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         price = (EditText) findViewById(R.id.price);
+        price.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         product_cat_hint = findViewById(R.id.product_cat_hint);
+
         button11 = (Button) findViewById(R.id.button11);
         progress_monitor = new Progress_Monitor(c);
 
@@ -112,14 +151,18 @@ public class Product_dialog extends Dialog implements
 
                                     Toaster("Success");
                                     product_cat.setText("");
+                                    product_cat.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                     product_name.setText("");
+                                    product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                     product_unit.setText("");
+                                    product_unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                     price.setText("");
                                     progress_monitor.Drop_Progressing();
                                 }
                                 else {
                                     Toaster("Product Name Already exist");
                                     product_name.setError("Matched");
+                                    product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                                     progress_monitor.Drop_Progressing();
                                 }
 
@@ -137,9 +180,14 @@ public class Product_dialog extends Dialog implements
 
                                 Toaster("Success");
                                 product_cat.setText("");
+                                product_cat.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                 product_name.setText("");
+                                product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                 product_unit.setText("");
+                                product_unit.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
                                 price.setText("");
+                                price.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
                                 progress_monitor.Drop_Progressing();
                             }
 
@@ -151,6 +199,7 @@ public class Product_dialog extends Dialog implements
 
                             Toaster("Failed to Saved Try again");
                             progress_monitor.Drop_Progressing();
+                            product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                         }
                     });
 
@@ -158,9 +207,19 @@ public class Product_dialog extends Dialog implements
                 else
                 {
                     product_cat.setError("Check Empty");
-                    product_name.setError("Check Empty");
-                    product_unit.setError("Check Empty");
-                    price.setError("Check Empty");
+                    product_cat.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    if (product_name.getText().toString().length()==0) {
+                        product_name.setError("Check Empty");
+                        product_name.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    }
+                    if(product_unit.getText().toString().length()==0)
+                    {product_unit.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    product_unit.setError("Check Empty");}
+
+                    if(price.getText().toString().length()==0) {
+                        price.setError("Check Empty");
+                        price.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
+                    }
                     progress_monitor.Drop_Progressing();
                 }
             }

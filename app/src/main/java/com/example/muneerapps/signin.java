@@ -2,6 +2,7 @@ package com.example.muneerapps;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +14,7 @@ import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -30,6 +32,7 @@ public class signin extends AppCompatActivity {
     ProgressBar progressBar2;
     Button button13;
     EditText email2,password3;
+    TextView forgot_pass;
 
 
     @Override
@@ -40,7 +43,27 @@ public class signin extends AppCompatActivity {
         progressBar2 = (ProgressBar) findViewById(R.id.progressBar2);
         button13 = (Button) findViewById(R.id.button13);
         email2 = (EditText) findViewById(R.id.email2);
+        forgot_pass = findViewById(R.id.forgot_pass);
+
+        email2.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                email2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                email2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+            }
+        });
         password3 = (EditText) findViewById(R.id.password3);
+        password3.setOnFocusChangeListener((view, hasFocus) -> {
+            if (hasFocus) {
+                password3.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+            }
+            if (!hasFocus){
+                password3.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+            }
+        });
         progressBar2.setVisibility(View.GONE);
     }
 
@@ -66,6 +89,8 @@ public class signin extends AppCompatActivity {
             super.onPreExecute();
             progressBar2.setVisibility(View.VISIBLE);
             button13.setVisibility(View.GONE);
+            forgot_pass.setClickable(false);
+
         }
 
         @Override
@@ -104,6 +129,8 @@ public class signin extends AppCompatActivity {
                                     Toaster("User Sign In Successfully");
                                     progressBar2.setVisibility(View.GONE);
                                     button13.setVisibility(View.VISIBLE);
+                                    forgot_pass.setClickable(true);
+                                    reset_focus();
                                     startActivity(new Intent(signin.this,Selector.class));
 
                                 }
@@ -112,6 +139,8 @@ public class signin extends AppCompatActivity {
                                     Toaster("User Sign In Failed due to "+task.getException().getLocalizedMessage());
                                     progressBar2.setVisibility(View.GONE);
                                     button13.setVisibility(View.VISIBLE);
+                                    forgot_pass.setClickable(true);
+                                    reset_focus();
                                 }
                             }
                         });
@@ -138,8 +167,26 @@ public class signin extends AppCompatActivity {
     {
         if (email2.getText().toString().length()>0 )
         {
+            try{
             FirebaseAuth.getInstance().sendPasswordResetEmail(email2.getText().toString());
             Toaster("Reset Email sent successfully to you");
+            reset_focus();
+            }
+            catch (Exception e){
+                Toaster("Reset Email sent Unsuccessful due to "+e.getLocalizedMessage());
+            }
         }
+        else
+        {
+            Toaster("Type your email in the box");
+            email2.setError("Blank");
+            email2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
+        }
+    }
+
+    public void reset_focus()
+    {
+        email2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+        password3.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
     }
 }

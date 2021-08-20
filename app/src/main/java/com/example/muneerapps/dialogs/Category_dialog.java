@@ -11,6 +11,7 @@ import android.widget.RadioButton;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 
 import com.example.muneerapps.R;
 import com.google.firebase.database.DataSnapshot;
@@ -42,6 +43,18 @@ public class Category_dialog extends Dialog implements
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.create_categ);
         category_reg = (EditText) findViewById(R.id.category_reg);
+        category_reg.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    category_reg.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    category_reg.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
+                }
+            }
+        });
         button9 = (Button) findViewById(R.id.button9);
         progress_monitor = new Progress_Monitor(c);
 
@@ -63,6 +76,8 @@ public class Category_dialog extends Dialog implements
                                             .child(String.valueOf(0)).setValue(category_reg.getText().toString());
                                 }
                                 category_reg.setText("");
+                                category_reg.setBackground(ContextCompat.getDrawable(c,R.drawable.dialog_text));
+
                                 Toaster("Success");
                                 progress_monitor.Drop_Progressing();
                             }
@@ -71,6 +86,7 @@ public class Category_dialog extends Dialog implements
                             public void onCancelled(@NonNull DatabaseError error) {
                                 Toaster("Error due to "+error.getDetails());
                                 progress_monitor.Drop_Progressing();
+                                category_reg.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
                             }
                         });
             }
@@ -78,6 +94,7 @@ public class Category_dialog extends Dialog implements
                 Toaster("Empty Blocks");
                 category_reg.setError("Empty Blocks");
                 progress_monitor.Drop_Progressing();
+                category_reg.setBackground(ContextCompat.getDrawable(c,R.drawable.pass_unmatch));
             }
 
 

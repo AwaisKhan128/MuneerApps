@@ -247,10 +247,9 @@ public class Selector extends AppCompatActivity {
         button23.setVisibility(View.GONE);
 
 
-
         FirebaseApp.initializeApp(this);
         Firebase_Selector();
-//        Reset_deadline();
+
 
 
     }

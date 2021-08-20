@@ -2,11 +2,14 @@ package com.example.muneerapps;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +25,8 @@ import android.widget.Toast;
 
 import com.example.muneerapps.dialogs.Customer_dialog;
 import com.example.muneerapps.dialogs.Reset_Pin;
+import com.google.android.gms.tasks.OnCanceledListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -92,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -101,9 +107,84 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         userName = (EditText) findViewById(R.id.userName);
+        userName.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    userName.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    userName.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+                }
+            }
+        });
         emails = (EditText) findViewById(R.id.email);
+        emails.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    emails.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    emails.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+                }
+            }
+        });
         password = (EditText) findViewById(R.id.password);
+        password.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+                }
+            }
+        });
         password2 = (EditText) findViewById(R.id.password2);
+        password2.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
+                    password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+                }
+                if (!hasFocus){
+                    password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+
+                }
+            }
+        });
+
+        password2.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                if (charSequence.toString().length()>0 && password.getText().toString().length()>0)
+                {
+                    new Password_Monitor().execute(password.getText().toString(),charSequence.toString());
+                }
+                else
+                {
+                    password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+                    password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text1));
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
+
+
         signin = (TextView) findViewById(R.id.signin);
         progressBar = (ProgressBar) findViewById(R.id.progressBar);
         button3 = (Button) findViewById(R.id.button3);
@@ -143,6 +224,9 @@ public class MainActivity extends AppCompatActivity {
             Toaster("Passwords must match or check length > 6");
             password.setError("Not Match");
             password2.setError("Not Match");
+            reset_focus();
+            password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
+            password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
         }
 
 
@@ -169,6 +253,7 @@ public class MainActivity extends AppCompatActivity {
             super.onPreExecute();
             progressBar.setVisibility(View.VISIBLE);
             button3.setVisibility(View.GONE);
+            signin.setClickable(false);
         }
 
         @Override
@@ -256,6 +341,7 @@ public class MainActivity extends AppCompatActivity {
 
                                                         progressBar.setVisibility(View.GONE);
                                                         button3.setVisibility(View.VISIBLE);
+                                                        signin.setClickable(true);
                                                         userName.setText("");
                                                         emails.setText("");
                                                         password.setText("");
@@ -280,27 +366,150 @@ public class MainActivity extends AppCompatActivity {
                                                         access[6] = false;
                                                         access[7] = false;
                                                         ans.set(true);
-
+                                                        reset_focus();
                                                         FirebaseAuth.getInstance().signOut();
 
                                                     } else {
                                                         Toaster(task.getException().getMessage());
                                                         progressBar.setVisibility(View.GONE);
                                                         button3.setVisibility(View.VISIBLE);
+                                                        signin.setClickable(true);
                                                         ans.set(false);
+                                                        reset_focus();
                                                     }
-                                                });
+                                                }).addOnCanceledListener(new OnCanceledListener() {
+                                            @Override
+                                            public void onCanceled() {
+                                                progressBar.setVisibility(View.GONE);
+                                                button3.setVisibility(View.VISIBLE);
+                                                signin.setClickable(true);
+                                                ans.set(false);
+                                                reset_focus();
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                progressBar.setVisibility(View.GONE);
+                                                button3.setVisibility(View.VISIBLE);
+                                                signin.setClickable(true);
+                                                ans.set(false);
+                                                reset_focus();
+                                            }
+                                        });
                                     }
                                     else {
+                                        progressBar.setVisibility(View.GONE);
+                                        button3.setVisibility(View.VISIBLE);
+                                        signin.setClickable(true);
+                                        ans.set(false);
+                                        reset_focus();
+                                        userName.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
                                         Toaster("Name already in database try different");
                                     }
 
+                                }
+                                else
+                                {
+                                    FirebaseAuth.getInstance().createUserWithEmailAndPassword(strings[0], strings[1])
+                                            .addOnCompleteListener(MainActivity.this, task -> {
+                                                if (task.isSuccessful()) {
+                                                    Toaster("User Created Successfully");
+                                                    DatabaseReference databaseReference = FirebaseDatabase.getInstance()
+                                                            .getReference("Users").child(FirebaseAuth.getInstance()
+                                                                    .getCurrentUser().getUid());
+
+                                                    databaseReference
+                                                            .child("Name").setValue(strings[2]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Customer").setValue(access[0]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Category").setValue(access[1]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Product").setValue(access[2]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Payment").setValue(access[3]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Product_Update").setValue(access[4]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Customer_Update").setValue(access[5]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Supplier").setValue(access[6]);
+
+                                                    databaseReference
+                                                            .child("Access").child("Supplier_Update").setValue(access[7]);
+
+
+
+
+                                                    progressBar.setVisibility(View.GONE);
+                                                    button3.setVisibility(View.VISIBLE);
+                                                    signin.setClickable(true);
+                                                    userName.setText("");
+                                                    emails.setText("");
+                                                    password.setText("");
+                                                    password2.setText("");
+                                                    radioButton.setChecked(false);
+                                                    radioButton2.setChecked(false);
+                                                    radioButton3.setChecked(false);
+                                                    radioButton4.setChecked(false);
+
+                                                    radioButton12.setChecked(false);
+                                                    radioButton13.setChecked(false);
+                                                    radioButton14.setChecked(false);
+                                                    radioButton15.setChecked(false);
+
+                                                    access[0] = false;
+                                                    access[1] = false;
+                                                    access[2] = false;
+                                                    access[3] = false;
+
+                                                    access[4] = false;
+                                                    access[5] = false;
+                                                    access[6] = false;
+                                                    access[7] = false;
+                                                    ans.set(true);
+                                                    reset_focus();
+
+                                                    FirebaseAuth.getInstance().signOut();
+
+                                                } else {
+                                                    Toaster(task.getException().getMessage());
+                                                    progressBar.setVisibility(View.GONE);
+                                                    button3.setVisibility(View.VISIBLE);
+                                                    signin.setClickable(true);
+                                                    ans.set(false);
+                                                    reset_focus();
+                                                }
+                                            }).addOnCanceledListener(() -> {
+                                                progressBar.setVisibility(View.GONE);
+                                                button3.setVisibility(View.VISIBLE);
+                                                signin.setClickable(true);
+                                                ans.set(false);
+                                            }).addOnFailureListener(e -> {
+                                        progressBar.setVisibility(View.GONE);
+                                        button3.setVisibility(View.VISIBLE);
+                                        signin.setClickable(true);
+                                        ans.set(false);
+                                        reset_focus();
+                                    });
                                 }
                             }
 
                             @Override
                             public void onCancelled(@NonNull DatabaseError error) {
-
+                                Toaster(error.getMessage());
+                                progressBar.setVisibility(View.GONE);
+                                button3.setVisibility(View.VISIBLE);
+                                signin.setClickable(true);
+                                ans.set(false);
+                                reset_focus();
                             }
                         });
 
@@ -373,6 +582,36 @@ public class MainActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    public class Password_Monitor extends AsyncTask<String,Void,Void>
+    {
+
+        @Override
+        protected Void doInBackground(String... strings) {
+            if (strings[0].compareToIgnoreCase(strings[1])==0)
+            {
+                password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_match));
+                password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_match));
+
+            }
+            else
+            {
+                password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
+                password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.pass_unmatch));
+            }
+
+
+            return null;
+        }
+    }
+    public void reset_focus()
+    {
+        userName.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+        emails.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+        password.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+        password2.setBackground(ContextCompat.getDrawable(mContext,R.drawable.dialog_text));
+    }
+
 
 
 }
