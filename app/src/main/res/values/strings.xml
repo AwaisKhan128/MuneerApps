@@ -5,8 +5,8 @@
     <string name="com_auth0_clientSecret">uEHKrfJ--64zM9IsKlzm-rc6w3up8TBc_bKZSiDyM1eV5IKKY_rbx1M1Mc9iYQTL</string>
     <string name="admin_key">24699</string>
     <string name="developer">Deadline has passed! You are required to contact developer to proceed.</string>
-
-
+    <string name="update">This is to notify you go to your playstore for Update</string>
+    <string name="shopclosed">Shop is closed now. Come back tomorrow.</string>
 
 
     <string name="register">REGISTER</string>

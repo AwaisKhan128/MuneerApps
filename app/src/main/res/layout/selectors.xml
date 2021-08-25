@@ -76,19 +76,6 @@
                 android:textSize="18sp" />
 
             <androidx.appcompat.widget.AppCompatButton
-                android:id="@+id/button8"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="20dp"
-                android:layout_marginTop="10dp"
-                android:layout_marginEnd="20dp"
-                android:background="@drawable/create_acc"
-
-                android:onClick="create_pay"
-                android:text="Create Payments"
-                android:textSize="18sp" />
-
-            <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/button7"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -112,6 +99,32 @@
 
                 android:onClick="update_prod"
                 android:text="Update Product"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button8"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/create_acc"
+
+                android:onClick="create_pay"
+                android:text="Sell/Purchase"
+                android:textSize="18sp" />
+
+            <androidx.appcompat.widget.AppCompatButton
+                android:id="@+id/button24"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="10dp"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/create_acc"
+
+                android:onClick="Payments_Overview"
+                android:text="Payments"
                 android:textSize="18sp" />
 
             <ProgressBar

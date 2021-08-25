@@ -3,15 +3,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent" android:layout_height="match_parent">
 
-    <com.airbnb.lottie.LottieAnimationView
-        android:id="@+id/animation_view"
-        android:layout_width="match_parent"
-        android:layout_height="120dp"
-        app:lottie_autoPlay="true"
-        app:lottie_loop="true"
-        app:lottie_rawRes="@raw/working" />
-
-
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -19,15 +10,12 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:orientation="vertical"
-            android:visibility="gone">
+            android:orientation="vertical">
 
             <com.jjoe64.graphview.GraphView
                 android:id="@+id/graph"
                 android:layout_width="match_parent"
                 android:layout_height="100dip" />
-
-
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -92,8 +80,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="10dp"
             android:text="Reset Date"
-            android:textAlignment="textEnd"
-            android:visibility="gone" />
+            android:textAlignment="textEnd" />
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/floatingActionButton2"
@@ -102,7 +89,6 @@
             android:layout_gravity="right"
             android:layout_margin="5dp"
             android:clickable="true"
-            android:visibility="gone"
             app:srcCompat="@drawable/share_24" />
 
         <LinearLayout
@@ -111,8 +97,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="10dp"
             android:layout_marginEnd="10dp"
-            android:orientation="horizontal"
-            android:visibility="gone">
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/searcher"
@@ -139,7 +124,7 @@
             android:id="@+id/bottomBar"
             android:layout_width="match_parent"
             android:layout_height="60dp"
-            app:bb_tabXmlResource="@xml/bottombar_tabs" />
+            app:bb_tabXmlResource="@xml/bottombar_tabs_pay" />
     </LinearLayout>
 
     <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton

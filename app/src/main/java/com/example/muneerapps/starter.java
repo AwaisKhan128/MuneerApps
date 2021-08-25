@@ -13,11 +13,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Handler;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -31,6 +33,7 @@ import android.widget.Toast;
 
 import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.Reset_Pin;
+import com.example.muneerapps.dialogs.Update_Notice;
 import com.google.firebase.FirebaseApp;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
@@ -39,6 +42,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jsoup.Jsoup;
 import org.w3c.dom.Text;
 
 public class starter extends AppCompatActivity {
@@ -54,8 +58,7 @@ public class starter extends AppCompatActivity {
 
     }
 
-    public void Enable_Button()
-    {
+    public void Enable_Button() {
         button.setVisibility(View.VISIBLE);
         button2.setVisibility(View.VISIBLE);
         progressBar4.setVisibility(View.GONE);
@@ -63,8 +66,8 @@ public class starter extends AppCompatActivity {
         button2.setClickable(true);
 
     }
-    public void Disable_Button()
-    {
+
+    public void Disable_Button() {
         button.setVisibility(View.GONE);
         button2.setVisibility(View.GONE);
         progressBar4.setVisibility(View.VISIBLE);
@@ -100,14 +103,11 @@ public class starter extends AppCompatActivity {
     }
 
     private void Refresh_Internet() {
-        if (internetIsConnected())
-        {
+        if (internetIsConnected()) {
             Enable_Button();
             button.setClickable(true);
             button2.setClickable(true);
-        }
-        else
-        {
+        } else {
             Enable_Button();
             button.setClickable(false);
             button2.setClickable(false);
@@ -118,7 +118,7 @@ public class starter extends AppCompatActivity {
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 2000) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R){
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
 
                 if (Environment.isExternalStorageManager()) {
 
@@ -139,11 +139,11 @@ public class starter extends AppCompatActivity {
     }
 
 
-
-
     TextView textView26;
-    Button button,button2;
+    Button button, button2;
     Handler handler;
+    String currentVersion;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -154,9 +154,14 @@ public class starter extends AppCompatActivity {
         progressBar4 = findViewById(R.id.progressBar4);
         button = findViewById(R.id.button);
         button2 = findViewById(R.id.button2);
-        cdd=new Deadline(starter.this);
+        try {
+            currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+        new GetVersionCode().execute();
+        cdd = new Deadline(starter.this);
         Disable_Button();
-
 
 
         textView26 = findViewById(R.id.textView26);
@@ -166,32 +171,28 @@ public class starter extends AppCompatActivity {
                     .addValueEventListener(new ValueEventListener() {
                         @Override
                         public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if(snapshot.exists())
-                            {
+                            if (snapshot.exists()) {
                                 boolean key = snapshot.getValue(Boolean.class);
-                                if (key)
-                                {
+                                if (key) {
                                     Reset_deadline();
-                                }
-                                else {
+                                } else {
                                     cdd.dismiss();
                                     FirebaseUser user = mAuth.getCurrentUser();
                                     if (user != null) {
                                         // Sign in logic here.
 
-                                        startActivity(new Intent(starter.this,Selector.class));
+                                        startActivity(new Intent(starter.this, Selector.class));
                                     }
 
 
                                 }
 
-                            }
-                            else {
+                            } else {
                                 FirebaseUser user = mAuth.getCurrentUser();
                                 if (user != null) {
                                     // Sign in logic here.
 
-                                    startActivity(new Intent(starter.this,Selector.class));
+                                    startActivity(new Intent(starter.this, Selector.class));
                                 }
 
                             }
@@ -205,28 +206,33 @@ public class starter extends AppCompatActivity {
                     });
 
 
-
         };
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R)
-        {
-            try {
-                Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                intent.addCategory("android.intent.category.DEFAULT");
-                intent.setData(Uri.parse(String.format("package:%s", new Object[] {getApplicationContext().getPackageName()})));
-                startActivityIfNeeded(intent, 2000);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            if (ContextCompat.checkSelfPermission(starter.this,
+                    Manifest.permission.READ_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(starter.this,
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    == PackageManager.PERMISSION_GRANTED) {
+
+            } else {
+                try {
+                    Intent intent = new Intent(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    intent.addCategory("android.intent.category.DEFAULT");
+                    intent.setData(Uri.parse(String.format("package:%s", new Object[]{getApplicationContext().getPackageName()})));
+                    startActivityIfNeeded(intent, 2000);
 
 
-            }catch (Exception e){
+                } catch (Exception e) {
 
-                Intent obj = new Intent();
-                obj.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
-                startActivityForResult(obj, 2000);
+                    Intent obj = new Intent();
+                    obj.setAction(Settings.ACTION_MANAGE_ALL_FILES_ACCESS_PERMISSION);
+                    startActivityForResult(obj, 2000);
 
+                }
             }
-        }
-        else
-        {
+
+        } else {
             Check_Permissions();
         }
 
@@ -234,10 +240,9 @@ public class starter extends AppCompatActivity {
                 .child("Date").addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (snapshot.exists())
-                {
+                if (snapshot.exists()) {
                     Enable_Button();
-                    textView26.setText("Deadline is "+ snapshot.getValue(String.class));
+                    textView26.setText("Deadline is " + snapshot.getValue(String.class));
                 }
             }
 
@@ -250,17 +255,14 @@ public class starter extends AppCompatActivity {
 
     }
 
-    public void Check_Permissions()
-    {
+    public void Check_Permissions() {
         if (ContextCompat.checkSelfPermission(starter.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE)
                 == PackageManager.PERMISSION_GRANTED && ContextCompat.checkSelfPermission(starter.this,
-            Manifest.permission.WRITE_EXTERNAL_STORAGE)
-            == PackageManager.PERMISSION_GRANTED)
-        {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                == PackageManager.PERMISSION_GRANTED) {
 
-        }
-        else {
+        } else {
             requestStoragePermission();
         }
     }
@@ -268,14 +270,13 @@ public class starter extends AppCompatActivity {
     private void requestStoragePermission() {
         if (ActivityCompat.shouldShowRequestPermissionRationale(this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) && ActivityCompat.shouldShowRequestPermissionRationale(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE))
-        {
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
             new AlertDialog.Builder(this)
                     .setTitle("Permission needed")
                     .setMessage("This Muneer Apps required your Storage Permission")
                     .setPositiveButton("ok", (dialog, which) -> ActivityCompat.requestPermissions(starter.this,
-                            new String[] {Manifest.permission.READ_EXTERNAL_STORAGE
-                                    ,Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                            new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                                    , Manifest.permission.WRITE_EXTERNAL_STORAGE},
                             1))
                     .setNegativeButton("cancel", new DialogInterface.OnClickListener() {
                         @Override
@@ -284,26 +285,23 @@ public class starter extends AppCompatActivity {
                         }
                     })
                     .create().show();
-        }
-        else {
+        } else {
             ActivityCompat.requestPermissions(this,
-                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE
-                            ,Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
+                    new String[]{Manifest.permission.READ_EXTERNAL_STORAGE
+                            , Manifest.permission.WRITE_EXTERNAL_STORAGE}, 1);
         }
     }
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        if (requestCode == 1 && grantResults[0]== PackageManager.PERMISSION_GRANTED)
-        {
+        if (requestCode == 1 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
             Toast.makeText(this, "Permission GRANTED", Toast.LENGTH_SHORT).show();
 
         }
     }
 
-    public void adminOnclick(View view)
-    {
+    public void adminOnclick(View view) {
 
         // get prompts.xml view
         LayoutInflater li = LayoutInflater.from(mContext);
@@ -328,16 +326,12 @@ public class starter extends AppCompatActivity {
                             FirebaseDatabase.getInstance().getReference("PIN_CODE").addListenerForSingleValueEvent(new ValueEventListener() {
                                 @Override
                                 public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                    if (snapshot.exists())
-                                    {
+                                    if (snapshot.exists()) {
                                         String pin = new Transaction_Encoder().getDecoded(snapshot.getValue(String.class));
-                                        if (userInput.getText().toString().equals(pin))
-                                        {
+                                        if (userInput.getText().toString().equals(pin)) {
                                             Toaster("Verification Succeed");
-                                            startActivity(new Intent(starter.this,MainActivity.class));
-                                        }
-                                        else
-                                        {
+                                            startActivity(new Intent(starter.this, MainActivity.class));
+                                        } else {
                                             Toaster("Verification Failed");
 
                                         }
@@ -365,14 +359,12 @@ public class starter extends AppCompatActivity {
         alertDialog.show();
     }
 
-    public void userOnClick(View view)
-    {
-        startActivity(new Intent(starter.this,signin.class));
+    public void userOnClick(View view) {
+        startActivity(new Intent(starter.this, signin.class));
     }
 
-    public void Toaster(String s)
-    {
-        Toast.makeText(mContext,s,Toast.LENGTH_SHORT).show();
+    public void Toaster(String s) {
+        Toast.makeText(mContext, s, Toast.LENGTH_SHORT).show();
     }
 
     Deadline cdd;
@@ -390,15 +382,12 @@ public class starter extends AppCompatActivity {
     protected void onRestart() {
         super.onRestart();
         FirebaseDatabase.getInstance().getReference("Deadline").child("Key")
-                .addListenerForSingleValueEvent(new ValueEventListener()
-                {
+                .addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists())
-                        {
+                        if (snapshot.exists()) {
                             boolean key = snapshot.getValue(Boolean.class);
-                            if (key)
-                            {
+                            if (key) {
                                 Reset_deadline();
                             }
 
@@ -412,5 +401,40 @@ public class starter extends AppCompatActivity {
 
                     }
                 });
+    }
+
+    private class GetVersionCode extends AsyncTask<Void, String, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            String newVersion = null;
+            try {
+                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + starter.this.getPackageName() + "&hl=it")
+                        .timeout(30000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select(".hAyfc .htlgb")
+                        .get(7)
+                        .ownText();
+                return newVersion;
+            } catch (Exception e) {
+                return newVersion;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String onlineVersion) {
+            super.onPostExecute(onlineVersion);
+            Log.d("update", "Current version " + currentVersion + "playstore version " + onlineVersion);
+            if (onlineVersion != null && !onlineVersion.isEmpty()) {
+                if (Float.valueOf(currentVersion) < Float.valueOf(onlineVersion)) {
+                    //show dialog
+                    Update_Notice update_notice = new Update_Notice(starter.this);
+                    update_notice.setCanceledOnTouchOutside(false);
+                    update_notice.show();
+                }
+            }
+        }
     }
 }

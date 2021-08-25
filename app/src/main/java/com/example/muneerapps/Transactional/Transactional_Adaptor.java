@@ -30,6 +30,7 @@ import com.example.muneerapps.Payment;
 import com.example.muneerapps.PDFManager.PdfDocumentAdapter;
 import com.example.muneerapps.R;
 import com.example.muneerapps.Transaction_Encoder;
+import com.example.muneerapps.dialogs.Apply_Discount;
 import com.example.muneerapps.dialogs.Progress_Monitor;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -53,7 +54,9 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Map;
+import java.util.Objects;
 
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
@@ -74,6 +77,8 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
 
+
+
     public Transactional_Adaptor(Context context, ArrayList<Transactional_Class> data)
     {
         this.context = context;
@@ -84,6 +89,30 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
         progress_monitor = new Progress_Monitor(context);
         Categories_list = new ArrayList<>();
         Dates_list = new ArrayList<>();
+    }
+    private void AddDPreference(String key, String date)
+    {
+        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putString(key, date);  // Saving string
+        editor.apply(); // commit changes
+    }
+    private void AddDTotalAmount(String key, float date)
+    {
+        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        SharedPreferences.Editor editor = pref.edit();
+        editor.putFloat(key, 0);  // Saving string
+        editor.apply(); // commit changes
+    }
+    private String Retrieve_Date(String key)
+    {
+        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        return pref.getString(key, "");         // getting you_bool
+    }
+    private float Retrieve_Discount(String key)
+    {
+        SharedPreferences pref = context.getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+        return pref.getFloat(key, 0);         // getting you_bool
     }
 
     @Override
@@ -117,6 +146,186 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
         holder.due_val.setText(data.get(i).getDue_val());
         holder.paid_val.setText(data.get(i).getPaid_val());
 
+        holder.imageView5.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                String datesKey = Retrieve_preference("Current_Date");
+                if(datesKey.length()>0) {
+
+                    AddDPreference("Date_Status", holder.Status.getText().toString());
+                    AddDPreference("Date_Customer_key", holder.Customer_key.getText().toString());
+                    AddDPreference("Date_Customer_value", holder.customer_val.getText().toString());
+                    FirebaseDatabase.getInstance()
+                            .getReference("Payments")
+                            .child("Transactions")
+                            .child(holder.Status.getText().toString())
+                            .addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                                    if (snapshot.exists())
+                                    {
+                                        DatabaseReference mRef = null;
+                                        for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                        {
+                                            if (dataSnapshot
+                                                    .child(holder.Customer_key.getText()
+                                                    .toString()).getValue(String.class)
+                                                    .toLowerCase().trim().compareTo(holder.customer_val
+                                                            .getText().toString().toLowerCase().trim())==0)
+                                            {
+                                                mRef = dataSnapshot.getRef();
+                                            }
+                                        }
+                                        if (mRef!=null)
+                                        {
+
+                                            DatabaseReference finalMRef = mRef;
+                                            mRef.getRef()
+                                                    .child("Product")
+                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                        @Override
+                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                            if (snapshot.hasChild(datesKey))
+                                                            {
+                                                                float Total_amount = 0.0f;
+                                                                for (DataSnapshot dataSnapshot : snapshot.child(datesKey).getChildren())
+                                                                {
+                                                                    Total_amount += Float.parseFloat(dataSnapshot.child("Amount")
+                                                                            .getValue(String.class)+"f");
+                                                                }
+                                                                final float TotalVal = Total_amount;
+                                                                AddDTotalAmount("Date_Amount", TotalVal);
+
+//                                                                Toaster(""+Total_amount);
+
+                                                                Apply_Discount apply_discount = new Apply_Discount((Activity) context);
+                                                                apply_discount.setOnDismissListener(new DialogInterface.OnDismissListener() {
+                                                                    @Override
+                                                                    public void onDismiss(DialogInterface dialogInterface) {
+                                                                        if ( Retrieve_Date("Current_Date").length()>0 &&
+                                                                                Retrieve_Discount("Discount_Amount")>0) {
+
+
+                                                                            String date = Retrieve_Date("Current_Date");
+                                                                            String dateStatus = Retrieve_Date("Date_Status");
+                                                                            String Customer_key = Retrieve_Date("Date_Customer_key");
+                                                                            String Customer_val = Retrieve_Date("Date_Customer_value");
+                                                                            float T_amount = TotalVal;
+                                                                            float discount = Retrieve_Discount("Discount_Amount");
+                                                                            float discounted = (discount/100)*T_amount;
+
+
+                                                                            FirebaseDatabase.getInstance().getReference("Payments")
+                                                                                    .child("Transactions").child(dateStatus)
+                                                                                    .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                        @Override
+                                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                            if (snapshot.exists())
+                                                                                            {
+                                                                                                DatabaseReference mRef= null;
+                                                                                                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                                                                                {
+                                                                                                    if (Objects.requireNonNull(dataSnapshot.child(Customer_key)
+                                                                                                            .getValue(String.class)).trim()
+                                                                                                            .toLowerCase().compareTo(Customer_val.trim().toLowerCase())==0)
+                                                                                                    {
+                                                                                                        mRef = dataSnapshot.getRef();
+                                                                                                    }
+                                                                                                }
+
+                                                                                                if(mRef !=null)
+                                                                                                {
+
+                                                                                                    mRef.getRef().child("Discounts").addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                                                        @Override
+                                                                                                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                                            if(snapshot.exists())
+                                                                                                            {
+                                                                                                                if (snapshot.hasChild(date))
+                                                                                                                {
+                                                                                                                    Toaster("Already discounted Failed");
+                                                                                                                }
+                                                                                                                else
+                                                                                                                {
+                                                                                                                    Toaster("Discount Applied");
+                                                                                                                    snapshot.getRef().child(date).setValue(String.valueOf(discounted));
+                                                                                                                }
+                                                                                                                AddDTotalAmount("Discount_Amount", 0);
+
+//                                                        dismiss();
+                                                                                                            }
+                                                                                                            else {
+                                                                                                                snapshot.getRef().child(date).setValue(String.valueOf(discounted));
+                                                                                                                AddDTotalAmount("Discount_Amount", 0);
+//                                                        Toaster("Discount Applied");
+//                                                        dismiss();
+                                                                                                            }
+                                                                                                        }
+
+                                                                                                        @Override
+                                                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                                                        }
+                                                                                                    });
+                                                                                                }
+                                                                                                else {
+                                                                                                    Toaster("Reference not found");
+                                                                                                }
+                                                                                            }
+                                                                                            else
+                                                                                            {
+                                                                                                Toaster("Key Link Found Error");
+                                                                                            }
+                                                                                        }
+
+                                                                                        @Override
+                                                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                                                        }
+                                                                                    });
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Toaster("Please set date first or discount applied failed");
+                                                                            Toaster(""+Retrieve_Discount("Discount_Amount"));
+                                                                        }
+                                                                    }
+                                                                });
+
+                                                                apply_discount.show();
+                                                            }
+                                                            else
+                                                            {
+                                                                Toaster("Please select correct date ");
+                                                            }
+                                                        }
+
+                                                        @Override
+                                                        public void onCancelled(@NonNull DatabaseError error) {
+
+                                                        }
+                                                    });
+                                        }
+                                    }
+                                }
+
+                                @Override
+                                public void onCancelled(@NonNull DatabaseError error) {
+
+                                }
+                            });
+
+                }
+                else
+                {
+                    Toaster("Discount could only apply Date-wise");
+                }
+
+            }
+        });
+
         holder.imageView2.setOnClickListener(view -> {
             Permission_Monitor(holder.key.getText().toString()
                     ,holder.Status.getText().toString(),holder.customer_val.getText().toString());
@@ -146,15 +355,18 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
             progress_monitor.Setup_Progressing("Please Wait", "While System is generating PDF");
             if (!Retrieve_preference("Current_Date").isEmpty() && Retrieve_preference("Current_Date")!=null)
             {
-                mRef.child("Transactions").child(Status).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                mRef.child("Transactions").child(Status)
+                        .child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    public void onDataChange(@NonNull DataSnapshot snapshotR) {
 
-                        snapshot.getRef()
-                                .child("Product").addListenerForSingleValueEvent(new ValueEventListener() {
+                        snapshotR.getRef()
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dateSnapshot) {
                                 final double[] Grand_Total = {0};
+                                final float[] Discount = {0};
+                                final float[] After_discount = {0};
                                 document = new Document();
                                 ArrayList<String> Date_wise = new ArrayList<>();
 
@@ -169,7 +381,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                     e.printStackTrace();
                                 }
 
-                                for (DataSnapshot dataSnapshot2 : dateSnapshot.getChildren())
+                                for (DataSnapshot dataSnapshot2 : dateSnapshot.child("Product").getChildren())
                                 { // DateWise
 
                                     if (!Date_wise.contains(dataSnapshot2.getKey()))
@@ -185,17 +397,17 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot3) {
                                                     ArrayList<String> arrayList = new ArrayList<>();
+                                                    ArrayList<String> discount_dates = new ArrayList<>();
 //                                                String datesKey = "12-Aug-2021";
-
-
                                                     String datesKey = Retrieve_preference("Current_Date");
 //                                                    for (String datesKey : Date_wise)
 //                                                    {
 
-                                                    if (snapshot3.child(datesKey).exists()) {
+                                                    if (snapshot3.child("Product").child(datesKey).exists()) {
                                                         Toaster("Generating PDF Please Wait");
                                                         document.open();
-                                                        for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren()) {
+                                                        for (DataSnapshot mySnapshot : snapshot3.child("Product").child(datesKey).getChildren())
+                                                        {
 
                                                             Map<String, Object> TransProduct_Val = (Map<String, Object>) mySnapshot.getValue();
 //                                                            mTV.append("\n Name : " + TransProduct_Val.get("Name"));
@@ -206,13 +418,38 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                         }
 
+                                                        snapshot3.child("Discounts")
+                                                                .child(datesKey).getRef().addListenerForSingleValueEvent(new ValueEventListener() {
+                                                            @Override
+                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                if (snapshot.exists())
+                                                                {
+                                                                    if (!(discount_dates.contains(snapshot.getKey().toString()))) {
+                                                                        discount_dates.add((String) snapshot.getKey().toString());
+                                                                    }
+                                                                }
+
+                                                            }
+
+                                                            @Override
+                                                            public void onCancelled(@NonNull DatabaseError error) {
+
+                                                            }
+                                                        });
+
+                                                        {
+
+
+
+                                                        }
+
                                                         if (arrayList.size() > 0) {
 //                                                    document.open();
 
                                                             for (String cat : arrayList) { //Category wise
                                                                 document.newPage();
                                                                 double Total = 0;
-                                                                for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren()) {
+                                                                for (DataSnapshot mySnapshot : snapshot3.child("Product").child(datesKey).getChildren()) {
 
                                                                     Map<String, Object> TransProduct_Val = (Map<String, Object>) mySnapshot.getValue();
 //
@@ -228,9 +465,11 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                                         }
 
+                                                                        int key = Integer.parseInt(mySnapshot.getKey().toString());
                                                                         CreatePDFFile(Path
                                                                                 , Status, datesKey, customer_val,
                                                                                 TransProduct_Val.get("Category").toString(),
+                                                                                ""+ ++key,
                                                                                 TransProduct_Val.get("Name").toString()
                                                                                 , TransProduct_Val.get("Rate").toString()
                                                                                 , TransProduct_Val.get("Quantity").toString()
@@ -252,13 +491,38 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
                                                                 Grand_Total[0] = Grand_Total[0] + Total;
+                                                                snapshot3.child("Discounts").child(datesKey)
+                                                                        .getRef()
+                                                                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                                                                            @Override
+                                                                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                                                                if (snapshot.exists()) {
+                                                                                    {
+                                                                                        Discount[0] = Float.parseFloat(
+                                                                                                snapshot.getValue(String.class) + "f");
+                                                                                    }
+                                                                                } else {
+                                                                                    Toaster("Not exists");
+                                                                                }
+
+                                                                            }
+
+                                                                            @Override
+                                                                            public void onCancelled(@NonNull DatabaseError error) {
+                                                                                Toaster("Error");
+                                                                                progress_monitor.Drop_Progressing();
+                                                                            }
+                                                                        });
 
 //                                                        addLineSpace(document);
 //                                                        addLineSeparator(document);
 //                                                        addLineSeparator(document);
                                                                 Categories_list = new ArrayList<>();
                                                             }
-
+                                                            if (snapshot3.child("Discounts").child(datesKey).exists()) {
+                                                            Discount[0] = Float.parseFloat(snapshot3
+                                                                    .child("Discounts").child(datesKey).getValue(String.class) + "f");
+                                                            }
                                                         }
 
 //                                                        document.newPage();
@@ -268,21 +532,33 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                         try {
 
-                                                                        addLineSpace(document);
-                                                                        addLineSeparator(document);
+                                                            {
+
+                                                            }
+
+
+
+                                                            After_discount[0] = (float) (Grand_Total[0] - (Discount[0]));
+                                                            addLineSpace(document);
+                                                            addLineSeparator(document);
                                                             addNewItem(document, "Grand Total", Element.ALIGN_CENTER);
-                                                                        addLineSeparator(document);
+                                                            addLineSeparator(document);
+
                                                             addNewItemWithLeftAndRight(document,
                                                                     " Grand Total ", "", "", "" + Grand_Total[0]);
                                                             addNewItemWithLeftAndRight(document,
-                                                                    " Total - Return ", ""
-                                                                    , "", "" + new Transaction_Encoder().getDecoded(
-                                                                            snapshot.child("Amount").getValue(String.class))
-                                                            );
+                                                                    " Discount ", "", "", "" + Discount[0]);
                                                             addNewItemWithLeftAndRight(document,
-                                                                    " Credit/Debit ", "", ""
-                                                                    , "" + new Transaction_Encoder().getDecoded(
-                                                                            snapshot.child("Credit").getValue(String.class)));
+                                                                    " After Discount ", "", "", "" + After_discount[0]);
+//                                                            addNewItemWithLeftAndRight(document,
+//                                                                    " Total - Return ", ""
+//                                                                    , "", "" + new Transaction_Encoder().getDecoded(
+//                                                                            snapshot.child("Amount").getValue(String.class))
+//                                                            );
+//                                                            addNewItemWithLeftAndRight(document,
+//                                                                    " Credit/Debit ", "", ""
+//                                                                    , "" + new Transaction_Encoder().getDecoded(
+//                                                                            snapshot.child("Credit").getValue(String.class)));
                                                         } catch (DocumentException e) {
                                                             e.printStackTrace();
                                                         }
@@ -297,7 +573,8 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                 @Override
                                                 public void onCancelled(@NonNull DatabaseError error) {
-
+                                                    Toaster("Error");
+                                                    progress_monitor.Drop_Progressing();
                                                 }
                                             });
 
@@ -339,15 +616,19 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
             }
             else
             {
-                mRef.child("Transactions").child(Status).child(key).addListenerForSingleValueEvent(new ValueEventListener() {
+                mRef.child("Transactions").child(Status)
+                        .child(key).addListenerForSingleValueEvent(new ValueEventListener() {
                     @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    public void onDataChange(@NonNull DataSnapshot snapshotR) {
 
-                        snapshot.getRef()
-                                .child("Product").addListenerForSingleValueEvent(new ValueEventListener() {
+                        snapshotR.getRef()
+                                .addListenerForSingleValueEvent(new ValueEventListener() {
                             @Override
                             public void onDataChange(@NonNull DataSnapshot dateSnapshot) {
                                 final double[] Grand_Total = {0};
+                                final float[] Discount = {0};
+
+                                final float[] After_discount = {0};
                                 document = new Document();
                                 ArrayList<String> Date_wise = new ArrayList<>();
 
@@ -362,7 +643,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                     e.printStackTrace();
                                 }
 
-                                for (DataSnapshot dataSnapshot2 : dateSnapshot.getChildren())
+                                for (DataSnapshot dataSnapshot2 : dateSnapshot.child("Product").getChildren())
                                 { // DateWise
 
                                     if (!Date_wise.contains(dataSnapshot2.getKey()))
@@ -371,6 +652,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                     }
                                 }
 
+
                                 try {
 
                                     dateSnapshot.getRef()
@@ -378,6 +660,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                 @Override
                                                 public void onDataChange(@NonNull DataSnapshot snapshot3) {
                                                     ArrayList<String> arrayList = new ArrayList<>();
+                                                    ArrayList<String> discount_dates = new ArrayList<>();
 //                                                String datesKey = "12-Aug-2021";
                                                     document.open();
                                                     Toaster("Generating PDF Please Wait");
@@ -386,7 +669,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                     {
                                                         document.newPage();
 
-                                                        for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren())
+                                                        for (DataSnapshot mySnapshot : snapshot3.child("Product").child(datesKey).getChildren())
                                                         {
 
                                                             Map<String, Object> TransProduct_Val = (Map<String, Object>) mySnapshot.getValue();
@@ -397,6 +680,8 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                             }
 
                                                         }
+
+
 
                                                         if (arrayList.size() > 0) {
 //                                                    document.open();
@@ -409,7 +694,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
 
 
-                                                                for (DataSnapshot mySnapshot : snapshot3.child(datesKey).getChildren())
+                                                                for (DataSnapshot mySnapshot : snapshot3.child("Product").child(datesKey).getChildren())
                                                                 {
 
                                                                     Map<String, Object> TransProduct_Val = (Map<String, Object>) mySnapshot.getValue();
@@ -426,9 +711,11 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                                         }
 
+                                                                        int key = Integer.parseInt(mySnapshot.getKey().toString());
                                                                         CreatePDFFile(Path
                                                                                 , Status, datesKey, customer_val,
                                                                                 TransProduct_Val.get("Category").toString(),
+                                                                                ""+ ++key,
                                                                                 TransProduct_Val.get("Name").toString()
                                                                                 , TransProduct_Val.get("Rate").toString()
                                                                                 , TransProduct_Val.get("Quantity").toString()
@@ -451,20 +738,45 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
                                                                 Grand_Total[0] = Grand_Total[0] + Total;
 
-//                                                        addLineSpace(document);
-//                                                        addLineSeparator(document);
-//                                                        addLineSeparator(document);
                                                                 Categories_list = new ArrayList<>();
                                                             }
 
                                                         }
-
-
-
+                                                        if (snapshot3.child("Discounts").child(datesKey).exists()) {
+                                                            Discount[0] += Float.parseFloat(snapshot3
+                                                                    .child("Discounts").child(datesKey).getValue(String.class) + "f");
+                                                        }
+//                                                        snapshot3.child("Discounts").getRef()
+//                                                                .addListenerForSingleValueEvent(new ValueEventListener() {
+//                                                                    @Override
+//                                                                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+//                                                                        if (snapshot.child(datesKey).exists()) {
+//
+//                                                                                {
+//                                                                                    Discount[0] += Float.parseFloat(
+//                                                                                            snapshot.child(datesKey).getValue(String.class) + "f");
+//                                                                                }
+//
+//
+//                                                                        } else {
+//                                                                            Toaster("Not exists");
+//                                                                        }
+//                                                                    }
+//
+//                                                                    @Override
+//                                                                    public void onCancelled(@NonNull DatabaseError error) {
+//                                                                        Toaster("Error");
+//                                                                        progress_monitor.Drop_Progressing();
+//                                                                    }
+//                                                                });
                                                     }
 
 
                                                     try {
+
+
+                                                        After_discount[0] = (float) (Grand_Total[0] - (Discount[0]));
+
                                                         addLineSpace(document);
                                                         addLineSeparator(document);
                                                         addNewItem(document, "Grand Total", Element.ALIGN_CENTER);
@@ -472,14 +784,18 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                                                         addNewItemWithLeftAndRight(document,
                                                                 " Grand Total ", "", "", "" + Grand_Total[0]);
                                                         addNewItemWithLeftAndRight(document,
-                                                                " Total - Return ", ""
-                                                                , "", "" + new Transaction_Encoder().getDecoded(
-                                                                        snapshot.child("Amount").getValue(String.class))
-                                                        );
+                                                                " Discount ", "", "", "" + Discount[0]);
                                                         addNewItemWithLeftAndRight(document,
-                                                                " Credit/Debit ", "", ""
-                                                                , "" + new Transaction_Encoder().getDecoded(
-                                                                        snapshot.child("Credit").getValue(String.class)));
+                                                                " After Discount ", "", "", "" + After_discount[0]);
+//                                                        addNewItemWithLeftAndRight(document,
+//                                                                " Total - Return ", ""
+//                                                                , "", "" + new Transaction_Encoder().getDecoded(
+//                                                                        snapshot.child("Amount").getValue(String.class))
+//                                                        );
+//                                                        addNewItemWithLeftAndRight(document,
+//                                                                " Credit/Debit ", "", ""
+//                                                                , "" + new Transaction_Encoder().getDecoded(
+//                                                                        snapshot.child("Credit").getValue(String.class)));
                                                     } catch (DocumentException e) {
                                                         e.printStackTrace();
                                                     }
@@ -529,9 +845,6 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
                     }
                 });
             }
-
-
-
 
 
 
@@ -606,7 +919,7 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
     }
 
-    private void CreatePDFFile(String path,String Order_Title,String Date, String CustomerName,String CategoryName,String ItemName
+    private void CreatePDFFile(String path,String Order_Title,String Date, String CustomerName,String CategoryName,String rank,String ItemName
             , String ItemRate,String ItemQuantity,String ItemAmount) {
 
 
@@ -817,10 +1130,12 @@ public class Transactional_Adaptor extends RecyclerView.Adapter<Transactional_Ho
 
         PdfPTable table = new PdfPTable(4);
 
+
         PdfPCell item = new PdfPCell(new Phrase(ItemName));
         PdfPCell rate = new PdfPCell(new Phrase(ItemRate));
         PdfPCell quantity = new PdfPCell(new Phrase(ItemQuantity));
         PdfPCell amount = new PdfPCell(new Phrase(ItemAmount));
+
 
         table.addCell(item);
         table.addCell(rate);

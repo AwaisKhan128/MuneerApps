@@ -23,6 +23,7 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.muneerapps.dialogs.Close_Shop;
 import com.example.muneerapps.dialogs.Customer_dialog;
 import com.example.muneerapps.dialogs.Reset_Pin;
 import com.google.android.gms.tasks.OnCanceledListener;
@@ -48,7 +49,8 @@ public class MainActivity extends AppCompatActivity {
     TextView signin;
     Button button3;
     ProgressBar progressBar;
-    RadioButton radioButton,radioButton2,radioButton3,radioButton4,radioButton14,radioButton13,radioButton12,radioButton15;
+    RadioButton radioButton,radioButton2,radioButton3,radioButton4
+            ,radioButton14,radioButton13,radioButton12,radioButton15,radioButton16;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -76,6 +78,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void Reset_Payments() {
+
+        Close_Shop close_shop = new Close_Shop(MainActivity.this);
+        close_shop.show();
+
     }
 
     private void Reset_Pin() {
@@ -103,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
         getSupportActionBar().setTitle("Signup");
         setContentView(R.layout.activity_main);
         mContext = this;
@@ -196,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
         radioButton13 = (RadioButton) findViewById(R.id.radioButton13);//Customer Update
         radioButton14 = (RadioButton) findViewById(R.id.radioButton14);//Supplier Registration
         radioButton15 = (RadioButton) findViewById(R.id.radioButton15);//Supplier Update
+        radioButton16 = (RadioButton) findViewById(R.id.radioButton16);//Payment Overview
         progressBar.setVisibility(View.GONE);
         FirebaseApp.initializeApp(this);
     }
@@ -336,6 +344,9 @@ public class MainActivity extends AppCompatActivity {
                                                         databaseReference
                                                                 .child("Access").child("Supplier_Update").setValue(access[7]);
 
+                                                        databaseReference
+                                                                .child("Access").child("Payment_Overview").setValue(access[8]);
+
 
 
 
@@ -355,6 +366,7 @@ public class MainActivity extends AppCompatActivity {
                                                         radioButton13.setChecked(false);
                                                         radioButton14.setChecked(false);
                                                         radioButton15.setChecked(false);
+                                                        radioButton16.setChecked(false);
 
                                                         access[0] = false;
                                                         access[1] = false;
@@ -365,6 +377,7 @@ public class MainActivity extends AppCompatActivity {
                                                         access[5] = false;
                                                         access[6] = false;
                                                         access[7] = false;
+                                                        access[8] = false;
                                                         ans.set(true);
                                                         reset_focus();
                                                         FirebaseAuth.getInstance().signOut();
@@ -445,6 +458,9 @@ public class MainActivity extends AppCompatActivity {
                                                     databaseReference
                                                             .child("Access").child("Supplier_Update").setValue(access[7]);
 
+                                                    databaseReference
+                                                            .child("Access").child("Payment_Overview").setValue(access[8]);
+
 
 
 
@@ -464,6 +480,7 @@ public class MainActivity extends AppCompatActivity {
                                                     radioButton13.setChecked(false);
                                                     radioButton14.setChecked(false);
                                                     radioButton15.setChecked(false);
+                                                    radioButton16.setChecked(false);
 
                                                     access[0] = false;
                                                     access[1] = false;
@@ -474,6 +491,7 @@ public class MainActivity extends AppCompatActivity {
                                                     access[5] = false;
                                                     access[6] = false;
                                                     access[7] = false;
+                                                    access[8] = false;
                                                     ans.set(true);
                                                     reset_focus();
 
@@ -528,7 +546,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    private boolean access[] = {false,false,false,false, false,false,false,false};
+    private boolean access[] = {false,false,false,false, false,false,false,false,false};
     public void Access(View view)
     {
         switch (view.getId())
@@ -564,21 +582,23 @@ public class MainActivity extends AppCompatActivity {
                 break;
 
             case R.id.radioButton13:
-//                radioButton4.toggle();
                 access[5]= !access[5];
                 radioButton13.setChecked(access[5]);
                 break;
 
             case R.id.radioButton14:
-//                radioButton4.toggle();
                 access[6]= !access[6];
                 radioButton14.setChecked(access[6]);
                 break;
 
             case R.id.radioButton15:
-//                radioButton4.toggle();
                 access[7]= !access[7];
                 radioButton15.setChecked(access[7]);
+                break;
+
+            case R.id.radioButton16:
+                access[8]= !access[8];
+                radioButton16.setChecked(access[8]);
                 break;
         }
     }

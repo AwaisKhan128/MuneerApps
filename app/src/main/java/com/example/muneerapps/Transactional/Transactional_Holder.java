@@ -12,7 +12,7 @@ import com.example.muneerapps.R;
 public class Transactional_Holder extends RecyclerView.ViewHolder {
 
     public TextView key,Status,pays,Customer_key,customer_val,product_val,total_val,due_val,paid_val;
-    public ImageView imageView2;
+    public ImageView imageView2,imageView5;
     public Transactional_Holder(@NonNull View itemView) {
         super(itemView);
 
@@ -25,6 +25,7 @@ public class Transactional_Holder extends RecyclerView.ViewHolder {
         due_val = itemView.findViewById(R.id.Due_val);
         paid_val = itemView.findViewById(R.id.Paid_val);
         imageView2 = itemView.findViewById(R.id.imageView2);
+        imageView5 = itemView.findViewById(R.id.imageView5);
         Customer_key = itemView.findViewById(R.id.Customer_key);
 
 

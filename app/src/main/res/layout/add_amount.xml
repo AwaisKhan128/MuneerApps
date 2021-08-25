@@ -75,7 +75,7 @@
                 <ListView
                     android:id="@+id/custom_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:visibility="gone" />
             </LinearLayout>
 
@@ -116,7 +116,7 @@
                 <ListView
                     android:id="@+id/product_list"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="150dp"
                     android:visibility="gone" />
             </LinearLayout>
 

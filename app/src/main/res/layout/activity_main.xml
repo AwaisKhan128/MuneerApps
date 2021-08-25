@@ -7,13 +7,18 @@
 
     <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:layout_margin="1dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"
+        android:elevation="10dp">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
             android:layout_marginEnd="20dp"
             android:layout_marginBottom="20dp"
             android:orientation="vertical">
@@ -40,7 +45,7 @@
                     <TextView
                         android:id="@+id/textView"
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                        android:layout_height="match_parent"
                         android:layout_weight="1"
                         android:gravity="center"
                         android:text="Create Account"
@@ -52,9 +57,11 @@
                     android:id="@+id/textView33"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
                     android:layout_weight="1"
                     android:gravity="center"
-                    android:text="Muneer Sweets And Bakers" />
+                    android:text="Muneer Sweets And Bakers"
+                    android:textColor="#0522E1" />
 
             </LinearLayout>
 
@@ -199,7 +206,21 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:onClick="Access"
-                    android:text="Payment Check" />
+                    android:text="Sell/Purchase" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButton16"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:onClick="Access"
+                    android:text="Payments" />
             </LinearLayout>
 
             <LinearLayout

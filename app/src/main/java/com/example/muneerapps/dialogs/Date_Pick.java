@@ -59,6 +59,7 @@ public class Date_Pick extends Dialog implements
 
 
                 Add2Preference("Current_Date",day+"-"+Months.get(month1-1)+"-"+datePicker1.getYear());
+                Add2Preference("Discount_date",day+"-"+Months.get(month1-1)+"-"+datePicker1.getYear());
                 dismiss();
 
             }

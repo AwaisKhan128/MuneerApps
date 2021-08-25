@@ -1,15 +1,5 @@
 package com.example.muneerapps;
 
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
-import androidx.annotation.WorkerThread;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.PopupMenu;
-import androidx.core.content.ContextCompat;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
-import androidx.recyclerview.widget.SnapHelper;
-
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -25,8 +15,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -34,35 +22,31 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.muneerapps.Load_Products.Product_Adaptor;
-import com.example.muneerapps.Load_Products.Product_Class;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
 import com.example.muneerapps.PDFManager.Common;
 import com.example.muneerapps.Transactional.Transactional_Adaptor;
 import com.example.muneerapps.Transactional.Transactional_Class;
-import com.example.muneerapps.Transactions.Transaction_Adaptor;
-import com.example.muneerapps.Transactions.Transaction_Class;
 import com.example.muneerapps.dialogs.Addcash_dialog;
-import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Date_Pick;
 import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.ReturnPurchase_dialog;
 import com.example.muneerapps.dialogs.ReturnSell_dialog;
-import com.example.muneerapps.dialogs.ShopClosed;
 import com.example.muneerapps.dialogs.SignOut_Toast;
 import com.example.muneerapps.dialogs.Subcash_dialog;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 import com.jjoe64.graphview.GraphView;
 import com.jjoe64.graphview.series.DataPoint;
 import com.jjoe64.graphview.series.LineGraphSeries;
-
 import com.ozcanalasalvar.library.view.datePicker.DatePicker;
 import com.ozcanalasalvar.library.view.popup.DatePickerPopup;
 import com.roughike.bottombar.BottomBar;
@@ -71,17 +55,10 @@ import com.roughike.bottombar.OnTabSelectListener;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
 
-import github.com.st235.lib_expandablebottombar.ExpandableBottomBar;
-
-public class Payment extends AppCompatActivity {
+public class Payment_Overview extends AppCompatActivity {
     ArrayList<Transactional_Class> Data_log = new ArrayList<>();
     ArrayList<Transactional_Class> Data_log_copy = new ArrayList<>();
-
-    ArrayList<Product_Class> Product_load = new ArrayList<>();
 
     public RecyclerView recycler;
     Context context;
@@ -91,10 +68,11 @@ public class Payment extends AppCompatActivity {
     FloatingActionButton floatingActionButton2;
     String Path ="";
     DatePicker datePicker;
+
     private void Reset_deadline() {
 
 
-        Deadline cdd=new Deadline(Payment.this);
+        Deadline cdd=new Deadline(Payment_Overview.this);
         cdd.setCanceledOnTouchOutside(false);
         cdd.setCancelable(false);
         cdd.show();
@@ -147,6 +125,9 @@ public class Payment extends AppCompatActivity {
                         cashout();
                         break;
 
+                    case R.id.search_bar:
+                        Date_pick();
+                        break;
 
                     case R.id.return_sell:
                         return_sell();
@@ -177,6 +158,10 @@ public class Payment extends AppCompatActivity {
 
                     case R.id.purchase:
                         cashout();
+                        break;
+
+                    case R.id.search_bar:
+                        Date_pick();
                         break;
 
                     case R.id.return_sell:
@@ -261,7 +246,7 @@ public class Payment extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_payment, menu);
+        inflater.inflate(R.menu.menu_payment_final, menu);
         return true;
     }
 
@@ -269,8 +254,31 @@ public class Payment extends AppCompatActivity {
     public boolean onOptionsItemSelected(@NonNull MenuItem item)
     {
         switch (item.getItemId()) {
+            case R.id.refresh:
+                Refresh_Now();
+                return true;
             case R.id.signout:
                 SignOut_Now();
+                return true;
+
+            case R.id.sell:
+                current_status = "Sell";
+                Sell();
+                return true;
+
+            case R.id.purchase:
+                current_status = "Purchase";
+                Purchase();
+                return true;
+                
+            case R.id.return_sell:
+                current_status = "Return_Sell";
+                Return_Sell();
+                return true;
+                
+            case R.id.return_purchase:
+                current_status = "Return_Purchase";
+                Return_Purchase();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -537,50 +545,19 @@ public class Payment extends AppCompatActivity {
     ImageView imageView3;
     ListView listView;
     TextView reset_date;
-    public void Shop_Status()
-    {
-        FirebaseDatabase.getInstance().getReference("Shop")
-                .addValueEventListener(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        if(snapshot.exists())
-                        {
-                            if(snapshot.getValue(Boolean.class))
-                            {
-                                shopClosed.dismiss();
-                            }
-                            else
-                            {
-                                shopClosed.setCancelable(false);
-                                shopClosed.setCanceledOnTouchOutside(false);
-                                shopClosed.show();
-                            }
-                        }
-                        else
-                        {
-                            shopClosed.dismiss();
-                        }
-                    }
 
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
 
-                    }
-                });
-    }
-
-    ShopClosed shopClosed ;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.balance_sheet);
+        setContentView(R.layout.balance_sheet_final);
         recycler = findViewById(R.id.recycler);
         context = this;
         Path = Common.getAppPath(context)+"/MuneerApps.pdf";
         linearLayout = new LinearLayoutManager(context);
+        Add3Preference("Owner","yes");
         recycler.setLayoutManager(linearLayout);
         recycler.addItemDecoration(new RecyclerMainSpacing(16));
-        Add3Preference("Owner","no");
 //        recycler.setVisibility(View.GONE);
         graph = (GraphView) findViewById(R.id.graph);
         linearLayoutS = findViewById(R.id.linearLayoutS);
@@ -591,7 +568,6 @@ public class Payment extends AppCompatActivity {
         floatingActionButton2 = findViewById(R.id.floatingActionButton2);
         StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
         StrictMode.setVmPolicy(builder.build());
-        new Load_Products().execute();
 
         floatingActionButton2.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -629,7 +605,6 @@ public class Payment extends AppCompatActivity {
                 }
             }
         });
-
         reset_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -641,12 +616,44 @@ public class Payment extends AppCompatActivity {
 
 
 
+        searcher.addTextChangedListener(new TextWatcher()
+        {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                if (searcher.getText().toString().length()>0)
+                {
+
+                    new SearchByUser().execute(searcher.getHint().toString(),charSequence.toString());
+
+                }
+                else
+                {
+                    try {
+                        Refresh_Now();
+                    }
+                    catch (Exception e)
+                    {
+                        e.printStackTrace();
+                    }
+                }
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
         imageView3 = findViewById(R.id.imageView3);
         imageView3.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Date_Pick date_pick = new Date_Pick(Payment.this);
+                Date_Pick date_pick = new Date_Pick(Payment_Overview.this);
                 date_pick.setCanceledOnTouchOutside(false);
                 date_pick.setOnDismissListener(new DialogInterface.OnDismissListener() {
                     @Override
@@ -658,8 +665,7 @@ public class Payment extends AppCompatActivity {
             }
         });
         Bottom_bars();
-        shopClosed = new ShopClosed(Payment.this);
-        Shop_Status();
+
 
 
 //        int[] array = new int[]{};
@@ -723,13 +729,13 @@ public class Payment extends AppCompatActivity {
 
     public void cashout()
     {
-        Subcash_dialog cdd=new Subcash_dialog(Payment.this);
+        Subcash_dialog cdd=new Subcash_dialog(Payment_Overview.this);
         cdd.show();
     }
 
     public void cashin()
     {
-        Addcash_dialog cdd=new Addcash_dialog(Payment.this);
+        Addcash_dialog cdd=new Addcash_dialog(Payment_Overview.this);
         cdd.show();
 
     }
@@ -742,7 +748,7 @@ public class Payment extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
                 {
-                    ReturnSell_dialog cdd=new ReturnSell_dialog(Payment.this);
+                    ReturnSell_dialog cdd=new ReturnSell_dialog(Payment_Overview.this);
                     cdd.show();
                 }
                 else
@@ -767,7 +773,7 @@ public class Payment extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 if (snapshot.exists())
                 {
-                    ReturnPurchase_dialog cdd=new ReturnPurchase_dialog(Payment.this);
+                    ReturnPurchase_dialog cdd=new ReturnPurchase_dialog(Payment_Overview.this);
                     cdd.show();
                 }
                 else
@@ -784,67 +790,6 @@ public class Payment extends AppCompatActivity {
 
     }
 
-
-    public class Load_Products extends AsyncTask<Void,Void,Void>
-    {
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-            try{
-
-                Product_load.clear();
-                recycler.removeAllViewsInLayout();
-                recycler.removeAllViews();
-                recycler.getAdapter().notifyDataSetChanged();
-            }
-            catch (Exception e)
-            {
-                e.printStackTrace();
-            }
-        }
-
-        @Override
-        protected Void doInBackground(Void... voids) {
-            FirebaseDatabase.getInstance().getReference("Products")
-                    .addListenerForSingleValueEvent(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(@NonNull DataSnapshot snapshot) {
-                            if (snapshot.exists())
-                            {
-                                for (DataSnapshot dataSnapshot : snapshot.getChildren())
-                                {
-
-                                    Product_load.add(new Product_Class(dataSnapshot.child("Category").getValue(String.class),
-                                            dataSnapshot.child("Name").getValue(String.class)
-                                            ,dataSnapshot.child("Unit").getValue(String.class),
-                                            dataSnapshot.child("Price").getValue(String.class)));
-                                }
-
-                                if (Product_load.size()>0)
-                                {
-                                    try {
-                                        Product_Adaptor viewAdaptor = new Product_Adaptor(context, Product_load);
-                                        viewAdaptor.notifyDataSetChanged();
-                                        recycler.setVisibility(View.VISIBLE);
-                                        recycler.setAdapter(viewAdaptor);
-                                        recycler.getAdapter().notifyDataSetChanged();
-                                    }
-                                    catch (Exception e)
-                                    {
-                                        e.printStackTrace();
-                                    }
-                                }
-                            }
-                        }
-
-                        @Override
-                        public void onCancelled(@NonNull DatabaseError error) {
-
-                        }
-                    });
-            return null;
-        }
-    }
 
 
     public class Manage_Users extends AsyncTask<Void,Void,Void>
@@ -971,25 +916,25 @@ public class Payment extends AppCompatActivity {
                 }
             });
 
-//            FirebaseDatabase.getInstance()
-//                    .getReference("Payments").child("Balance").child(current_status).addListenerForSingleValueEvent(new ValueEventListener() {
-//                @Override
-//                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                    if(snapshot.exists())
-//                    {
-//                        String balance = new Transaction_Encoder().getDecoded(snapshot.getValue(String.class));
-//                        getSupportActionBar().setTitle("Balance Rs. "+balance);
-//                    }
-//                    else {
-//                        getSupportActionBar().setTitle("Balance Rs. "+0);
-//                    }
-//                }
-//
-//                @Override
-//                public void onCancelled(@NonNull DatabaseError error) {
-//
-//                }
-//            });
+            FirebaseDatabase.getInstance()
+                    .getReference("Payments").child("Balance").child(current_status).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists())
+                    {
+                        String balance = new Transaction_Encoder().getDecoded(snapshot.getValue(String.class));
+                        getSupportActionBar().setTitle("Balance Rs. "+balance);
+                    }
+                    else {
+                        getSupportActionBar().setTitle("Balance Rs. "+0);
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
             return null;
         }
     }
@@ -1135,6 +1080,9 @@ public class Payment extends AppCompatActivity {
             return null;
         }
     }
+
+
+
 
     private void Add2Preference(String key, long quantity)
     {

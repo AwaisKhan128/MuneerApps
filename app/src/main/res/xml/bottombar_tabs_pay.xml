@@ -4,20 +4,25 @@
         <tab
             id="@+id/sell"
             icon="@drawable/add_amount"
-            title="Sell" />
+            title="Received" />
         <tab
             id="@+id/purchase"
             icon="@drawable/purchase"
-            title="Purchase" />
+            title="Sent" />
+
+        <tab
+            id="@+id/search_bar"
+            icon="@drawable/ic_action_action_search"
+            title="Search" />
 
         <tab
             id="@+id/return_sell"
             icon="@drawable/return_"
-            title="Return Sell" />
+            title="Return Received" />
         <tab
             id="@+id/return_purchase"
             icon="@drawable/return_"
-            title="Return Purchase" />
+            title="Return Sent" />
 
 
 </tabs>

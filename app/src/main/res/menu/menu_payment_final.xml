@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+
+
+
+
+        <item android:id="@+id/refresh"
+            android:icon="@drawable/refresh_24"
+            android:title="refresh"
+            app:showAsAction="always" />
+
+
+
+        <item android:id="@+id/sell"
+            android:icon="@drawable/logout_now"
+            android:title="Sell"
+            />
+        <item android:id="@+id/purchase"
+            android:icon="@drawable/logout_now"
+            android:title="Purchase"
+            />
+
+        <item android:id="@+id/return_sell"
+            android:icon="@drawable/logout_now"
+            android:title="Return Sell"
+            />
+
+        <item android:id="@+id/return_purchase"
+            android:icon="@drawable/logout_now"
+            android:title="Return Purchase"
+
+            />
+
+        <item android:id="@+id/signout"
+            android:icon="@drawable/logout_now"
+            android:title="Signout"
+            app:showAsAction="ifRoom" />
+</menu>

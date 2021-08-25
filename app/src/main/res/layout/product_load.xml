@@ -2,11 +2,7 @@
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:outlineAmbientShadowColor="#000000"
-    android:outlineSpotShadowColor="#000000"
-    app:cardBackgroundColor="#E6E7F1"
-    app:cardUseCompatPadding="true">
+    android:layout_height="wrap_content">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -18,25 +14,6 @@
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="0"
-            android:orientation="vertical">
-
-            <TextView
-                android:id="@+id/textView30"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_weight="1"
-                android:gravity="center"
-                android:text="Key"
-                android:textSize="18sp"
-                android:visibility="gone" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
             android:layout_weight="3"
             android:orientation="vertical">
 
@@ -44,38 +21,9 @@
                 android:id="@+id/textView31"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:gravity="center|start"
-                android:paddingStart="5dp"
-                android:text="Status"
-                android:textSize="24sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
-            android:gravity="right">
-
-            <TextView
-                android:id="@+id/textView32"
-                android:layout_width="wrap_content"
-                android:layout_height="match_parent"
                 android:gravity="center"
-                android:text="TextView" />
-
-            <ImageView
-                android:id="@+id/imageView2"
-                android:layout_width="10dp"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/print_24" />
-
-            <ImageView
-                android:id="@+id/imageView5"
-                android:layout_width="30dp"
-                android:layout_height="30dp"
-                android:layout_weight="1"
-                app:srcCompat="@drawable/discount_vect" />
+                android:text="Product"
+                android:textSize="24sp" />
         </LinearLayout>
 
     </LinearLayout>
@@ -100,44 +48,17 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
                 android:paddingEnd="30dp"
-                android:text="Customer:"
+                android:text="Category:"
                 android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/Customer_val"
+                android:id="@+id/Category"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center|end"
-                android:text="Junaid Alam"
-                android:textSize="18sp" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp">
-
-            <TextView
-                android:id="@+id/Product_key"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0"
-                android:paddingEnd="28dp"
-                android:text="Days:      "
-                android:textColor="#000000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/Product_val"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:gravity="center|end"
-                android:text="504"
+                android:gravity="center|right"
+                android:text="0"
                 android:textSize="18sp" />
         </LinearLayout>
 
@@ -153,16 +74,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Total:            "
+                android:text="Product:"
                 android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/Total_val"
+                android:id="@+id/Name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center|end"
+                android:gravity="center|right"
                 android:text="1"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -179,16 +100,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Due:             "
+                android:text="Unit:"
                 android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/Due_val"
+                android:id="@+id/Unit"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center|end"
+                android:gravity="center|right"
                 android:text="2"
                 android:textSize="18sp" />
         </LinearLayout>
@@ -205,16 +126,16 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_weight="0"
-                android:text="Paid:             "
+                android:text="Price"
                 android:textColor="#000000"
                 android:textSize="20sp" />
 
             <TextView
-                android:id="@+id/Paid_val"
+                android:id="@+id/Price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:gravity="center|end"
+                android:gravity="center|right"
                 android:text="24"
                 android:textSize="18sp" />
         </LinearLayout>

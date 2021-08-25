@@ -4,7 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -17,8 +20,10 @@ import com.example.muneerapps.dialogs.Category_dialog;
 import com.example.muneerapps.dialogs.Customer_dialog;
 import com.example.muneerapps.dialogs.Deadline;
 import com.example.muneerapps.dialogs.Product_dialog;
+import com.example.muneerapps.dialogs.ShopClosed;
 import com.example.muneerapps.dialogs.Supplier_dialog;
 import com.example.muneerapps.dialogs.Update_Customer;
+import com.example.muneerapps.dialogs.Update_Notice;
 import com.example.muneerapps.dialogs.Update_Supplier;
 import com.example.muneerapps.dialogs.update_prod_dlg;
 import com.google.firebase.FirebaseApp;
@@ -29,10 +34,12 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import org.jsoup.Jsoup;
+
 import java.io.BufferedReader;
 
 public class Selector extends AppCompatActivity {
-    Button button5,button6,button7,button8,button22,button23,button19,button18;
+    Button button5,button6,button7,button8,button22,button23,button19,button18,button24;
 
 
     @Override
@@ -83,6 +90,41 @@ public class Selector extends AppCompatActivity {
     public void Refresh_Now()
     {
 
+    }
+
+
+
+
+    public void Shop_Status()
+    {
+        FirebaseDatabase.getInstance().getReference("Shop")
+                .addValueEventListener(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(@NonNull DataSnapshot snapshot) {
+                        if(snapshot.exists())
+                        {
+                            if(snapshot.getValue(Boolean.class))
+                            {
+                                shopClosed.dismiss();
+                            }
+                            else
+                            {
+                                shopClosed.setCancelable(false);
+                                shopClosed.setCanceledOnTouchOutside(false);
+                                shopClosed.show();
+                            }
+                        }
+                        else
+                        {
+                            shopClosed.dismiss();
+                        }
+                    }
+
+                    @Override
+                    public void onCancelled(@NonNull DatabaseError error) {
+
+                    }
+                });
     }
 
     public void Firebase_Selector()
@@ -152,6 +194,19 @@ public class Selector extends AppCompatActivity {
                     }
 
 
+                    if (snapshot.hasChild("Payment_Overview"))
+                    {
+                        if (snapshot.child("Payment_Overview").getValue(Boolean.class))
+                        {
+                            button24.setVisibility(View.VISIBLE);
+                            progressBar3.setVisibility(View.GONE);
+                        }
+                        else if (!(snapshot.child("Payment_Overview").getValue(Boolean.class)))
+                        {
+                            button24.setVisibility(View.GONE);
+                            progressBar3.setVisibility(View.GONE);
+                        }
+                    }
 
 
                     if (snapshot.child("Customer").getValue(Boolean.class))
@@ -217,8 +272,9 @@ public class Selector extends AppCompatActivity {
         cdd.show();
 
     }
-
+    ShopClosed shopClosed ;
     ProgressBar progressBar3;
+    String currentVersion;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -228,6 +284,15 @@ public class Selector extends AppCompatActivity {
         button6 = (Button) findViewById(R.id.button6);
         button7 = (Button) findViewById(R.id.button7);
         button8 = (Button) findViewById(R.id.button8);
+        button24 = (Button) findViewById(R.id.button24);//Payments Overview
+        try {
+            currentVersion = getPackageManager().getPackageInfo(getPackageName(), 0).versionName;
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        shopClosed = new ShopClosed(Selector.this);
+        Shop_Status();
 
         button18 = (Button) findViewById(R.id.button18);//Update Product
         button19 = (Button) findViewById(R.id.button19);//Update Customers
@@ -245,6 +310,7 @@ public class Selector extends AppCompatActivity {
         button19.setVisibility(View.GONE);
         button22.setVisibility(View.GONE);
         button23.setVisibility(View.GONE);
+        button24.setVisibility(View.GONE);
 
 
         FirebaseApp.initializeApp(this);
@@ -289,6 +355,7 @@ public class Selector extends AppCompatActivity {
     {
         Product_dialog cdd=new Product_dialog(Selector.this);
         cdd.show();
+
     }
 
     public void update_prod(View view)
@@ -303,5 +370,44 @@ public class Selector extends AppCompatActivity {
         cdd.show();
     }
 
+    public void Payments_Overview(View view)
+    {
+        startActivity(new Intent(Selector.this,Payment_Overview.class));
+    }
+
+    private class GetVersionCode extends AsyncTask<Void, String, String> {
+        @Override
+        protected String doInBackground(Void... voids) {
+
+            String newVersion = null;
+            try {
+                newVersion = Jsoup.connect("https://play.google.com/store/apps/details?id=" + Selector.this.getPackageName() + "&hl=it")
+                        .timeout(30000)
+                        .userAgent("Mozilla/5.0 (Windows; U; WindowsNT 5.1; en-US; rv1.8.1.6) Gecko/20070725 Firefox/2.0.0.6")
+                        .referrer("http://www.google.com")
+                        .get()
+                        .select(".hAyfc .htlgb")
+                        .get(7)
+                        .ownText();
+                return newVersion;
+            } catch (Exception e) {
+                return newVersion;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(String onlineVersion) {
+            super.onPostExecute(onlineVersion);
+            Log.d("update", "Current version " + currentVersion + "playstore version " + onlineVersion);
+            if (onlineVersion != null && !onlineVersion.isEmpty()) {
+                if (Float.valueOf(currentVersion) < Float.valueOf(onlineVersion)) {
+                    //show dialog
+                    Update_Notice update_notice = new Update_Notice(Selector.this);
+                    update_notice.setCanceledOnTouchOutside(false);
+                    update_notice.show();
+                }
+            }
+        }
+    }
 
 }

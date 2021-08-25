@@ -70,7 +70,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:text="Payment" />
+                    android:text="Sell/Purchase" />
             </LinearLayout>
 
             <LinearLayout
@@ -91,6 +91,20 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Customer" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/radioButton19"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="Payments" />
+
             </LinearLayout>
 
             <LinearLayout
